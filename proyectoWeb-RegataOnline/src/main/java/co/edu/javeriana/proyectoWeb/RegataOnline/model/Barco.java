@@ -4,12 +4,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Barco {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @ManyToOne 
+    private ModeloBarco modelo;
+
+    @ManyToOne 
+    private Jugador jugador;
+
+    @ManyToOne 
+    private Celda celda;
 
     private int velocidadX;
     private int velocidadY;

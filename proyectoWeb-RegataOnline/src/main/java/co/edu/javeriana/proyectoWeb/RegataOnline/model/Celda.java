@@ -1,9 +1,13 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Celda {
@@ -11,10 +15,15 @@ public class Celda {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    private Mapa mapa;
 
     private String tipo;
     private int posicionX;
     private int posicionY;
+
+    @OneToMany(mappedBy = "celda")  
+    private List<Barco> barcos;
 
     public Celda() {
     }

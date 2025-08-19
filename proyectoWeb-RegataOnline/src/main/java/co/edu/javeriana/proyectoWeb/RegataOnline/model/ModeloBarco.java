@@ -1,9 +1,13 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class ModeloBarco {
@@ -13,6 +17,9 @@ public class ModeloBarco {
 
     private String nombreModelo;
     private String color;
+
+    @OneToMany(mappedBy = "modelo")  
+    private List<Barco> barcos = new ArrayList<>();
 
     public ModeloBarco() {
     }
@@ -38,4 +45,7 @@ public class ModeloBarco {
     public void setColor(String color) {
         this.color = color;
     }   
+    public List<Barco> getBarcos() {
+        return barcos;
+    }
 }
