@@ -65,4 +65,10 @@ public class Barco {
     public void setPosicionY(int posicionY) {
         this.posicionY = posicionY;
     }
+    public ModeloBarco getModelo() {
+        return modelo;
+    }
+    public void setModelo(ModeloBarco modelo) {
+        this.modelo = modelo;
+    }
 }

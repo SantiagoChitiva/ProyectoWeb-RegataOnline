@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Jugadores</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+        <h1>Lista de Jugadores</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>View</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="jugador :${listaJugadores}">
+                    <td th:text= "${jugador.Nombre}"></td>
+                    <td>
+                        <a th:href="@{/jugador/view/{id}(id=${jugador.id})}">view</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/jugador/edit/{id}(id=${jugador.id})}">editar</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/jugador/delete/{id}(id=${jugador.id})}">eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</body>
+</html>

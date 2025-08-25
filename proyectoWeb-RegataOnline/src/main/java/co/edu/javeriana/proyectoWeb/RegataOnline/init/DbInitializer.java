@@ -1,5 +1,7 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.init;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -36,6 +38,8 @@ public class DbInitializer implements CommandLineRunner {
     
     @Autowired
     private CeldaRepositorio celdaRepositorio;
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void run(String... args) throws Exception {

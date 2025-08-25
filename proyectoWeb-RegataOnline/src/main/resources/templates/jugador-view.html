@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jugador View</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+        <h1>Jugador View</h1>
+        <ul>
+            <li th:text = "${jugador.nombre}"></li>
+        </ul>
+        <p th:text="|${jugador.nombre}|"></p>
+        <a th:href="@{/jugador/list}">Volver</a>
+</body>
+</html>

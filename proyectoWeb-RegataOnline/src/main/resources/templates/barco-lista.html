@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Barcos</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <h1>Lista de Barcos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Modelo</th>
+                <th>View</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="barco : ${listaBarcos}">
+                <td th:text="${barco.id}"></td>
+                <td th:text="${barco.modelo?.nombreModelo}"></td>
+                <td>
+                    <a th:href="@{/barco/view/{id}(id=${barco.id})}">ver</a>
+                </td>
+                <td>
+                    <a th:href="@{/barco/edit/{id}(id=${barco.id})}">editar</a>
+                </td>
+                <td>
+                        <a th:href="@{/barco/delete/{id}(id=${barco.id})}">eliminar</a>
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
