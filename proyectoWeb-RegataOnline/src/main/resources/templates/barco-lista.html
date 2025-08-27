@@ -7,6 +7,8 @@
 </head>
 <body>
     <h1>Lista de Barcos</h1>
+    <a href="/barco/create">Crear Nuevo Barco</a>
+    <br><br>
     <table>
         <thead>
             <tr>
@@ -20,7 +22,7 @@
         <tbody>
             <tr th:each="barco : ${listaBarcos}">
                 <td th:text="${barco.id}"></td>
-                <td th:text="${barco.modelo?.nombreModelo}"></td>
+                <td th:text="${barco.nombreModeloBarco}"></td>
                 <td>
                     <a th:href="@{/barco/view/{id}(id=${barco.id})}">ver</a>
                 </td>

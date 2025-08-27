@@ -71,4 +71,20 @@ public class Barco {
     public void setModelo(ModeloBarco modelo) {
         this.modelo = modelo;
     }
+
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
+    }
+
+    public Celda getCelda() {
+        return celda;
+    }
+
+    public void setCelda(Celda celda) {
+        this.celda = celda;
+    }
 }
