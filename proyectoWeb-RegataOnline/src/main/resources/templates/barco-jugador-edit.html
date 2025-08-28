@@ -5,14 +5,14 @@
     <title>Barcos Jugador Edit</title>
 </head>
 <body>
-    <form action="/jugador/barco/save" method="post">
+    <form action="/jugador/barcos/save" method="post">
         <input type="hidden" name="jugadorId" th:value="${barcoJugador.jugadorId}">
 
         <ul>
-            <li th:each="Barcos : ${allBarcos}">
-                <input type="checkbox" name="barcoIds" th:value="${barco.id}">
-                <label th:text = "${barco.modeloBarco}"></label>
-
+            <li th:each="barco : ${allBarcos}">
+                <input type="checkbox" name="barcoIds" th:value="${barco.id}"
+                       th:checked="${#lists.contains(barcoJugador.barcosIds, barco.id)}">
+                <label th:text="${barco.id}"></label>
             </li>
         </ul>
         <button type="submit">Save</button>

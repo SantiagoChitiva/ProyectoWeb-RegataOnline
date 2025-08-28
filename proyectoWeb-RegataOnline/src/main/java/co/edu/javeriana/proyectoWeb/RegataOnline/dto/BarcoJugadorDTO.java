@@ -7,6 +7,9 @@ public class BarcoJugadorDTO {
     private List<Long> barcosIds;
 
 
+    public BarcoJugadorDTO() {
+    }
+    
     public BarcoJugadorDTO(Long jugadorId, List<Long> barcosIds) {
         this.jugadorId = jugadorId;
         this.barcosIds = barcosIds;

@@ -52,4 +52,25 @@ public class BarcoServicio {
 
         return Optional.of(barcoJugadorDTO);
     }
+
+    public void updateBarcosJugador(BarcoJugadorDTO barcoJugadorDTO){
+        Jugador jugador = jugadorRepositorio.findById(barcoJugadorDTO.getJugadorId()).orElseThrow();
+        
+        // Limpiar los barcos actuales del jugador
+        jugador.getBarcos().clear();
+        
+        // Solo buscar barcos si la lista de IDs no es null y no está vacía
+        if (barcoJugadorDTO.getBarcosIds() != null && !barcoJugadorDTO.getBarcosIds().isEmpty()) {
+            List<Barco> barcosSeleccionados = barcoRepositorio.findAllById(barcoJugadorDTO.getBarcosIds());
+            
+            // Actualizar la relación bidireccional
+            for (Barco barco : barcosSeleccionados) {
+                barco.setJugador(jugador);
+            }
+            
+            jugador.getBarcos().addAll(barcosSeleccionados);
+        }
+        
+        jugadorRepositorio.save(jugador);
+    }
 }

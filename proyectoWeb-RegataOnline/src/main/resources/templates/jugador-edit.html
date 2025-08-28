@@ -13,5 +13,8 @@
         <input type="text" id="nombre" name="nombre" th:value="${jugador.nombre}">
         <button type="submit">Save</button>
     </form>
+    <p>
+        <a th:href="@{/jugador/barcos/edit/{id}(id=${jugador.id})}">Edit Barcos</a>
+    </p>
 </body>
 </html>
