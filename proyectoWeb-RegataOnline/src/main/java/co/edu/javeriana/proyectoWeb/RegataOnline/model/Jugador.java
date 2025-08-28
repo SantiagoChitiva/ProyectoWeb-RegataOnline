@@ -46,4 +46,8 @@ public class Jugador {
     public List<Barco> getBarcos() {
         return barcos;
     }
+
+    public void setBarcos(List<Barco> barcos) {
+        this.barcos = barcos;
+    }
 }

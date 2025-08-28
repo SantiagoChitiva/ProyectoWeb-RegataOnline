@@ -52,10 +52,25 @@ public class DbInitializer implements CommandLineRunner {
             modeloBarcoRepositorio.save(new ModeloBarco("Modelo " + i, "Color " + i));
         }  
         List<Barco> barcos = new ArrayList<>();
-        for(int i = 0; i < 50; i++) {
-            Barco barco = barcoRepositorio.save(new Barco(i, i + 1, i * 5, i * 5));
-            barcos.add(barco);
+        int barcoIndex = 0;
+        for (int j = 0; j < jugadores.size(); j++) {
+            Jugador jugador = jugadores.get(j);
+            List<Barco> barcosJugador = new ArrayList<>(); // Lista de barcos para este jugador
+
+            for (int b = 0; b < 10; b++) {
+                Barco barco = new Barco(barcoIndex, barcoIndex + 1, barcoIndex * 5, barcoIndex * 5);
+                barco.setJugador(jugador); // Asignar jugador al barco
+                barco.setModelo(modeloBarcoRepositorio.findById(barcoIndex % 10L).orElse(null)); // Asignar modelo (esto es un ejemplo, puedes ajustarlo)
+                barco = barcoRepositorio.save(barco); // Guardar el barco en la base de datos
+                barcosJugador.add(barco); // Añadir el barco a la lista del jugador
+                barcoIndex++;
+            }
+
+            // Ahora guardamos la relación de los barcos con el jugador
+            jugador.setBarcos(barcosJugador); // Añadir los barcos al jugador
+            jugadorRepositorio.save(jugador); // Guardar al jugador con su lista de barcos
         }
+
     }
 
 }

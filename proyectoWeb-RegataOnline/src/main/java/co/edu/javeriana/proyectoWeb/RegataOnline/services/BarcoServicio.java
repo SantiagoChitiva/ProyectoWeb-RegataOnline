@@ -7,14 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoJugadorDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.mapper.BarcoMapper;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 
 @Service
 public class BarcoServicio {
     @Autowired
     private BarcoRepositorio barcoRepositorio;
+    @Autowired
+    private JugadorRepositorio jugadorRepositorio;
 
      public List<BarcoDTO> listarBarcos() {
         return barcoRepositorio.findAll().stream().map(BarcoMapper::toDTO).toList();
@@ -31,5 +36,20 @@ public class BarcoServicio {
 
     public void borrarBarco(long id) {
         barcoRepositorio.deleteById(id);
+    }
+
+    public Optional <BarcoJugadorDTO> getBarcoJugador(Long jugadorId){
+        Optional<Jugador> jugadorOpt = jugadorRepositorio.findById(jugadorId);
+
+        if(jugadorOpt.isEmpty()){
+            return Optional.empty();
+        }
+
+        Jugador jugador = jugadorOpt.get();
+        List<Long> barcoIds = jugador.getBarcos().stream().map(Barco::getId).toList();
+
+        BarcoJugadorDTO barcoJugadorDTO = new BarcoJugadorDTO(jugadorId, barcoIds);
+
+        return Optional.of(barcoJugadorDTO);
     }
 }

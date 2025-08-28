@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Barcos Jugador Edit</title>
+</head>
+<body>
+    <form action="/jugador/barco/save" method="post">
+        <input type="hidden" name="jugadorId" th:value="${barcoJugador.jugadorId}">
+
+        <ul>
+            <li th:each="Barcos : ${allBarcos}">
+                <input type="checkbox" name="barcoIds" th:value="${barco.id}">
+                <label th:text = "${barco.modeloBarco}"></label>
+
+            </li>
+        </ul>
+        <button type="submit">Save</button>
+
+    </form>
+    
+</body>
+</html>
