@@ -53,6 +53,17 @@ public class BarcoServicio {
         return Optional.of(barcoJugadorDTO);
     }
 
+    public List<BarcoDTO> obtenerBarcosPorJugador(Long jugadorId) {
+        Optional<Jugador> jugadorOpt = jugadorRepositorio.findById(jugadorId);
+        
+        if (jugadorOpt.isEmpty()) {
+            return List.of();
+        }
+        
+        Jugador jugador = jugadorOpt.get();
+        return jugador.getBarcos().stream().map(BarcoMapper::toDTO).toList();
+    }
+
     public void updateBarcosJugador(BarcoJugadorDTO barcoJugadorDTO){
         Jugador jugador = jugadorRepositorio.findById(barcoJugadorDTO.getJugadorId()).orElseThrow();
         

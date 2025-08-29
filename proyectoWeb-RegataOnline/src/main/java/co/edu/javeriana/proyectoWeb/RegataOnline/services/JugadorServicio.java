@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.JugadorDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.mapper.JugadorMapper;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 
@@ -31,8 +32,19 @@ public class JugadorServicio {
     }
 
     public void borrarJugador(long id) {
-        jugadorRepositorio.deleteById(id);
+        Optional<Jugador> jugadorOpt = jugadorRepositorio.findById(id);
+        if (jugadorOpt.isPresent()) {
+            Jugador jugador = jugadorOpt.get();
+
+            for (Barco barco : jugador.getBarcos()) {
+            barco.setJugador(null);
+            }
+
+            jugador.getBarcos().clear();
+
+            jugadorRepositorio.save(jugador);
+
+            jugadorRepositorio.deleteById(id);
+        }
     }
-
-
 }

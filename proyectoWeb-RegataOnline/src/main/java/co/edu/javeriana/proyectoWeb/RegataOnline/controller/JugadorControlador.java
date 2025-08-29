@@ -1,6 +1,7 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoJugadorDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.JugadorDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
+import co.edu.javeriana.proyectoWeb.RegataOnline.services.BarcoServicio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.JugadorServicio;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,6 +31,9 @@ public class JugadorControlador {
     @Autowired
     private JugadorServicio jugadorServicio;
 
+    @Autowired
+    private BarcoServicio barcoServicio;
+
     private Logger log = LoggerFactory.getLogger(getClass());
 
     @GetMapping("/list")
@@ -40,8 +48,10 @@ public class JugadorControlador {
     @GetMapping("/view/{idJugador}")   
     public ModelAndView buscarJugador(@PathVariable("idJugador") Long id){
         JugadorDTO jugador = jugadorServicio.buscarJugador(id).orElseThrow();
+        List<BarcoDTO> barcosJugador = barcoServicio.obtenerBarcosPorJugador(id);
         ModelAndView modelAndView = new ModelAndView("jugador-view");
         modelAndView.addObject("jugador", jugador);
+        modelAndView.addObject("barcosJugador", barcosJugador);
         return modelAndView;
     }
 

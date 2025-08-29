@@ -20,7 +20,7 @@
             </thead>
             <tbody>
                 <tr th:each="jugador :${listaJugadores}">
-                    <td th:text= "${jugador.Nombre}"></td>
+                    <td th:text= "${jugador.nombre}"></td>
                     <td>
                         <a th:href="@{/jugador/view/{id}(id=${jugador.id})}">view</a>
                     </td>

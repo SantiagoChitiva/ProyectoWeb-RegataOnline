@@ -44,7 +44,7 @@ public class BarcoJugadorControlador {
     @PostMapping("/save")
     public RedirectView saveBarcosJugador(@ModelAttribute BarcoJugadorDTO barcoJugadorDTO) {
         barcoServicio.updateBarcosJugador(barcoJugadorDTO);
-        return new RedirectView("/jugador/list");
+        return new RedirectView("/jugador/edit/" + barcoJugadorDTO.getJugadorId());
     }
     
     
