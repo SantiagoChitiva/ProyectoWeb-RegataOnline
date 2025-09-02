@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoJugadorDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoModeloDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.mapper.BarcoMapper;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Modelo;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
 
 @Service
 public class BarcoServicio {
@@ -20,8 +23,10 @@ public class BarcoServicio {
     private BarcoRepositorio barcoRepositorio;
     @Autowired
     private JugadorRepositorio jugadorRepositorio;
+    @Autowired
+    private ModeloRepositorio modeloBarcoRepositorio;
 
-     public List<BarcoDTO> listarBarcos() {
+    public List<BarcoDTO> listarBarcos() {
         return barcoRepositorio.findAll().stream().map(BarcoMapper::toDTO).toList();
     }
 
@@ -83,5 +88,20 @@ public class BarcoServicio {
         }
         
         jugadorRepositorio.save(jugador);
+    }
+
+    public Optional <BarcoModeloDTO> getBarcoModelo(Long barcoId){
+        Optional<Modelo> modeloBarcoOpt = modeloBarcoRepositorio.findById(barcoId);
+
+        if(modeloBarcoOpt.isEmpty()){
+            return Optional.empty();
+        }
+
+        Modelo modeloBarco = modeloBarcoOpt.get();
+        List<Long> modelosIds = modeloBarco.getBarcos().stream().map(Barco::getId).toList();
+
+        BarcoModeloDTO barcoModeloDTO = new BarcoModeloDTO(barcoId, modelosIds);
+
+        return Optional.of(barcoModeloDTO);
     }
 }

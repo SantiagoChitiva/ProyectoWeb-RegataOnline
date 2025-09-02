@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import co.edu.javeriana.proyectoWeb.RegataOnline.model.ModeloBarco;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Modelo;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Celda;
@@ -15,7 +15,7 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.CeldaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
-import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloBarcoRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
 public class DbInitializer implements CommandLineRunner {
 
     @Autowired
-    private ModeloBarcoRepositorio modeloBarcoRepositorio;
+    private ModeloRepositorio modeloRepositorio;
 
     @Autowired
     private BarcoRepositorio barcoRepositorio;
@@ -49,7 +49,7 @@ public class DbInitializer implements CommandLineRunner {
             jugadores.add(jugador);
         }
         for(int i = 0; i < 10; i++) {
-            modeloBarcoRepositorio.save(new ModeloBarco("Modelo " + i, "Color " + i));
+            modeloRepositorio.save(new Modelo("Modelo " + i, "Color " + i));
         }  
         List<Barco> barcos = new ArrayList<>();
         int barcoIndex = 0;
@@ -60,7 +60,7 @@ public class DbInitializer implements CommandLineRunner {
             for (int b = 0; b < 10; b++) {
                 Barco barco = new Barco(barcoIndex, barcoIndex + 1, barcoIndex * 5, barcoIndex * 5);
                 barco.setJugador(jugador); // Asignar jugador al barco
-                barco.setModelo(modeloBarcoRepositorio.findById(barcoIndex % 10L).orElse(null)); // Asignar modelo (esto es un ejemplo, puedes ajustarlo)
+                barco.setModelo(modeloRepositorio.findById(barcoIndex % 10L).orElse(null)); // Asignar modelo (esto es un ejemplo, puedes ajustarlo)
                 barco = barcoRepositorio.save(barco); // Guardar el barco en la base de datos
                 barcosJugador.add(barco); // Añadir el barco a la lista del jugador
                 barcoIndex++;

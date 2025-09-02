@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class ModeloBarco {
+public class Modelo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -21,9 +21,9 @@ public class ModeloBarco {
     @OneToMany(mappedBy = "modelo")  
     private List<Barco> barcos = new ArrayList<>();
 
-    public ModeloBarco() {
+    public Modelo() {
     }
-    public ModeloBarco(String nombreModelo, String color) {
+    public Modelo(String nombreModelo, String color) {
         this.nombreModelo = nombreModelo;
         this.color = color;
     }   

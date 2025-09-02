@@ -57,7 +57,7 @@ public class JugadorControlador {
 
     @GetMapping("/create")   
     public ModelAndView formularioCrearJugador(){
-        ModelAndView modelAndView = new ModelAndView("jugador-edit");
+        ModelAndView modelAndView = new ModelAndView("jugador-create");
         modelAndView.addObject("jugador", new JugadorDTO());
         return modelAndView;
     }

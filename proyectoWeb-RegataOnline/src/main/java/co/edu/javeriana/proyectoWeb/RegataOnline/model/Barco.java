@@ -13,7 +13,7 @@ public class Barco {
     private Long id;
 
     @ManyToOne 
-    private ModeloBarco modelo;
+    private Modelo modelo;
 
     @ManyToOne 
     private Jugador jugador;
@@ -65,10 +65,10 @@ public class Barco {
     public void setPosicionY(int posicionY) {
         this.posicionY = posicionY;
     }
-    public ModeloBarco getModelo() {
+    public Modelo getModelo() {
         return modelo;
     }
-    public void setModelo(ModeloBarco modelo) {
+    public void setModelo(Modelo modelo) {
         this.modelo = modelo;
     }
 
