@@ -38,12 +38,10 @@ public class BarcoModeloControlador {
         modelAndView.addObject("allModelos", allModelos);
         return modelAndView;
     }
-/*
-    @PostMapping("/save")
-    public RedirectView saveBarcosJugador(@ModelAttribute BarcoJugadorDTO barcoJugadorDTO) {
-        barcoServicio.updateBarcosJugador(barcoJugadorDTO);
-        return new RedirectView("/jugador/edit/" + barcoJugadorDTO.getJugadorId());
-    }
 
-*/  
+    @PostMapping("/save")
+    public RedirectView saveBarcoModelo(@ModelAttribute BarcoModeloDTO barcoModeloDTO) {
+        barcoServicio.actualizarModeloDeBarcos(barcoModeloDTO);
+        return new RedirectView("/jugador/edit/" + barcoModeloDTO.getModeloId());
+    }
 }

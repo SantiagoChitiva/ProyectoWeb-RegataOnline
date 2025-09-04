@@ -3,7 +3,11 @@ package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.JugadorDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.ModeloDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.BarcoServicio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.services.JugadorServicio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.services.ModeloServicio;
 
 import java.util.List;
 
@@ -24,6 +28,10 @@ import org.springframework.web.servlet.view.RedirectView;
 public class BarcoControlador {
     @Autowired 
     private BarcoServicio barcoServicio;
+    @Autowired
+    private ModeloServicio modeloServicio;
+    @Autowired
+    private JugadorServicio jugadorServicio;
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -45,16 +53,27 @@ public class BarcoControlador {
 
     @GetMapping("/create")
     public ModelAndView formularioCrearBarco() {
+        List<ModeloDTO> modelos = modeloServicio.listarModelos();
+        List<JugadorDTO> jugadores = jugadorServicio.listarJugadores();
+
         ModelAndView modelAndView = new ModelAndView("barco-edit");
         modelAndView.addObject("barco", new BarcoDTO());
+        modelAndView.addObject("modelosBarco", modelos);
+        modelAndView.addObject("jugadores", jugadores);
+
         return modelAndView;
     }
 
     @GetMapping("/edit/{id}")
     public ModelAndView formularioEditarBarco(@PathVariable Long id) {
         BarcoDTO barcoDTO = barcoServicio.buscarBarco(id).orElseThrow();
+        List<ModeloDTO> modelos = modeloServicio.listarModelos();
+        List<JugadorDTO> jugadores = jugadorServicio.listarJugadores();
+
         ModelAndView modelAndView = new ModelAndView("barco-edit");
         modelAndView.addObject("barco", barcoDTO);
+        modelAndView.addObject("modelosBarco", modelos);
+        modelAndView.addObject("jugadores", jugadores);
         return modelAndView;
     }
 

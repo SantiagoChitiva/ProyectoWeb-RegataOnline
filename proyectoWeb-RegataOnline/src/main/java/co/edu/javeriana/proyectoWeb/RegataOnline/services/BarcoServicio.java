@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ch.qos.logback.core.model.Model;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoJugadorDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoModeloDTO;
@@ -24,7 +25,8 @@ public class BarcoServicio {
     @Autowired
     private JugadorRepositorio jugadorRepositorio;
     @Autowired
-    private ModeloRepositorio modeloBarcoRepositorio;
+    private ModeloRepositorio modeloRepositorio;
+    
 
     public List<BarcoDTO> listarBarcos() {
         return barcoRepositorio.findAll().stream().map(BarcoMapper::toDTO).toList();
@@ -36,6 +38,17 @@ public class BarcoServicio {
     
     public void guardarBarco(BarcoDTO barcoDTO) {
         Barco barco = BarcoMapper.toEntity(barcoDTO);
+
+        if (barcoDTO.getModeloId() != null) {
+            Modelo modelo = modeloRepositorio.findById(barcoDTO.getModeloId()).orElse(null);
+            barco.setModelo(modelo);
+        }
+        
+        if (barcoDTO.getJugadorId() != null) {
+            Jugador jugador = jugadorRepositorio.findById(barcoDTO.getJugadorId()).orElse(null);
+            barco.setJugador(jugador);
+        }
+
         barcoRepositorio.save(barco);
     }
 
@@ -90,8 +103,43 @@ public class BarcoServicio {
         jugadorRepositorio.save(jugador);
     }
 
+    public void actualizarModeloDeBarcos(BarcoModeloDTO barcoModeloDTO) {
+        Modelo nuevoModelo = null;
+        
+        // Obtener el nuevo modelo si se proporciona
+        if (barcoModeloDTO.getModeloId() != null) {
+            nuevoModelo = modeloRepositorio.findById(barcoModeloDTO.getModeloId()).orElseThrow();
+        }
+        
+        // Procesar cada barco
+        if (barcoModeloDTO.getBarcosIds() != null && !barcoModeloDTO.getBarcosIds().isEmpty()) {
+            List<Barco> barcosAActualizar = barcoRepositorio.findAllById(barcoModeloDTO.getBarcosIds());
+            
+            for (Barco barco : barcosAActualizar) {
+                // Remover barco del modelo anterior (si tenía uno)
+                if (barco.getModelo() != null) {
+                    barco.getModelo().getBarcos().remove(barco);
+                }
+                
+                // Asignar nuevo modelo
+                if (nuevoModelo != null) {
+                    barco.setModelo(nuevoModelo);
+                    nuevoModelo.getBarcos().add(barco);
+                } else {
+                    barco.setModelo(null);
+                }
+            }
+            
+            // Guardar todos los cambios
+            barcoRepositorio.saveAll(barcosAActualizar);
+            if (nuevoModelo != null) {
+                modeloRepositorio.save(nuevoModelo);
+            }
+        }
+    }
+
     public Optional <BarcoModeloDTO> getBarcoModelo(Long barcoId){
-        Optional<Modelo> modeloBarcoOpt = modeloBarcoRepositorio.findById(barcoId);
+        Optional<Modelo> modeloBarcoOpt = modeloRepositorio.findById(barcoId);
 
         if(modeloBarcoOpt.isEmpty()){
             return Optional.empty();

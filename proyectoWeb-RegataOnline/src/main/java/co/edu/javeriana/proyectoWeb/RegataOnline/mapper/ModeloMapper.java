@@ -14,9 +14,9 @@ public class ModeloMapper {
 
     public static Modelo toEntity(ModeloDTO modeloDTO){
         Modelo modelo = new Modelo();
-        modeloDTO.setId(modelo.getId());
-        modeloDTO.setNombreModelo(modelo.getNombreModelo());
-        modeloDTO.setColor(modelo.getColor());
+        modelo.setId(modeloDTO.getId());
+        modelo.setNombreModelo(modeloDTO.getNombreModelo());
+        modelo.setColor(modeloDTO.getColor());
         return modelo;
 
     }
