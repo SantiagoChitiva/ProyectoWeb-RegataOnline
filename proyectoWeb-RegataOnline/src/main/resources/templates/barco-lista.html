@@ -14,6 +14,8 @@
             <tr>
                 <th>Id</th>
                 <th>Modelo</th>
+                <th>Jugador</th>
+                <th>Celda</th>
                 <th>View</th>
                 <th>Editar</th>
                 <th>Eliminar</th>
@@ -22,7 +24,9 @@
         <tbody>
             <tr th:each="barco : ${listaBarcos}">
                 <td th:text="${barco.id}"></td>
-                <td th:text="${barco.nombreModeloBarco}"></td>
+                <td th:text="${barco.nombreModeloBarco != null ? barco.nombreModeloBarco : 'Sin modelo'}"></td>
+                <td th:text="${barco.nombreJugador != null ? barco.nombreJugador : 'Sin jugador'}"></td>
+                <td th:text="${barco.tipoCelda != null and barco.tipoCelda != '' ? barco.tipoCelda : (barco.celdaId != null ? 'Agua' : 'Sin celda')}"></td>
                 <td>
                     <a th:href="@{/barco/view/{id}(id=${barco.id})}">ver</a>
                 </td>

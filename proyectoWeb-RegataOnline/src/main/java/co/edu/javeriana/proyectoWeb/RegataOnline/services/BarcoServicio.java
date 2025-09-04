@@ -7,14 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.qos.logback.core.model.Model;
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoCeldaDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoJugadorDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoModeloDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.mapper.BarcoMapper;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Celda;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Modelo;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.CeldaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
 
@@ -26,6 +29,8 @@ public class BarcoServicio {
     private JugadorRepositorio jugadorRepositorio;
     @Autowired
     private ModeloRepositorio modeloRepositorio;
+    @Autowired
+    private CeldaRepositorio celdaRepositorio;
     
 
     public List<BarcoDTO> listarBarcos() {
@@ -48,6 +53,15 @@ public class BarcoServicio {
             Jugador jugador = jugadorRepositorio.findById(barcoDTO.getJugadorId()).orElse(null);
             barco.setJugador(jugador);
         }
+        if (barcoDTO.getCeldaId() != null) {
+            Celda celda = celdaRepositorio.findById(barcoDTO.getCeldaId()).orElse(null);
+            barco.setCelda(celda);
+            barco.setPosicionX(celda.getPosicionX());
+            barco.setPosicionY(celda.getPosicionY());
+        }else{
+            barco.setCelda(null);
+        }
+
 
         barcoRepositorio.save(barco);
     }
@@ -151,5 +165,66 @@ public class BarcoServicio {
         BarcoModeloDTO barcoModeloDTO = new BarcoModeloDTO(barcoId, modelosIds);
 
         return Optional.of(barcoModeloDTO);
+    }
+
+    public Optional<BarcoCeldaDTO> getBarcoCelda(Long celdaId) {
+        Optional<Celda> celdaOpt = celdaRepositorio.findById(celdaId);
+
+        if (celdaOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Celda celda = celdaOpt.get();
+        List<Long> barcoIds = celda.getBarcos().stream().map(Barco::getId).toList();
+
+        BarcoCeldaDTO barcoCeldaDTO = new BarcoCeldaDTO(celdaId, barcoIds);
+
+        return Optional.of(barcoCeldaDTO);
+    }
+
+    public void actualizarCeldaDeBarcos(BarcoCeldaDTO barcoCeldaDTO) {
+        Celda nuevaCelda = null;
+        
+        // Obtener la nueva celda si se proporciona
+        if (barcoCeldaDTO.getCeldaId() != null) {
+            nuevaCelda = celdaRepositorio.findById(barcoCeldaDTO.getCeldaId()).orElseThrow();
+        }
+        
+        // Procesar cada barco
+        if (barcoCeldaDTO.getBarcosIds() != null && !barcoCeldaDTO.getBarcosIds().isEmpty()) {
+            List<Barco> barcosAActualizar = barcoRepositorio.findAllById(barcoCeldaDTO.getBarcosIds());
+            
+            for (Barco barco : barcosAActualizar) {
+                // Remover barco de la celda anterior (si tenía una)
+                if (barco.getCelda() != null) {
+                    barco.getCelda().getBarcos().remove(barco);
+                }
+                
+                // Asignar nueva celda
+                if (nuevaCelda != null) {
+                    barco.setCelda(nuevaCelda);
+                    nuevaCelda.getBarcos().add(barco);
+                } else {
+                    barco.setCelda(null);
+                }
+            }
+            
+            // Guardar todos los cambios
+            barcoRepositorio.saveAll(barcosAActualizar);
+            if (nuevaCelda != null) {
+                celdaRepositorio.save(nuevaCelda);
+            }
+        }
+    }
+
+    public List<BarcoDTO> obtenerBarcosPorCelda(Long celdaId) {
+        Optional<Celda> celdaOpt = celdaRepositorio.findById(celdaId);
+        
+        if (celdaOpt.isEmpty()) {
+            return List.of();
+        }
+        
+        Celda celda = celdaOpt.get();
+        return celda.getBarcos().stream().map(BarcoMapper::toDTO).toList();
     }
 }

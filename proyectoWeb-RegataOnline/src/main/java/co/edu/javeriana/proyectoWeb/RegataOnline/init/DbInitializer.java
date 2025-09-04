@@ -19,6 +19,7 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -70,7 +71,45 @@ public class DbInitializer implements CommandLineRunner {
             jugador.setBarcos(barcosJugador); // Añadir los barcos al jugador
             jugadorRepositorio.save(jugador); // Guardar al jugador con su lista de barcos
         }
+        List<Celda> celdas = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+                Celda celda = new Celda("", i % 10, i / 10); // tipo vacío = agua
+                celda = celdaRepositorio.save(celda);
+                celdas.add(celda);
+            }
 
+        // Crear algunas paredes (x)
+        for (int i = 0; i < 3; i++) {
+            Celda celda = new Celda("x", i + 15, 2);
+            celda = celdaRepositorio.save(celda);
+            celdas.add(celda);
+        }
+
+        // Crear celdas de partida (P)
+        for (int i = 0; i < 3; i++) {
+            Celda celda = new Celda("P", i, 0);
+            celda = celdaRepositorio.save(celda);
+            celdas.add(celda);
+        }
+
+        // Crear celdas de meta (M)
+        for (int i = 0; i < 3; i++) {
+            Celda celda = new Celda("M", i, 5);
+            celda = celdaRepositorio.save(celda);
+            celdas.add(celda);
+        }
+
+        List<Barco> todosLosBarcos = barcoRepositorio.findAll();
+        List<Celda> celdasNavegables = celdas.stream()
+            .filter(c -> c.esAgua() || c.esPartida())
+            .collect(Collectors.toList());
+
+        for (int i = 0; i < Math.min(todosLosBarcos.size(), celdasNavegables.size()); i++) {
+            Barco barco = todosLosBarcos.get(i);
+            Celda celda = celdasNavegables.get(i % celdasNavegables.size());
+            barco.setCelda(celda);
+            barcoRepositorio.save(barco);
+        }
     }
 
 }

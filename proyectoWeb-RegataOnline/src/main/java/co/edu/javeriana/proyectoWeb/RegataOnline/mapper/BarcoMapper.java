@@ -22,6 +22,10 @@ public class BarcoMapper {
         if(barco.getCelda() != null){
             barcoDTO.setCeldaId(barco.getCelda().getId());
         }
+        if(barco.getCelda() != null){
+            barcoDTO.setCeldaId(barco.getCelda().getId());
+            barcoDTO.setTipoCelda(barco.getCelda().getTipo());
+        }
         return barcoDTO;
     }
 

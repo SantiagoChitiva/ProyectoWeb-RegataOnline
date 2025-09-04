@@ -37,7 +37,7 @@
             <option value="">Seleccionar Celda</option>
             <option th:each="celda : ${celdas}" 
                     th:value="${celda.id}" 
-                    th:text="${celda.id}"
+                    th:text="'ID: ' + ${celda.id} + ' - ' + ${celda.tipoDisplay} + ' - Pos(' + ${celda.posicionX} + ',' + ${celda.posicionY} + ')'"
                     th:selected="${celda.id == barco.celdaId}">
             </option>
         </select>
@@ -51,13 +51,13 @@
         <input type="number" id="velocidadY" name="velocidadY" th:value="${barco.velocidadY}">
         <br><br>
         
-        <label>Posición X:</label>
+     <!--  <label>Posición X:</label>
         <input type="number" id="posicionX" name="posicionX" th:value="${barco.posicionX}">
         <br><br>
         
         <label>Posición Y:</label>
         <input type="number" id="posicionY" name="posicionY" th:value="${barco.posicionY}">
-        <br><br>
+        <br><br>--> 
         
         <button type="submit">Guardar</button>
         <a th:href="@{/barco/list}">Cancelar</a>

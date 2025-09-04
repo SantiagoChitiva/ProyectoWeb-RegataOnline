@@ -56,4 +56,43 @@ public class Celda {
     public void setPosicionY(int posicionY) {
         this.posicionY = posicionY;
     }
+    public List<Barco> getBarcos() {
+        return barcos;
+    }
+
+    public void setBarcos(List<Barco> barcos) {
+        this.barcos = barcos;
+    }
+
+    public Mapa getMapa() {
+        return mapa;
+    }
+
+    public void setMapa(Mapa mapa) {
+        this.mapa = mapa;
+    }
+
+    public boolean esAgua() {
+        return tipo == null || tipo.trim().isEmpty();
+    }
+
+    public boolean esPared() {
+        return "x".equals(tipo);
+    }
+
+    public boolean esPartida() {
+        return "P".equals(tipo);
+    }
+
+    public boolean esMeta() {
+        return "M".equals(tipo);
+    }
+
+    public boolean esNavegable() {
+        return esAgua() || esPartida();
+    }
+
+    public boolean esPeligrosa() {
+        return esPared();
+    }
 }

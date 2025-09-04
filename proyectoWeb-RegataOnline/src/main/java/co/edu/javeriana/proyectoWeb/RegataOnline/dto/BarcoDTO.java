@@ -11,6 +11,7 @@ public class BarcoDTO {
     private Long celdaId;
     private String nombreModeloBarco;
     private String nombreJugador;
+    private String tipoCelda;
     
     public BarcoDTO() {
         //TODO Auto-generated constructor stub
@@ -102,5 +103,13 @@ public class BarcoDTO {
 
     public void setNombreJugador(String nombreJugador) {
         this.nombreJugador = nombreJugador;
+    }
+    
+    public String getTipoCelda() {
+        return tipoCelda;
+    }
+
+    public void setTipoCelda(String tipoCelda) {
+        this.tipoCelda = tipoCelda;
     }
 }
