@@ -1,9 +1,13 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Mapa {
@@ -13,6 +17,9 @@ public class Mapa {
 
     private int filas;
     private int columnas;
+
+    @OneToMany(mappedBy = "mapa")
+    private List<Celda> celdas = new ArrayList<>();
 
     public Mapa() {
     }
@@ -38,6 +45,9 @@ public class Mapa {
     }
     public void setColumnas(int columnas) {
         this.columnas = columnas;
+    }
+    public List<Celda> getCeldas() {
+        return celdas;
     }
 }
 
