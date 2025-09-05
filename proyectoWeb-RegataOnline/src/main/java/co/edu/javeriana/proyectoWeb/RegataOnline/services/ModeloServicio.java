@@ -34,7 +34,29 @@ public class ModeloServicio {
     }
 
     public void borrarModelo(long id) {
-        modeloRepositorio.deleteById(id);
+        Optional<Modelo> modeloOpt = modeloRepositorio.findById(id);
+        if (modeloOpt.isPresent()) {
+            Modelo modelo = modeloOpt.get();
+
+            // Desasociar todos los barcos de este modelo antes de eliminarlo
+            for (Barco barco : modelo.getBarcos()) {
+                barco.setModelo(null);
+            }
+
+            modelo.getBarcos().clear();
+            modeloRepositorio.save(modelo);
+            modeloRepositorio.deleteById(id);
+        }
     }
 
+    public List<BarcoDTO> obtenerBarcosPorModelo(Long modeloId) {
+        Optional<Modelo> modeloOpt = modeloRepositorio.findById(modeloId);
+        
+        if (modeloOpt.isEmpty()) {
+            return List.of();
+        }
+        
+        Modelo modelo = modeloOpt.get();
+        return modelo.getBarcos().stream().map(BarcoMapper::toDTO).toList();
+    }
 }

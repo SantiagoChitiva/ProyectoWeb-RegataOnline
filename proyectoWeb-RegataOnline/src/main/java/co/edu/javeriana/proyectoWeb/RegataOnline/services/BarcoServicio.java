@@ -167,6 +167,17 @@ public class BarcoServicio {
         return Optional.of(barcoModeloDTO);
     }
 
+    public List<BarcoDTO> obtenerBarcosPorModelo(Long modeloId) {
+        Optional<Modelo> modeloOpt = modeloRepositorio.findById(modeloId);
+        
+        if (modeloOpt.isEmpty()) {
+            return List.of();
+        }
+        
+        Modelo modelo = modeloOpt.get();
+        return modelo.getBarcos().stream().map(BarcoMapper::toDTO).toList();
+    }
+
     public Optional<BarcoCeldaDTO> getBarcoCelda(Long celdaId) {
         Optional<Celda> celdaOpt = celdaRepositorio.findById(celdaId);
 
