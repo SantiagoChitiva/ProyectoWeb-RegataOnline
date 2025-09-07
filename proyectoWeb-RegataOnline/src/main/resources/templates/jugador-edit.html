@@ -11,10 +11,18 @@
         <input type="hidden" name="id" th:value="${jugador.id}">
         <label>Nombre:</label>
         <input type="text" id="nombre" name="nombre" th:value="${jugador.nombre}">
-        <button type="submit">Save</button>
+        <div style="margin-top: 20px; text-align: center;">
+            <button type="submit" class="btn btn-success btn-icon">
+                Guardar Jugador
+            </button>
+            <a th:href="@{/jugador/barcos/edit/{id}(id=${jugador.id})}" class="btn btn-primary">
+                Edit Barcos
+            </a>
+            <a th:href="@{/jugador/list}" class="btn btn-secondary" style="margin-left: 10px;">
+                Cancelar
+            </a>
+
+        </div>
     </form>
-    <p>
-        <a th:href="@{/jugador/barcos/edit/{id}(id=${jugador.id})}">Edit Barcos</a>
-    </p>
 </body>
 </html>

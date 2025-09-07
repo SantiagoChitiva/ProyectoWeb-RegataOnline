@@ -59,8 +59,14 @@
         <input type="number" id="posicionY" name="posicionY" th:value="${barco.posicionY}">
         <br><br>--> 
         
-        <button type="submit">Guardar</button>
-        <a th:href="@{/barco/list}">Cancelar</a>
+         <div style="margin-top: 20px; text-align: center;">
+            <button type="submit" class="btn btn-success btn-icon">
+                Guardar Barco
+            </button>
+            <a th:href="@{/barco/list}" class="btn btn-secondary" style="margin-left: 10px;">
+                Cancelar
+            </a>
+        </div>
     </form>
 </body>
 </html>

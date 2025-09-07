@@ -27,14 +27,9 @@ a:hover {
 
 /* Contenedor para acciones principales */
 .header-actions {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
+    width: 90%;
+    margin: 16px auto;
+    text-align: left;
 }
 
 /* Estilos para botones */

@@ -7,13 +7,14 @@
 </head>
 <body>
     <h1>Lista de Jugadores</h1>
-    <a href="/jugador/create">Crear Nuevo Jugador</a>
-    <br><br>
+    <div class="header-actions">
+        <a href="/jugador/create" class="btn btn-primary btn-icon btn-create">Crear Nuevo Jugador</a>
+    </div>
     <table>
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>View</th>
+                    <th>Ver</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -22,7 +23,7 @@
                 <tr th:each="jugador :${listaJugadores}">
                     <td th:text= "${jugador.nombre}"></td>
                     <td>
-                        <a th:href="@{/jugador/view/{id}(id=${jugador.id})}">view</a>
+                        <a th:href="@{/jugador/view/{id}(id=${jugador.id})}">ver</a>
                     </td>
                     <td>
                         <a th:href="@{/jugador/edit/{id}(id=${jugador.id})}">editar</a>

@@ -16,8 +16,14 @@
                 <label th:text="${barco.id}"></label>
             </li>
         </ul>
-        <button type="submit">Save</button>
-
+        <div style="margin-top: 20px; text-align: center;">
+            <button type="submit" class="btn btn-success btn-icon">
+                Guardar Barcos
+            </button>
+            <a th:href="@{/jugador/edit/{id}(id=${barcoJugador.jugadorId})}" class="btn btn-secondary" style="margin-left: 10px;">
+                Cancelar
+            </a>
+        </div>
     </form>
     
 </body>

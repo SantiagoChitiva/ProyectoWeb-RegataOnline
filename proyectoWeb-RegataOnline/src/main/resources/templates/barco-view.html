@@ -23,6 +23,10 @@
         <li><strong>Posición X:</strong> <span th:text="${barco.posicionX}"></span></li>
         <li><strong>Posición Y:</strong> <span th:text="${barco.posicionY}"></span></li>
     </ul>
-    <a th:href="@{/barco/list}">Volver</a>
+    <div class="header-actions">
+        <a th:href="@{/barco/list}" class="btn btn-secondary" style="margin-top: 20px; display: inline-block;">
+            Volver
+        </a>
+    </div>
 </body>
 </html>
