@@ -73,36 +73,36 @@ public class DbInitializer implements CommandLineRunner {
         }
 
         // Crear el mapa
-        Mapa mapa = mapaRepositorio.save(new Mapa(15, 10));
+        Mapa mapa = new Mapa(10, 15); // 10 filas, 15 columnas
+        mapa = mapaRepositorio.save(mapa);
 
         List<Celda> celdas = new ArrayList<>();
         
-        // Crear más celdas de agua (tu código original solo creaba 15)
-        for (int i = 0; i < 100; i++) {
-            Celda celda = new Celda("", i % 15, i / 15); // tipo vacío = agua
-            celda = celdaRepositorio.save(celda);
-            celdas.add(celda);
-        }
-
-        // Crear algunas paredes (x) - exactamente como tu código
-        for (int i = 0; i < 3; i++) {
-            Celda celda = new Celda("x", i + 15, 2);
-            celda = celdaRepositorio.save(celda);
-            celdas.add(celda);
-        }
-
-        // Crear celdas de partida (P) - exactamente como tu código
-        for (int i = 0; i < 3; i++) {
-            Celda celda = new Celda("P", i, 0);
-            celda = celdaRepositorio.save(celda);
-            celdas.add(celda);
-        }
-
-        // Crear celdas de meta (M) - exactamente como tu código
-        for (int i = 0; i < 3; i++) {
-            Celda celda = new Celda("M", i, 5);
-            celda = celdaRepositorio.save(celda);
-            celdas.add(celda);
+        // Crear todas las celdas del mapa (10 filas x 15 columnas = 150 celdas)
+        for (int fila = 0; fila < 10; fila++) {
+            for (int col = 0; col < 15; col++) {
+                String tipo = "";
+                
+                // Fila 0: celdas de partida en las primeras columnas
+                if (fila == 0 && col < 5) {
+                    tipo = "P";
+                }
+                // Última fila: celdas de meta 
+                else if (fila == 9 && col >= 5 && col <= 9) {
+                    tipo = "M";
+                }
+                // Algunas paredes estratégicas
+                else if ((fila == 3 && col >= 7 && col <= 9) || 
+                         (fila == 6 && col >= 3 && col <= 5)) {
+                    tipo = "x";
+                }
+                // Resto son agua
+                
+                Celda celda = new Celda(tipo, col, fila);
+                celda.setMapa(mapa);
+                celda = celdaRepositorio.save(celda);
+                celdas.add(celda);
+            }
         }
 
         List<Barco> todosLosBarcos = barcoRepositorio.findAll();
