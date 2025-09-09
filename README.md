@@ -18,6 +18,6 @@ Toda la documentación se encuentra en la carpeta [Docs](https://github.com/Sant
 Enlaces directos:
 
 - [Casos de uso](https://github.com/SantiagoChitiva/ProyectoWeb-RegataOnline/blob/main/Docs/Casos%20de%20uso.pdf)  
-- [Modelo entidad-relación](https://github.com/SantiagoChitiva/ProyectoWeb-RegataOnline/blob/main/Docs/Modelo%20Entidad%20Relacion.pdf)  
+- [Modelo entidad-relación](https://github.com/SantiagoChitiva/ProyectoWeb-RegataOnline/blob/main/Docs/Diagrama%20de%20Modelo%20de%20Datos.pdf)  
 - [Mockups](https://github.com/SantiagoChitiva/ProyectoWeb-RegataOnline/blob/main/Docs/Mockups.pdf)  
 ---
