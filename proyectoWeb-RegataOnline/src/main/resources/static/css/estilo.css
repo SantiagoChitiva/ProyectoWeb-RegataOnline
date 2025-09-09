@@ -226,3 +226,47 @@ li:last-child {
 h1{
     color: green;
 }
+
+/* Estilos para los botones de navegación */
+.nav-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(41, 128, 185, 0.3);
+    margin: 10px;
+    min-width: 200px;
+    text-align: center;
+}
+
+.nav-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(41, 128, 185, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.nav-button.jugador {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+.nav-button.barco {
+    background: linear-gradient(135deg, #FF9800, #F57C00);
+}
+
+.nav-button.modelo {
+    background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 30px 0;
+}
