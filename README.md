@@ -1,7 +1,7 @@
 # 🏁 Juego Regata Online
 
 Proyecto académico que simula una regata en línea entre varios jugadores.  
-Desarrollado como parte de la asignatura de desarrollo web.
+Desarrollado como parte de la asignatura de desarrollo web 2025-3
 
 ---
 
