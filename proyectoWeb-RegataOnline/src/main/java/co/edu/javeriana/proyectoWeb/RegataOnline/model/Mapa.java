@@ -49,6 +49,9 @@ public class Mapa {
     public List<Celda> getCeldas() {
         return celdas;
     }
+    public void setCeldas(List<Celda> celdas) {
+        this.celdas = celdas;
+    }
 }
 
 

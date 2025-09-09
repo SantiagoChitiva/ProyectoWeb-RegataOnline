@@ -1,25 +1,25 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.init;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import co.edu.javeriana.proyectoWeb.RegataOnline.model.Modelo;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
-import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Celda;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Mapa;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Modelo;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.CeldaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -71,28 +71,34 @@ public class DbInitializer implements CommandLineRunner {
             jugador.setBarcos(barcosJugador); // Añadir los barcos al jugador
             jugadorRepositorio.save(jugador); // Guardar al jugador con su lista de barcos
         }
-        List<Celda> celdas = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-                Celda celda = new Celda("", i % 10, i / 10); // tipo vacío = agua
-                celda = celdaRepositorio.save(celda);
-                celdas.add(celda);
-            }
 
-        // Crear algunas paredes (x)
+        // Crear el mapa
+        Mapa mapa = mapaRepositorio.save(new Mapa(15, 10));
+
+        List<Celda> celdas = new ArrayList<>();
+        
+        // Crear más celdas de agua (tu código original solo creaba 15)
+        for (int i = 0; i < 100; i++) {
+            Celda celda = new Celda("", i % 15, i / 15); // tipo vacío = agua
+            celda = celdaRepositorio.save(celda);
+            celdas.add(celda);
+        }
+
+        // Crear algunas paredes (x) - exactamente como tu código
         for (int i = 0; i < 3; i++) {
             Celda celda = new Celda("x", i + 15, 2);
             celda = celdaRepositorio.save(celda);
             celdas.add(celda);
         }
 
-        // Crear celdas de partida (P)
+        // Crear celdas de partida (P) - exactamente como tu código
         for (int i = 0; i < 3; i++) {
             Celda celda = new Celda("P", i, 0);
             celda = celdaRepositorio.save(celda);
             celdas.add(celda);
         }
 
-        // Crear celdas de meta (M)
+        // Crear celdas de meta (M) - exactamente como tu código
         for (int i = 0; i < 3; i++) {
             Celda celda = new Celda("M", i, 5);
             celda = celdaRepositorio.save(celda);
@@ -111,6 +117,4 @@ public class DbInitializer implements CommandLineRunner {
             barcoRepositorio.save(barco);
         }
     }
-
 }
-
