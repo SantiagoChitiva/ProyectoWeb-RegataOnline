@@ -41,7 +41,8 @@ public class BarcoServicio {
         return barcoRepositorio.findById(id).map(BarcoMapper::toDTO);
     }
     
-    public void guardarBarco(BarcoDTO barcoDTO) {
+    public BarcoDTO crearBarco(BarcoDTO barcoDTO) {
+        barcoDTO.setId(null);
         Barco barco = BarcoMapper.toEntity(barcoDTO);
 
         if (barcoDTO.getModeloId() != null) {
@@ -63,7 +64,33 @@ public class BarcoServicio {
         }
 
 
-        barcoRepositorio.save(barco);
+        return BarcoMapper.toDTO(barcoRepositorio.save(barco));
+    }
+
+    public BarcoDTO actualizarBarco(BarcoDTO barcoDTO) {
+
+        Barco barco = BarcoMapper.toEntity(barcoDTO);
+
+        if (barcoDTO.getModeloId() != null) {
+            Modelo modelo = modeloRepositorio.findById(barcoDTO.getModeloId()).orElse(null);
+            barco.setModelo(modelo);
+        }
+        
+        if (barcoDTO.getJugadorId() != null) {
+            Jugador jugador = jugadorRepositorio.findById(barcoDTO.getJugadorId()).orElse(null);
+            barco.setJugador(jugador);
+        }
+        if (barcoDTO.getCeldaId() != null) {
+            Celda celda = celdaRepositorio.findById(barcoDTO.getCeldaId()).orElse(null);
+            barco.setCelda(celda);
+            barco.setPosicionX(celda.getPosicionX());
+            barco.setPosicionY(celda.getPosicionY());
+        }else{
+            barco.setCelda(null);
+        }
+
+
+        return BarcoMapper.toDTO(barcoRepositorio.save(barco));
     }
 
     public void borrarBarco(long id) {
