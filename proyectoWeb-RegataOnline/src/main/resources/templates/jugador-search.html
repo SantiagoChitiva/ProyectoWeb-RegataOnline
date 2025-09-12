@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Búsqueda de Jugadores</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <h1>Búsqueda de Jugadores</h1>
+    
+    <form method="get" action="#" th:action="@{/jugador/search}">
+        <label for="txtSearchText">Buscar por Nombre:</label>
+        <input type="text" name="searchText" id="txtSearchText" th:value="${param.searchText}">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <div class="header-actions" style="margin-top: 20px;">
+        <a href="/jugador/list" class="btn btn-secondary">Volver a la lista completa</a>
+    </div>
+    
+    <table th:if="${jugadores != null and !jugadores.empty}">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="jugador : ${jugadores}">
+                <td th:text="${jugador.nombre}"></td>
+                <td>
+                    <a th:href="@{/jugador/view/{id}(id=${jugador.id})}">ver</a>
+                </td>
+                <td>
+                    <a th:href="@{/jugador/edit/{id}(id=${jugador.id})}">editar</a>
+                </td>
+                <td>
+                    <a th:href="@{/jugador/delete/{id}(id=${jugador.id})}">eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div th:if="${jugadores == null or jugadores.empty}" 
+         style="text-align: center; padding: 40px; color: #7f8c8d; background: #f8f9fa; border-radius: 8px; margin: 20px auto; max-width: 500px;">
+        <p style="font-size: 18px; margin: 0;">🔍 No se encontraron jugadores</p>
+        <p style="font-size: 14px; margin: 10px 0 0 0;" th:if="${param.searchText != null and param.searchText != ''}">
+            No hay resultados para: "<span th:text="${param.searchText}"></span>"
+        </p>
+        <p style="font-size: 14px; margin: 10px 0 0 0;" th:if="${param.searchText == null or param.searchText == ''}">
+            Ingresa un término de búsqueda para buscar jugadores.
+        </p>
+    </div>
+</body>
+</html>

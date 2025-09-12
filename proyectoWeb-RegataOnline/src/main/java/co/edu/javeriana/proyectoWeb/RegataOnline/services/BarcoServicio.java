@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ch.qos.logback.core.model.Model;
@@ -36,6 +37,11 @@ public class BarcoServicio {
     public List<BarcoDTO> listarBarcos() {
         return barcoRepositorio.findAll().stream().map(BarcoMapper::toDTO).toList();
     }
+
+    public List<BarcoDTO> listarBarcos(Pageable pageable) {
+        return barcoRepositorio.findAll(pageable).stream().map(BarcoMapper::toDTO).toList();
+    }
+
 
     public Optional<BarcoDTO> buscarBarco(Long id) {
         return barcoRepositorio.findById(id).map(BarcoMapper::toDTO);
@@ -264,5 +270,9 @@ public class BarcoServicio {
         
         Celda celda = celdaOpt.get();
         return celda.getBarcos().stream().map(BarcoMapper::toDTO).toList();
+    }
+
+    public List<BarcoDTO> buscarBarcosPorNombre(String searchText) {
+        return barcoRepositorio.findByNombreContainingIgnoreCase(searchText).stream().map(BarcoMapper::toDTO).toList();
     }
 }

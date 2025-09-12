@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.JugadorDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.mapper.BarcoMapper;
 import co.edu.javeriana.proyectoWeb.RegataOnline.mapper.JugadorMapper;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
@@ -19,7 +22,10 @@ public class JugadorServicio {
 
     public List<JugadorDTO> listarJugadores(){
         return jugadorRepositorio.findAll().stream().map(JugadorMapper::toDTO).toList();
+    }
 
+    public List<JugadorDTO> listarJugadores(Pageable pageable){
+        return jugadorRepositorio.findAll(pageable).stream().map(JugadorMapper::toDTO).toList();
     }
 
     public Optional<JugadorDTO> buscarJugador(Long id){
@@ -46,5 +52,9 @@ public class JugadorServicio {
 
             jugadorRepositorio.deleteById(id);
         }
+    }
+
+    public List<JugadorDTO> buscarJugadoresPorNombre(String searchText) {
+        return jugadorRepositorio.findByNombreContainingIgnoreCase(searchText).stream().map(JugadorMapper::toDTO).toList();
     }
 }

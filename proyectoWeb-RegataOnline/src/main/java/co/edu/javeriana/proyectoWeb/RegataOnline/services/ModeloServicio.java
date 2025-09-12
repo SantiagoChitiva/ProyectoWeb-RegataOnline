@@ -5,6 +5,7 @@ import java.util.Optional;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
@@ -22,6 +23,10 @@ public class ModeloServicio {
 
     public List<ModeloDTO> listarModelos() {
         return modeloRepositorio.findAll().stream().map(ModeloMapper::toDTO).toList();
+    }
+
+    public List<ModeloDTO> listarModelos(Pageable pageable) {
+        return modeloRepositorio.findAll(pageable).stream().map(ModeloMapper::toDTO).toList();
     }
 
     public Optional<ModeloDTO> buscarModelo(Long id) {
@@ -58,5 +63,9 @@ public class ModeloServicio {
         
         Modelo modelo = modeloOpt.get();
         return modelo.getBarcos().stream().map(BarcoMapper::toDTO).toList();
+    }
+
+    public List<ModeloDTO> buscarModelosPorNombre(String searchText) {
+        return modeloRepositorio.findBynombreModeloContainingIgnoreCase(searchText).stream().map(ModeloMapper::toDTO).toList();   
     }
 }

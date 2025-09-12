@@ -42,6 +42,19 @@ public class DbInitializer implements CommandLineRunner {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    private final String[] nombresBarcos = {
+        "Viento del Mar", "Águila Marina", "Tormenta Azul", "Navegante Dorado", "Estrella del Norte",
+        "Corsario Veloz", "Tsunami", "Brisa Oceánica", "Rayo del Caribe", "Sirena Plateada",
+        "Huracán Negro", "Delfín Saltarín", "Marejada", "Capitán Audaz", "Espuma Blanca",
+        "Trueno Marino", "Ola Gigante", "Velero Fantasma", "Kraken", "Perla Negra",
+        "Tiburón Blanco", "Marea Alta", "Viento Norte", "Capitán Garfio", "Mar Bravío",
+        "Aventurero", "Explorador", "Conquistador", "Navegador", "Pirata Real",
+        "Océano Profundo", "Corriente Marina", "Barlovento", "Sotavento", "Naufragio",
+        "Tesoro Perdido", "Isla Misteriosa", "Puerto Seguro", "Faro Luminoso", "Ancla de Oro",
+        "Velamen Real", "Timón de Plata", "Brújula Mágica", "Cataviento", "Bauprés",
+        "Mastelero", "Jarcia Firme", "Driza Maestra", "Escota Libre", "Amura de Estribor"
+    };
+
     @Override
     public void run(String... args) throws Exception {
         List<Jugador> jugadores = new ArrayList<>();
@@ -59,7 +72,8 @@ public class DbInitializer implements CommandLineRunner {
             List<Barco> barcosJugador = new ArrayList<>(); // Lista de barcos para este jugador
 
             for (int b = 0; b < 10; b++) {
-                Barco barco = new Barco(barcoIndex, barcoIndex + 1, barcoIndex * 5, barcoIndex * 5);
+                String nombreBarco = nombresBarcos[barcoIndex % nombresBarcos.length];
+                Barco barco = new Barco(nombreBarco,barcoIndex, barcoIndex + 1, barcoIndex * 5, barcoIndex * 5);
                 barco.setJugador(jugador); // Asignar jugador al barco
                 barco.setModelo(modeloRepositorio.findById(barcoIndex % 10L).orElse(null)); // Asignar modelo (esto es un ejemplo, puedes ajustarlo)
                 barco = barcoRepositorio.save(barco); // Guardar el barco en la base de datos

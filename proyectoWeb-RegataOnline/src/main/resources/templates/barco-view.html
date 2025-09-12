@@ -9,6 +9,7 @@
     <h1>Detalle del Barco</h1>
      <ul>
         <li><strong>ID:</strong> <span th:text="${barco.id}"></span></li>
+        <li><strong>Nombre:</strong> <span th:text="${barco.nombre != null ? barco.nombre : 'Sin nombre'}"></span></li>
         <li><strong>Modelo:</strong> <span th:text="${barco.nombreModeloBarco}"></span></li>
         <li><strong>Jugador:</strong> <span th:text="${barco.nombreJugador != null ? barco.nombreJugador : 'Sin jugador'}"></span></li>
         <li><strong>Celda:</strong> 

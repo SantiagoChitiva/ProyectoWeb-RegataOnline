@@ -2,6 +2,7 @@ package co.edu.javeriana.proyectoWeb.RegataOnline.dto;
 
 public class BarcoDTO {
     private Long id;
+    private String nombre;
     private int velocidadX;
     private int velocidadY;
     private int posicionX;
@@ -17,8 +18,9 @@ public class BarcoDTO {
         //TODO Auto-generated constructor stub
     }
 
-    public BarcoDTO(Long id, int velocidadX, int velocidadY, int posicionX, int posicionY) {
+    public BarcoDTO(Long id, String nombre, int velocidadX, int velocidadY, int posicionX, int posicionY) {
         this.id = id;
+        this.nombre = nombre;
         this.velocidadX = velocidadX;
         this.velocidadY = velocidadY;
         this.posicionX = posicionX;
@@ -31,6 +33,14 @@ public class BarcoDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public int getVelocidadX() {

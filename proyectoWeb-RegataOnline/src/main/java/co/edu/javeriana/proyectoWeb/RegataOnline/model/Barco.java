@@ -21,6 +21,7 @@ public class Barco {
     @ManyToOne 
     private Celda celda;
 
+    private String nombre;
     private int velocidadX;
     private int velocidadY;
     private int posicionX;
@@ -29,7 +30,8 @@ public class Barco {
     public Barco() {
     }
 
-    public Barco(int velocidadX, int velocidadY, int posicionX, int posicionY) {
+    public Barco(String nombre ,int velocidadX, int velocidadY, int posicionX, int posicionY) {
+        this.nombre = nombre;
         this.velocidadX = velocidadX;
         this.velocidadY = velocidadY;
         this.posicionX = posicionX;
@@ -86,5 +88,12 @@ public class Barco {
 
     public void setCelda(Celda celda) {
         this.celda = celda;
+    }
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

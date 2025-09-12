@@ -7,6 +7,7 @@ public class BarcoMapper {
     public static BarcoDTO toDTO(Barco barco){
         BarcoDTO barcoDTO = new BarcoDTO();
         barcoDTO.setId(barco.getId());
+        barcoDTO.setNombre(barco.getNombre());
         barcoDTO.setVelocidadX(barco.getVelocidadX());
         barcoDTO.setVelocidadY(barco.getVelocidadY());
         barcoDTO.setPosicionX(barco.getPosicionX());
@@ -32,6 +33,7 @@ public class BarcoMapper {
     public static Barco toEntity(BarcoDTO barcoDTO){
         Barco barco = new Barco();
         barco.setId(barcoDTO.getId());
+        barco.setNombre(barcoDTO.getNombre());
         barco.setVelocidadX(barcoDTO.getVelocidadX());
         barco.setVelocidadY(barcoDTO.getVelocidadY());
         barco.setPosicionX(barcoDTO.getPosicionX());

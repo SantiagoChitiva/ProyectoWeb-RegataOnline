@@ -19,6 +19,7 @@
             <thead>
                 <tr>
                     <th>ID Barco</th>
+                    <th>Nombre</th>
                     <th>Jugador</th>
                     <th>Velocidad X</th>
                     <th>Velocidad Y</th>
@@ -30,6 +31,7 @@
             <tbody>
                 <tr th:each="barco : ${barcosModelo}">
                     <td th:text="${barco.id}"></td>
+                    <td th:text="${barco.nombre != null ? barco.nombre : 'Sin nombre'}"></td>
                     <td th:text="${barco.nombreJugador != null ? barco.nombreJugador : 'Sin jugador'}"></td>
                     <td th:text="${barco.velocidadX}"></td>
                     <td th:text="${barco.velocidadY}"></td>

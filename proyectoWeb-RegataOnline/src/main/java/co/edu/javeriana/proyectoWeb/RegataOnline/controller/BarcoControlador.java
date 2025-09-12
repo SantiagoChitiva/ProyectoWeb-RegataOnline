@@ -1,6 +1,7 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,12 +52,25 @@ public class BarcoControlador {
         return barcoServicio.listarBarcos();
     }
 
-    /*
     @GetMapping("/list/{page}")
     public List<BarcoDTO> listarBarcos(@PathVariable Integer page) {
         return barcoServicio.listarBarcos(PageRequest.of(page, 10));
     }
 
+    @GetMapping("/search")
+    public ModelAndView buscarBarcos(@RequestParam(required = false) String searchText) {
+        log.info("Lista de Barcos");
+        List<BarcoDTO> barcos;
+        if (searchText == null || searchText.trim().equals("")) {
+            barcos = barcoServicio.listarBarcos();
+        } else {
+            barcos = barcoServicio.buscarBarcosPorNombre(searchText);            
+        }
+        ModelAndView modelAndView = new ModelAndView("barco-search");
+        modelAndView.addObject("barcos", barcos);
+        return modelAndView;
+    }
+/*
     @GetMapping("/view/{id}")
     public ModelAndView buscarBarco(@PathParam(required = false) String searchText){
         minuto 21:38 video rest

@@ -3,9 +3,11 @@ package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.query.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -42,6 +44,29 @@ public class JugadorControlador {
         List<JugadorDTO> jugadores = jugadorServicio.listarJugadores();
         ModelAndView modelAndView = new ModelAndView("jugador-lista");
         modelAndView.addObject("listaJugadores", jugadores);
+        return modelAndView;
+    }
+
+    @GetMapping("/list/{page}")
+    public ModelAndView listarJugadores(@PathVariable Integer page) {
+        log.info("Lista de Jugadores");
+        List<JugadorDTO> jugadores = jugadorServicio.listarJugadores(PageRequest.of(page, 2));
+        ModelAndView modelAndView = new ModelAndView("jugador-lista");
+        modelAndView.addObject("listaJugadores", jugadores);
+        return modelAndView;
+    }
+
+    @GetMapping("/search")
+    public ModelAndView buscarJugadores(@RequestParam(required = false) String searchText) {
+        log.info("Lista de Jugadores");
+        List<JugadorDTO> jugadores;
+        if (searchText == null || searchText.trim().equals("")) {
+            jugadores = jugadorServicio.listarJugadores();
+        } else {
+            jugadores = jugadorServicio.buscarJugadoresPorNombre(searchText);            
+        }
+        ModelAndView modelAndView = new ModelAndView("jugador-search");
+        modelAndView.addObject("jugadores", jugadores);
         return modelAndView;
     }
 

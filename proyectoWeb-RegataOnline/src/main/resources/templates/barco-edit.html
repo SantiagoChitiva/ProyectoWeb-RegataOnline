@@ -10,6 +10,11 @@
     <form action="/barco/save" method="post">
         <input type="hidden" name="id" th:value="${barco.id}">
         
+        <label>Nombre del Barco:</label>
+        <input type="text" id="nombre" name="nombre" th:value="${barco.nombre}" required 
+               placeholder="Ej: Viento del Mar">
+        <br><br>
+        
         <label>Modelo de Barco:</label>
         <select id="modeloId" name="modeloId">
             <option value="">Seleccionar Modelo</option>
