@@ -10,6 +10,12 @@ GET {{base_url}}/barco/list
 GET {{base_url}}/barco/21
 
 ###
+GET {{base_url}}/barco/9999
+
+###
+GET {{base_url}}/barco/list/-1
+
+###
 POST {{base_url}}/barco
 Content-Type: application/json
 
