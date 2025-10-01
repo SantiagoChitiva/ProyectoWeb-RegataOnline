@@ -16,6 +16,9 @@ GET {{base_url}}/barco/9999
 GET {{base_url}}/barco/list/-1
 
 ###
+GET {{base_url}}/barco/search?searchText=Velero
+
+###
 POST {{base_url}}/barco
 Content-Type: application/json
 

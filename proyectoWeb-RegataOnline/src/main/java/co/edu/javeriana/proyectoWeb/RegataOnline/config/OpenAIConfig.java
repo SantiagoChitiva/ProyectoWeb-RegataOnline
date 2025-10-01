@@ -10,6 +10,9 @@ import io.swagger.v3.oas.models.info.Info;
 public class OpenAIConfig {
     @Bean
     OpenAPI customOpenAI() {
-            return new OpenAPI().info(new Info().title("Regata Online API").version("1.0.0").description("API para la gestion de una regata online"));
+            return new OpenAPI()
+            .info(new Info().title("Regata Online API")
+            .version("1.0.0")
+            .description("API para la gestion de una regata online"));
     }
 }
