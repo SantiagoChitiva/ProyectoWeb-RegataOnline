@@ -33,9 +33,9 @@ public class ModeloServicio {
         return modeloRepositorio.findById(id).map(ModeloMapper::toDTO);
     }
     
-    public void guardarModelo(ModeloDTO modeloDTO) {
+    public ModeloDTO guardarModelo(ModeloDTO modeloDTO) {
         Modelo modelo = ModeloMapper.toEntity(modeloDTO);
-        modeloRepositorio.save(modelo);
+        return ModeloMapper.toDTO(modeloRepositorio.save(modelo));
     }
 
     public void borrarModelo(long id) {

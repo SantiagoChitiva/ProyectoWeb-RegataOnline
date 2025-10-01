@@ -150,12 +150,13 @@ public class BarcoServicio {
         jugadorRepositorio.save(jugador);
     }
 
-    public void actualizarModeloDeBarcos(BarcoModeloDTO barcoModeloDTO) {
+    public BarcoModeloDTO actualizarModeloDeBarcos(BarcoModeloDTO barcoModeloDTO) {
         Modelo nuevoModelo = null;
         
         // Obtener el nuevo modelo si se proporciona
         if (barcoModeloDTO.getModeloId() != null) {
-            nuevoModelo = modeloRepositorio.findById(barcoModeloDTO.getModeloId()).orElseThrow();
+            nuevoModelo = modeloRepositorio.findById(barcoModeloDTO.getModeloId())
+                .orElseThrow(() -> new RuntimeException("Modelo no encontrado con ID: " + barcoModeloDTO.getModeloId()));
         }
         
         // Procesar cada barco
@@ -180,9 +181,15 @@ public class BarcoServicio {
             // Guardar todos los cambios
             barcoRepositorio.saveAll(barcosAActualizar);
             if (nuevoModelo != null) {
-                modeloRepositorio.save(nuevoModelo);
+                nuevoModelo = modeloRepositorio.save(nuevoModelo);
             }
         }
+        
+        // Retornar el DTO actualizado
+        // Puedes construir el DTO con la información actualizada
+        BarcoModeloDTO resultado;
+        resultado = new BarcoModeloDTO(barcoModeloDTO.getModeloId(), barcoModeloDTO.getBarcosIds());
+        return resultado;
     }
 
     public Optional <BarcoModeloDTO> getBarcoModelo(Long barcoId){

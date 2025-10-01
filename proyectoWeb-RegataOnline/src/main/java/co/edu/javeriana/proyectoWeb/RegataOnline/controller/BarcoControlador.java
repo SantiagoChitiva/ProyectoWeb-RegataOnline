@@ -55,19 +55,19 @@ public class BarcoControlador {
     }
 
     @GetMapping("/list/{page}")
-    @Operation(summary = "Listar barcos con paginación", description = "Obtiene una lista de barcos paginada (10 por pagina). El número de página debe ser mayor a 0.")
+    @Operation(summary = "Listar barcos con paginación", description = "Obtiene una lista de barcos paginada (10 por pagina). El número de página debe ser mayor o igual 0.")
      @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista paginada de barcos obtenida exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Número de página inválido (debe ser mayor a 0)")
+        @ApiResponse(responseCode = "400", description = "Número de página inválido (debe ser mayor o igual 0)")
     })
     public ResponseEntity<?> listarBarcos(
         @Parameter(description = "Número de página (debe ser mayor a 0)", example = "1", required = true)
         @PathVariable Integer page)
 {
-        if (page > 0) {
+        if (page >= 0){
             return ResponseEntity.ok(barcoServicio.listarBarcos(PageRequest.of(page, 10)));    
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO("El numero de pagina debe ser mayor a 0"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDTO("El numero de pagina debe ser mayor o igual 0"));
         }
         
     }

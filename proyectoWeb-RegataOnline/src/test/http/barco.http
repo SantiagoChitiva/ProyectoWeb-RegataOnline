@@ -13,7 +13,7 @@ GET {{base_url}}/barco/21
 GET {{base_url}}/barco/9999
 
 ###
-GET {{base_url}}/barco/list/-1
+GET {{base_url}}/barco/list/0
 
 ###
 GET {{base_url}}/barco/search?searchText=Velero
