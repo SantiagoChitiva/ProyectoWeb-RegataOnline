@@ -1,51 +1,41 @@
+
 package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.CeldaDTO;
-import co.edu.javeriana.proyectoWeb.RegataOnline.services.BarcoServicio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.CeldaServicio;
 
-@Controller
+@RestController
 @RequestMapping("/celda")
+@Tag(name = "Celda", description = "Endpoints para gestionar las celdas")
 public class CeldaControlador {
-    
-    @Autowired 
-    private CeldaServicio celdaServicio;
-    
     @Autowired
-    private BarcoServicio barcoServicio;
-
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private CeldaServicio celdaServicio;
 
     @GetMapping("/list")
-    public ModelAndView listarCeldas() {
-        List<CeldaDTO> celdas = celdaServicio.listarCeldas();
-        ModelAndView modelAndView = new ModelAndView("celda-lista");
-        modelAndView.addObject("listaCeldas", celdas);
-        return modelAndView;
+    @Operation(summary = "Listar todas las celdas", description = "Obtiene una lista de todas las celdas")
+    @ApiResponse(responseCode = "200", description = "Lista de celdas obtenida exitosamente")
+    public List<CeldaDTO> listarCeldas() {
+        return celdaServicio.listarCeldas();
     }
 
-    @GetMapping("/view/{id}")
-    public ModelAndView buscarCelda(@PathVariable("id") Long id){
-        CeldaDTO celda = celdaServicio.buscarCelda(id).orElseThrow();
-        List<BarcoDTO> barcosCelda = barcoServicio.obtenerBarcosPorCelda(id);
-        ModelAndView modelAndView = new ModelAndView("celda-view");
-        modelAndView.addObject("celda", celda);
-        modelAndView.addObject("barcosCelda", barcosCelda);
-        return modelAndView;
+    @GetMapping("/{id}")
+    @Operation(summary = "Buscar celda por ID", description = "Obtiene los detalles de una celda específica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Celda encontrada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Celda no encontrada")
+    })
+    public Optional<CeldaDTO> buscarCelda(
+        @Parameter(description = "ID de la celda", example = "1", required = true)
+        @PathVariable("id") Long id) {
+        return celdaServicio.buscarCelda(id);
     }
 }
