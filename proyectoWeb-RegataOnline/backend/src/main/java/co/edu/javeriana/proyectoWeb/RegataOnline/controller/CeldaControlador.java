@@ -45,5 +45,3 @@ public class CeldaControlador {
         return celdaServicio.buscarCelda(id);
     }
 }
-
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
