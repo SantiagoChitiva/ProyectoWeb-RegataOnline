@@ -1,4 +1,3 @@
-
 package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 
 import java.util.List;
@@ -46,3 +45,5 @@ public class CeldaControlador {
         return celdaServicio.buscarCelda(id);
     }
 }
+
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
