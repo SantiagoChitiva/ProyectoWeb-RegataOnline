@@ -1,0 +1,6 @@
+<h1>Lista de Barcos</h1>
+<ul>
+    @for(p of barcos(); track $index) {
+        <li (click)="barcoSelected(p)">{{p.id}} - {{p.nombre}}</li>
+    }
+</ul>
