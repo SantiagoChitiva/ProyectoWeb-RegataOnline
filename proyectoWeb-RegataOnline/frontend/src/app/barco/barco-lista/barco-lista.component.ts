@@ -2,11 +2,12 @@ import { Component, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Barco } from '../../model/barco';
 import { BarcoService } from '../../shared/barco.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-barco-lista',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './barco-lista.component.html',
   styleUrl: './barco-lista.component.css'
 })

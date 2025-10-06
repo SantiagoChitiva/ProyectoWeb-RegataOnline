@@ -1,6 +1,12 @@
 <h1>Lista de Barcos</h1>
 <ul>
     @for(p of barcos(); track $index) {
-        <li (click)="barcoSelected(p)">{{p.id}} - {{p.nombre}}</li>
+        <li>
+            <span>{{p.id}} - {{p.nombre}}</span>
+            <div class="actions">
+                <a [routerLink]="['/barco/view', p.id]">Ver</a>
+                <a [routerLink]="['/barco/edit', p.id]">Editar</a>
+            </div>
+        </li>
     }
 </ul>

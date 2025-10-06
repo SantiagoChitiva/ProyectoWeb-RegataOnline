@@ -11,21 +11,4 @@ import { Barco } from './model/barco';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly dato2 = signal('Hola Mundo');
-
-  dato = 'Hola Mundo';
-
-  selectedBarco = signal<Barco>({});
-
-  cambiar(){
-    this.dato = 'Chao Mundo';
-  }
-
-  cambiar2(){
-    this.dato2.set('Chao Mundo');
-  }
-
-  selectBarco(barco: Barco){
-    this.selectedBarco.set(barco);
-  }
 }

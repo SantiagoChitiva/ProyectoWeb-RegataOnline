@@ -1,0 +1,38 @@
+<h1>Editar Barco</h1>
+<form (ngSubmit)="guardar()">
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre" [(ngModel)]="barco().nombre" required />
+        </div>
+        <div class="form-group">
+            <label for="modeloId">Modelo ID</label>
+            <input id="modeloId" type="number" name="modeloId" [(ngModel)]="barco().modeloId" required />
+        </div>
+        <div class="form-group">
+            <label for="velocidadX">Velocidad X</label>
+            <input id="velocidadX" type="number" name="velocidadX" [(ngModel)]="barco().velocidadX"/>
+        </div>
+        <div class="form-group">
+            <label for="velocidadY">Velocidad Y</label>
+            <input id="velocidadY" type="number" name="velocidadY" [(ngModel)]="barco().velocidadY"/>
+        </div>
+        <div class="form-group">
+            <label for="posicionX">Posición X</label>
+            <input id="posicionX" type="number" name="posicionX" [(ngModel)]="barco().posicionX" />
+        </div>
+        <div class="form-group">
+            <label for="posicionY">Posición Y</label>
+            <input id="posicionY" type="number" name="posicionY" [(ngModel)]="barco().posicionY" />
+        </div>
+        <div class="form-group">
+            <label for="jugadorId">Jugador ID</label>
+            <input id="jugadorId" type="number" name="jugadorId" [(ngModel)]="barco().jugadorId" />
+        </div>
+        <div class="form-group">
+            <label for="celdaId">Celda ID</label>
+            <input id="celdaId" type="number" name="celdaId" [(ngModel)]="barco().celdaId" />
+        </div>
+    </div>
+    <button type="submit">Guardar Cambios</button>
+</form>

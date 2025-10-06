@@ -1,5 +1,8 @@
-import { Component, input, signal, WritableSignal } from '@angular/core';
+import { Component, inject, input, signal, WritableSignal } from '@angular/core';
 import { Barco } from '../../model/barco';
+import { BarcoService } from '../../shared/barco.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-barco-view',
@@ -8,5 +11,21 @@ import { Barco } from '../../model/barco';
   styleUrl: './barco-view.component.css'
 })
 export class BarcoViewComponent {
-  barco = input<Barco>({});
+  barcoService = inject(BarcoService);
+
+  route = inject(ActivatedRoute);
+
+  router = inject(Router);
+
+  barco = signal<Barco>({});
+
+  ngOnInit(): void {
+    this.route.params.pipe(
+      switchMap(params => this.barcoService.findById(+params['id']))
+    ).subscribe(resp => this.barco.set(resp));
+  }
+
+  volver() {
+    this.router.navigate(['/barco/list']);
+  }
 }
