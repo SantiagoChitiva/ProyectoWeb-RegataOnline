@@ -1,0 +1,10 @@
+<h1>Editar Jugador</h1>
+<form (ngSubmit)="guardar()">
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre" [(ngModel)]="jugador().nombre" required />
+        </div>
+    </div>
+    <button type="submit">Guardar Cambios</button>
+</form>

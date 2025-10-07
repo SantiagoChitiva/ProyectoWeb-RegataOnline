@@ -1,4 +1,35 @@
-<h1>Gestión de Barcos</h1>
+<div class="app-wrapper">
+  <header class="app-header">
+    <div class="header-content">
+      <a routerLink="/" class="logo">
+        <span class="logo-icon">⛵</span>
+        <span class="logo-text">Regata Online</span>
+      </a>
+      <nav class="main-nav">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="nav-icon">🏠</span>
+          Inicio
+        </a>
+        <a routerLink="/barco/list" routerLinkActive="active">
+          <span class="nav-icon">🚢</span>
+          Barcos
+        </a>
+        <a routerLink="/jugador/list" routerLinkActive="active">
+          <span class="nav-icon">👥</span>
+          Jugadores
+        </a>
+      </nav>
+    </div>
+  </header>
 
-<router-outlet></router-outlet>
- 
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Regata Online - Pontificia Universidad Javeriana</p>
+      <p class="footer-credits">Desarrollo Web - Semestre 6</p>
+    </div>
+  </footer>
+</div>
