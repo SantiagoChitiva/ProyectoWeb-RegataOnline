@@ -4,7 +4,7 @@ h1 {
   margin-bottom: 1.5rem;
   text-align: center;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
   color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -32,7 +32,7 @@ form {
 }
 
 label {
-  color: #667eea;
+  color: #27ae60;
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
@@ -51,13 +51,13 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #27ae60;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
 }
 
 input:hover {
-  border-color: #764ba2;
+  border-color: #2ecc71;
 }
 
 select {
@@ -72,19 +72,25 @@ select {
 
 select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #27ae60;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
 }
 
 select:hover {
-  border-color: #764ba2;
+  border-color: #2ecc71;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 button[type="submit"] {
-  width: 100%;
+  flex: 1;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -92,14 +98,36 @@ button[type="submit"] {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 1rem;
 }
 
 button[type="submit"]:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 12px rgba(39, 174, 96, 0.4);
 }
 
 button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 1rem;
+  background: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #7f8c8d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(149, 165, 166, 0.4);
+}
+
+.btn-cancel:active {
   transform: translateY(0);
 }

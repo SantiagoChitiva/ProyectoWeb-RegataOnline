@@ -25,7 +25,7 @@ export class JugadorService {
         headers: new HttpHeaders({ "Content-Type": "application/json" })
        });
   }
-/*
+
   create(jugador: Jugador): Observable<Jugador> {
     return this.http.post<Jugador>(`${environment.baseUrl}/jugador`,
       jugador, 
@@ -37,5 +37,4 @@ export class JugadorService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${environment.baseUrl}/jugador/${id}`);
   }
-*/
 }

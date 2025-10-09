@@ -28,4 +28,24 @@ export class BarcoViewComponent {
   volver() {
     this.router.navigate(['/barco/list']);
   }
+
+  eliminar() {
+    const id = this.barco()?.id;
+    const nombre = this.barco()?.nombre;
+    
+    if (!id) return;
+    
+    if (confirm(`¿Estás seguro de eliminar el barco "${nombre}"?`)) {
+      this.barcoService.delete(id).subscribe({
+        next: () => {
+          console.log('Barco eliminado');
+          this.router.navigate(['/barco/list']);
+        },
+        error: err => {
+          alert('Error al eliminar el barco');
+          console.error(err);
+        }
+      });
+    }
+  }
 }

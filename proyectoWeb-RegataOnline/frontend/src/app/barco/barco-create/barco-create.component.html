@@ -1,5 +1,5 @@
-<h1>Editar Barco</h1>
-<form (ngSubmit)="guardar()">
+<h1>Crear Nuevo Barco</h1>
+<form (ngSubmit)="crear()">
     <div class="form-grid">
         <div class="form-group">
             <label for="nombre">Nombre</label>
@@ -8,7 +8,7 @@
         <div class="form-group">
             <label for="modeloId">Modelo</label>
             <select id="modeloId" name="modeloId" [(ngModel)]="barco().modeloId" required>
-                <option value="" disabled>Seleccione un modelo</option>
+                <option value="" disabled selected>Seleccione un modelo</option>
                 @for(modelo of modelos(); track modelo.id) {
                     <option [value]="modelo.id">{{ modelo.id }} - {{ modelo.nombreModelo }}</option>
                 }
@@ -49,5 +49,8 @@
             </select>
         </div>
     </div>
-    <button type="submit">Guardar Cambios</button>
+    <div class="button-group">
+        <button type="submit">Crear Barco</button>
+        <button type="button" class="btn-cancel" (click)="cancelar()">Cancelar</button>
+    </div>
 </form>

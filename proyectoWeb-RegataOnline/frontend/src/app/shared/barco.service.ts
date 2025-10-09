@@ -25,7 +25,7 @@ export class BarcoService {
         headers: new HttpHeaders({ "Content-Type": "application/json" })
        });
   }
-/*
+
   create(barco: Barco): Observable<Barco> {
     return this.http.post<Barco>(`${environment.baseUrl}/barco`,
       barco, 
@@ -33,7 +33,8 @@ export class BarcoService {
         headers: new HttpHeaders({ "Content-Type": "application/json" })
       });
   }
-*/
 
-  
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.baseUrl}/barco/${id}`);
+  }
 }

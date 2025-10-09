@@ -10,6 +10,31 @@ h1 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.header-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-create {
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+}
+
+.btn-create:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+}
+
 ul {
   list-style: none;
   padding: 0;
@@ -67,12 +92,30 @@ a:first-of-type:hover {
   transform: scale(1.05);
 }
 
-a:last-of-type {
-  background: #e74c3c;
+a:nth-of-type(2) {
+  background: #f39c12;
   color: white;
 }
 
-a:last-of-type:hover {
+a:nth-of-type(2):hover {
+  background: #e67e22;
+  transform: scale(1.05);
+}
+
+.btn-delete {
+  padding: 0.5rem 1rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.btn-delete:hover {
   background: #c0392b;
   transform: scale(1.05);
 }

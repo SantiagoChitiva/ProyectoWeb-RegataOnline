@@ -48,8 +48,14 @@ h1 {
   font-weight: 500;
 }
 
-button {
-  width: 100%;
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-back {
+  flex: 1;
   padding: 0.8rem;
   background: #667eea;
   color: white;
@@ -61,12 +67,35 @@ button {
   transition: all 0.3s ease;
 }
 
-button:hover {
+.btn-back:hover {
   background: #764ba2;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-button:active {
+.btn-back:active {
+  transform: translateY(0);
+}
+
+.btn-delete {
+  flex: 1;
+  padding: 0.8rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+}
+
+.btn-delete:active {
   transform: translateY(0);
 }

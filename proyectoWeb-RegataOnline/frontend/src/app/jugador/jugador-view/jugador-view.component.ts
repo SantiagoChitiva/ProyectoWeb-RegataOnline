@@ -30,4 +30,24 @@ export class JugadorViewComponent {
   volver(): void {
     this.router.navigate(['/jugador/list']);
   }
+
+  eliminar(): void {
+    const id = this.jugador()?.id;
+    const nombre = this.jugador()?.nombre;
+    
+    if (!id) return;
+    
+    if (confirm(`¿Estás seguro de eliminar al jugador "${nombre}"?`)) {
+      this.jugadorService.delete(id).subscribe({
+        next: () => {
+          console.log('Jugador eliminado');
+          this.router.navigate(['/jugador/list']);
+        },
+        error: err => {
+          alert('Error al eliminar el jugador');
+          console.error(err);
+        }
+      });
+    }
+  }
 }

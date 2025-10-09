@@ -18,6 +18,10 @@ export class JugadorListaComponent {
   jugadorService = inject(JugadorService);
 
   ngOnInit(): void {
+    this.cargarJugadores();
+  }
+
+  cargarJugadores(): void {
     this.jugadorService.findAll().subscribe({
       next: data => this.jugadores.set(data),
       error: err => console.error('Error cargando jugadores', err)
@@ -26,5 +30,22 @@ export class JugadorListaComponent {
 
   jugadorSelected(jugador: Jugador): void {
     this.jugadorClicked.emit(jugador);
+  }
+
+  eliminar(id: number | undefined, nombre: string | undefined): void {
+    if (!id) return;
+    
+    if (confirm(`¿Estás seguro de eliminar al jugador "${nombre}"?`)) {
+      this.jugadorService.delete(id).subscribe({
+        next: () => {
+          console.log('Jugador eliminado');
+          this.cargarJugadores();
+        },
+        error: err => {
+          alert('Error al eliminar el jugador');
+          console.error(err);
+        }
+      });
+    }
   }
 }

@@ -50,5 +50,8 @@
       <span>{{ barco()?.tipoCelda || 'N/A' }}</span>
     </div>
   </div>
-  <button (click)="volver()">Volver a la Lista</button>
+  <div class="button-group">
+    <button class="btn-back" (click)="volver()">Volver a la Lista</button>
+    <button class="btn-delete" (click)="eliminar()">Eliminar Barco</button>
+  </div>
 </div>

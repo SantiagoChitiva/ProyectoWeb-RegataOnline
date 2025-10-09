@@ -7,23 +7,20 @@ import { Barco } from '../../model/barco';
 import { Modelo } from '../../model/modelo';
 import { Jugador } from '../../model/jugador';
 import { Celda } from '../../model/celda';
-import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-barco-edit',
+  selector: 'app-barco-create',
   imports: [FormsModule],
-  templateUrl: './barco-edit.component.html',
-  styleUrl: './barco-edit.component.css'
+  templateUrl: './barco-create.component.html',
+  styleUrl: './barco-create.component.css'
 })
-export class BarcoEditComponent {
+export class BarcoCreateComponent {
   barcoService = inject(BarcoService);
   modeloService = inject(ModeloService);
   jugadorService = inject(JugadorService);
   celdaService = inject(CeldaService);
-
-  route = inject(ActivatedRoute);
 
   router = inject(Router);
 
@@ -36,9 +33,6 @@ export class BarcoEditComponent {
     this.cargarModelos();
     this.cargarJugadores();
     this.cargarCeldas();
-    this.route.params.pipe(
-      switchMap(params => this.barcoService.findById(+params['id']))
-    ).subscribe(resp => this.barco.set(resp));
   }
 
   cargarModelos(): void {
@@ -62,19 +56,22 @@ export class BarcoEditComponent {
     });
   }
 
-  guardar() {
-    console.log("Guardar", this.barco());
-    this.barcoService.update(this.barco()).subscribe(
+  crear() {
+    console.log("Crear", this.barco());
+    this.barcoService.create(this.barco()).subscribe(
       {
         next: resp => {
-        console.log("Guardado", resp);
+        console.log("Creado", resp);
         this.router.navigate(['/barco/list']);
       },
       error: err => {
-        alert("Error al guardar: ");
+        alert("Error al crear: " + err.message);
         console.log(err);
       }}
     );
   }
 
+  cancelar() {
+    this.router.navigate(['/barco/list']);
+  }
 }
