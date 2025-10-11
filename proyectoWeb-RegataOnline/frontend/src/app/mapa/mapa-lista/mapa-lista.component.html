@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="header">
+    <h1>Mapas de Regatas</h1>
+    <button (click)="crearNuevoMapa()" class="btn btn-primary">
+      + Crear Nuevo Mapa
+    </button>
+  </div>
+
+  @if (cargando()) {
+    <div class="loading">
+      <p>Cargando mapas...</p>
+    </div>
+  } @else if (mapas().length === 0) {
+    <div class="empty-state">
+      <h2>No hay mapas creados</h2>
+      <p>Crea tu primer mapa para comenzar</p>
+      <button (click)="crearNuevoMapa()" class="btn btn-primary">
+        Crear Mapa
+      </button>
+    </div>
+  } @else {
+    <div class="mapas-grid">
+      @for (mapa of mapas(); track mapa.id) {
+        <div class="mapa-card" (click)="verDetalle(mapa.id)">
+          <div class="mapa-preview">
+            <div class="dimensiones">
+              {{ mapa.filas }} x {{ mapa.columnas }}
+            </div>
+            <div class="grid-icon">🗺️</div>
+          </div>
+          
+          <div class="mapa-info">
+            <h3>Mapa #{{ mapa.id }}</h3>
+            <div class="stats">
+              <span class="stat">
+                <span class="stat-label">Celdas:</span>
+                <span class="stat-value">{{ mapa.filas * mapa.columnas }}</span>
+              </span>
+              @if (mapa.celdas) {
+                <span class="stat">
+                  <span class="stat-label">Especiales:</span>
+                  <span class="stat-value">{{ mapa.celdas.length }}</span>
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="mapa-actions">
+            <button 
+              class="btn btn-danger btn-sm"
+              (click)="eliminarMapa(mapa.id, $event)">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -7,6 +7,9 @@ import { JugadorListaComponent } from './jugador/jugador-lista/jugador-lista.com
 import { JugadorViewComponent } from './jugador/jugador-view/jugador-view.component';
 import { JugadorEditComponent } from './jugador/jugador-edit/jugador-edit.component';
 import { JugadorCreateComponent } from './jugador/jugador-create/jugador-create.component';
+import { MapaListaComponent } from './mapa/mapa-lista/mapa-lista.component';
+import { MapaCreateComponent } from './mapa/mapa-create/mapa-create.component';
+import { MapaViewComponent } from './mapa/mapa-view/mapa-view.component';
 import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
@@ -18,5 +21,8 @@ export const routes: Routes = [
     { path: 'jugador/list', component: JugadorListaComponent },
     { path: 'jugador/create', component: JugadorCreateComponent },
     { path: 'jugador/view/:id', component: JugadorViewComponent },
-    { path: 'jugador/edit/:id', component: JugadorEditComponent }
+    { path: 'jugador/edit/:id', component: JugadorEditComponent },
+    { path: 'mapa/list', component: MapaListaComponent },
+    { path: 'mapa/create', component: MapaCreateComponent },
+    { path: 'mapa/view/:id', component: MapaViewComponent }
 ];

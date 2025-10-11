@@ -4175,3 +4175,27 @@ alter table if exists celda add constraint FKhgw4s6n9ijmpsbkb34y5x6fug foreign k
 2025-09-11 16:37:35.894234-05:00 jdbc[33]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BARCO" not found; SQL statement:
 select b1_0.id,c1_0.id,m1_0.id,m1_0.columnas,m1_0.filas,c1_0.posicionx,c1_0.posiciony,c1_0.tipo,j1_0.id,j1_0.nombre,m2_0.id,m2_0.color,m2_0.nombre_modelo,b1_0.posicionx,b1_0.posiciony,b1_0.velocidadx,b1_0.velocidady from barco b1_0 left join celda c1_0 on c1_0.id=b1_0.celda_id left join mapa m1_0 on m1_0.id=c1_0.mapa_id left join jugador j1_0 on j1_0.id=b1_0.jugador_id left join modelo m2_0 on m2_0.id=b1_0.modelo_id where b1_0.id=? [42102-232]
+2025-10-10 19:04:59.763924-05:00 jdbc[65]: null
+org.h2.message.DbException: La conexión no fue cerrada por la aplicación y esta siendo limpiada (garbage collected)
+The connection was not closed by the application and is garbage collected [90018-232]
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.get(DbException.java:188)
+	at org.h2.jdbc.JdbcConnection.closeOld(JdbcConnection.java:217)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:134)
+	at org.h2.Driver.connect(Driver.java:59)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: La conexión no fue cerrada por la aplicación y esta siendo limpiada (garbage collected)
+The connection was not closed by the application and is garbage collected [90018-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:690)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	... 16 more
