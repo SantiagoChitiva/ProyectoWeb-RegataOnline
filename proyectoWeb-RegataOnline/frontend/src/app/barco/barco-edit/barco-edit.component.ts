@@ -113,13 +113,28 @@ export class BarcoEditComponent {
   construirMatriz(mapa: Mapa): void {
     const matriz: (Celda | null)[][] = [];
     
+    console.log('=== CONSTRUYENDO MATRIZ ===');
+    console.log('Mapa:', mapa.filas, 'filas x', mapa.columnas, 'columnas');
+    console.log('Celdas del backend:', mapa.celdas);
+    
+    // Construir matriz: fila i, columna j
+    // Backend usa: posicionX = columna, posicionY = fila
     for (let i = 0; i < mapa.filas; i++) {
       matriz[i] = [];
       for (let j = 0; j < mapa.columnas; j++) {
+        // Buscar celda donde posicionX=j (columna) y posicionY=i (fila)
         const celda = mapa.celdas?.find(c => c.posicionX === j && c.posicionY === i);
         matriz[i][j] = celda || null;
+        
+        // Log solo para las celdas especiales
+        if (celda && celda.tipo && celda.tipo !== '') {
+          console.log(`Celda especial en matriz[${i}][${j}]: tipo=${celda.tipo}, posX=${celda.posicionX}, posY=${celda.posicionY}`);
+        }
       }
     }
+    
+    console.log('Matriz construida:', matriz);
+    console.log('========================');
     
     this.matrizCeldas.set(matriz);
   }
@@ -166,9 +181,12 @@ export class BarcoEditComponent {
   }
 
   esCeldaSeleccionada(celda: Celda | null): boolean {
-    return celda !== null && 
-           this.celdaSeleccionada() !== null && 
-           celda.id === this.celdaSeleccionada()?.id;
+    if (!celda || !this.celdaSeleccionada()) return false;
+    
+    const seleccionada = this.celdaSeleccionada();
+    // Comparar por coordenadas en lugar de por id
+    return celda.posicionX === seleccionada?.posicionX && 
+           celda.posicionY === seleccionada?.posicionY;
   }
 
   esCeldaNoNavegable(celda: Celda | null): boolean {

@@ -41,11 +41,12 @@ public class MapaServicio {
         // Crear todas las celdas del mapa
         List<Celda> celdas = new ArrayList<>();
         
+        // i = fila (posicionY), j = columna (posicionX)
         for (int i = 0; i < request.getFilas(); i++) {
             for (int j = 0; j < request.getColumnas(); j++) {
                 Celda celda = new Celda();
-                celda.setPosicionX(i);
-                celda.setPosicionY(j);
+                celda.setPosicionX(j);  // j = columna = X
+                celda.setPosicionY(i);  // i = fila = Y
                 celda.setTipo(""); // Por defecto, agua (vacío)
                 celda.setMapa(mapa);
                 celdas.add(celda);
@@ -55,7 +56,8 @@ public class MapaServicio {
         // Aplicar las celdas seleccionadas (con tipos especiales)
         if (request.getCeldasSeleccionadas() != null) {
             for (CeldaDTO celdaConfig : request.getCeldasSeleccionadas()) {
-                int index = celdaConfig.getPosicionX() * request.getColumnas() + celdaConfig.getPosicionY();
+                // Buscar la celda en la lista por sus coordenadas
+                int index = celdaConfig.getPosicionY() * request.getColumnas() + celdaConfig.getPosicionX();
                 if (index >= 0 && index < celdas.size()) {
                     celdas.get(index).setTipo(celdaConfig.getTipo());
                 }

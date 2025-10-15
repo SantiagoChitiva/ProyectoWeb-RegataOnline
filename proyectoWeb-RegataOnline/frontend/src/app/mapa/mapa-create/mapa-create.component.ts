@@ -46,8 +46,8 @@ export class MapaCreateComponent {
       const fila: Celda[] = [];
       for (let j = 0; j < columnasVal; j++) {
         fila.push({
-          posicionX: i,
-          posicionY: j,
+          posicionX: j,  // j es la columna = X
+          posicionY: i,  // i es la fila = Y
           tipo: ''
         });
       }

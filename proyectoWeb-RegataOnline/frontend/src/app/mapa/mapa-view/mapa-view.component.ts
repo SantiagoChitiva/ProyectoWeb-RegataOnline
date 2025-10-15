@@ -41,12 +41,13 @@ export class MapaViewComponent implements OnInit {
     const matriz: Celda[][] = [];
     
     // Crear matriz vacía
+    // i = fila (posicionY), j = columna (posicionX)
     for (let i = 0; i < mapa.filas; i++) {
       const fila: Celda[] = [];
       for (let j = 0; j < mapa.columnas; j++) {
         fila.push({
-          posicionX: i,
-          posicionY: j,
+          posicionX: j,  // j = columna = X
+          posicionY: i,  // i = fila = Y
           tipo: ''
         });
       }
@@ -54,9 +55,11 @@ export class MapaViewComponent implements OnInit {
     }
 
     // Llenar con las celdas del mapa
+    // Backend: posicionX = columna, posicionY = fila
+    // Acceso: matriz[fila][columna] = matriz[posicionY][posicionX]
     mapa.celdas.forEach(celda => {
-      if (celda.posicionX < mapa.filas && celda.posicionY < mapa.columnas) {
-        matriz[celda.posicionX][celda.posicionY] = celda;
+      if (celda.posicionY < mapa.filas && celda.posicionX < mapa.columnas) {
+        matriz[celda.posicionY][celda.posicionX] = celda;
       }
     });
 

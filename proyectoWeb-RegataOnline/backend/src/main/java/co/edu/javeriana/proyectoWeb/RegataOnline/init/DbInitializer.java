@@ -73,7 +73,7 @@ public class DbInitializer implements CommandLineRunner {
 
             for (int b = 0; b < 10; b++) {
                 String nombreBarco = nombresBarcos[barcoIndex % nombresBarcos.length];
-                Barco barco = new Barco(nombreBarco,barcoIndex, barcoIndex + 1, barcoIndex * 5, barcoIndex * 5);
+                Barco barco = new Barco(nombreBarco, 0, 0, barcoIndex * 5, barcoIndex * 5); // Velocidad X=0, Y=0
                 barco.setJugador(jugador); // Asignar jugador al barco
                 barco.setModelo(modeloRepositorio.findById(barcoIndex % 10L).orElse(null)); // Asignar modelo (esto es un ejemplo, puedes ajustarlo)
                 barco = barcoRepositorio.save(barco); // Guardar el barco en la base de datos
@@ -86,31 +86,34 @@ public class DbInitializer implements CommandLineRunner {
             jugadorRepositorio.save(jugador); // Guardar al jugador con su lista de barcos
         }
 
-        // Crear el mapa
-        Mapa mapa = new Mapa(10, 15); // 10 filas, 15 columnas
+        // Crear el mapa de 10x10
+        Mapa mapa = new Mapa(10, 10); // 10 filas, 10 columnas
         mapa = mapaRepositorio.save(mapa);
 
         List<Celda> celdas = new ArrayList<>();
         
-        // Crear todas las celdas del mapa (10 filas x 15 columnas = 150 celdas)
+        // Crear todas las celdas del mapa (10 filas x 10 columnas = 100 celdas)
         for (int fila = 0; fila < 10; fila++) {
-            for (int col = 0; col < 15; col++) {
+            for (int col = 0; col < 10; col++) {
                 String tipo = "";
                 
-                // Fila 0: celdas de partida en las primeras columnas
-                if (fila == 0 && col < 5) {
-                    tipo = "P";
+                // Todo el contorno son paredes, EXCEPTO fila 9 (que solo tiene paredes en primera y última columna)
+                if (fila == 0 || col == 0 || col == 9) {
+                    tipo = "x";  // Pared en fila superior y columnas laterales
                 }
-                // Última fila: celdas de meta 
-                else if (fila == 9 && col >= 5 && col <= 9) {
-                    tipo = "M";
-                }
-                // Algunas paredes estratégicas
-                else if ((fila == 3 && col >= 7 && col <= 9) || 
-                         (fila == 6 && col >= 3 && col <= 5)) {
+                // Fila 9: solo las esquinas son paredes
+                else if (fila == 9 && (col == 0 || col == 9)) {
                     tipo = "x";
                 }
-                // Resto son agua
+                // Celda de partida en posición (1, 1) - esquina superior izquierda interior
+                else if (fila == 1 && col == 1) {
+                    tipo = "P";
+                }
+                // Celda de meta en posición (8, 8) - esquina inferior derecha interior
+                else if (fila == 8 && col == 8) {
+                    tipo = "M";
+                }
+                // Resto son agua (navegables), incluyendo fila 9 excepto las esquinas
                 
                 Celda celda = new Celda(tipo, col, fila);
                 celda.setMapa(mapa);

@@ -91,13 +91,14 @@ export class BarcoCreateComponent {
     const matriz: CeldaMapa[][] = [];
     
     // Crear matriz vacía con agua
+    // i = fila (posicionY), j = columna (posicionX)
     for (let i = 0; i < mapa.filas; i++) {
       const fila: CeldaMapa[] = [];
       for (let j = 0; j < mapa.columnas; j++) {
         fila.push({
           id: undefined,
-          posicionX: i,
-          posicionY: j,
+          posicionX: j,  // j es la columna = X
+          posicionY: i,  // i es la fila = Y
           tipo: ''
         });
       }
@@ -105,9 +106,11 @@ export class BarcoCreateComponent {
     }
 
     // Llenar con las celdas reales del mapa
+    // Backend: posicionX = columna, posicionY = fila
     mapa.celdas.forEach(celda => {
-      if (celda.posicionX < mapa.filas && celda.posicionY < mapa.columnas) {
-        matriz[celda.posicionX][celda.posicionY] = celda;
+      // Buscar en matriz[fila][columna] = matriz[posicionY][posicionX]
+      if (celda.posicionY < mapa.filas && celda.posicionX < mapa.columnas) {
+        matriz[celda.posicionY][celda.posicionX] = celda;
       }
     });
 

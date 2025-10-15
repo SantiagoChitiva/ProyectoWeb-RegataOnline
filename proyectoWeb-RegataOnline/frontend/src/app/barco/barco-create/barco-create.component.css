@@ -145,8 +145,9 @@ select {
 }
 
 .celda.seleccionada {
-  box-shadow: 0 0 20px rgba(243, 156, 18, 0.8);
-  transform: scale(1.1);
+  background-color: #f1c40f !important; /* Amarillo brillante */
+  box-shadow: inset 0 0 10px rgba(243, 156, 18, 0.8);
+  border: 2px solid #f39c12 !important;
   z-index: 5;
 }
 

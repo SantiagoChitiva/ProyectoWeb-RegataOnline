@@ -1,0 +1,95 @@
+<div class="container">
+  <h1>✨ Crear Nueva Partida</h1>
+
+  @if (jugador()) {
+    <div class="jugador-info">
+      <span class="icono">👤</span>
+      <div>
+        <strong>Jugador:</strong>
+        <p>{{ jugador()!.nombre }}</p>
+      </div>
+    </div>
+
+    <form class="form-partida">
+      <!-- Selección de Mapa -->
+      <div class="form-section">
+        <h2>🗺️ Selecciona un Mapa</h2>
+        <div class="grid-mapas">
+          @for (mapa of mapas(); track mapa.id) {
+            <div 
+              class="card-mapa"
+              [class.seleccionado]="mapaSeleccionado() === mapa.id"
+              (click)="mapaSeleccionado.set(mapa.id!)">
+              <div class="card-header">
+                <span class="badge-mapa">Mapa #{{ mapa.id }}</span>
+              </div>
+              <div class="card-body">
+                <div class="dimensiones">{{ mapa.filas }} x {{ mapa.columnas }}</div>
+                <div class="info-celdas">{{ mapa.celdas?.length || 0 }} celdas</div>
+              </div>
+              @if (mapaSeleccionado() === mapa.id) {
+                <div class="check-seleccionado">✓</div>
+              }
+            </div>
+          } @empty {
+            <div class="mensaje-vacio">
+              <p>No hay mapas disponibles</p>
+              <a routerLink="/mapa/create" class="link-crear">Crear nuevo mapa</a>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Selección de Barco -->
+      <div class="form-section">
+        <h2>🚢 Selecciona tu Barco</h2>
+        <div class="grid-barcos">
+          @for (barco of barcos(); track barco.id) {
+            <div 
+              class="card-barco"
+              [class.seleccionado]="barcoSeleccionado() === barco.id"
+              (click)="barcoSeleccionado.set(barco.id!)">
+              <div class="card-header">
+                <span class="nombre-barco">{{ barco.nombre }}</span>
+              </div>
+              <div class="card-body">
+                <div class="stats">
+                  <div class="stat">
+                    <span class="label">Vel. X:</span>
+                    <span class="value">{{ barco.velocidadX }}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="label">Vel. Y:</span>
+                    <span class="value">{{ barco.velocidadY }}</span>
+                  </div>
+                </div>
+              </div>
+              @if (barcoSeleccionado() === barco.id) {
+                <div class="check-seleccionado">✓</div>
+              }
+            </div>
+          } @empty {
+            <div class="mensaje-vacio">
+              <p>No tienes barcos disponibles</p>
+              <a routerLink="/barco/create" class="link-crear">Crear nuevo barco</a>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="acciones">
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="crearPartida()"
+          [disabled]="!mapaSeleccionado() || !barcoSeleccionado()">
+          🚀 Crear Partida
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">
+          ← Volver
+        </button>
+      </div>
+    </form>
+  }
+</div>
