@@ -1,0 +1,11 @@
+<h1>Editar Modelo</h1>
+<form (ngSubmit)="guardar()">
+  <div class="form-group">
+    <label for="nombre">Nombre</label>
+    <input id="nombre" name="nombre" [(ngModel)]="modelo().nombre" required />
+  </div>
+  <div class="button-group">
+    <button type="submit">Guardar Cambios</button>
+    <button type="button" class="btn-cancel" (click)="cancelar()">Cancelar</button>
+  </div>
+</form>

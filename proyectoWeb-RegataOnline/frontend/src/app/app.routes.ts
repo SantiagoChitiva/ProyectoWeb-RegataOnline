@@ -8,6 +8,10 @@ import { JugadorViewComponent } from './jugador/jugador-view/jugador-view.compon
 import { JugadorEditComponent } from './jugador/jugador-edit/jugador-edit.component';
 import { JugadorCreateComponent } from './jugador/jugador-create/jugador-create.component';
 import { HomeComponent } from './home/home.component';
+import { ModeloListaComponent } from './modelo/modelo-lista/modelo-lista.component';
+import { ModeloViewComponent } from './modelo/modelo-view/modelo-view.component';
+import { ModeloEditComponent } from './modelo/modelo-edit/modelo-edit.component';
+import { ModeloCreateComponent } from './modelo/modelo-create/modelo-create.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -18,5 +22,9 @@ export const routes: Routes = [
     { path: 'jugador/list', component: JugadorListaComponent },
     { path: 'jugador/create', component: JugadorCreateComponent },
     { path: 'jugador/view/:id', component: JugadorViewComponent },
-    { path: 'jugador/edit/:id', component: JugadorEditComponent }
+    { path: 'jugador/edit/:id', component: JugadorEditComponent },
+    { path: 'modelo/list', component: ModeloListaComponent },
+    { path: 'modelo/create', component: ModeloCreateComponent },
+    { path: 'modelo/view/:id', component: ModeloViewComponent },
+    { path: 'modelo/edit/:id', component: ModeloEditComponent }
 ];

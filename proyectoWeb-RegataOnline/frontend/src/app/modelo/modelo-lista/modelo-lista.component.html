@@ -1,0 +1,16 @@
+<h1>Lista de Modelos</h1>
+<div class="header-actions">
+    <a [routerLink]="['/modelo/create']" class="btn-create">+ Crear Nuevo Modelo</a>
+</div>
+<ul>
+    @for(m of modelos(); track $index) {
+        <li>
+            <span>{{m.id}} - {{m.nombre}}</span>
+            <div class="actions">
+                <a [routerLink]="['/modelo/view', m.id]">Ver</a>
+                <a [routerLink]="['/modelo/edit', m.id]">Editar</a>
+                <button class="btn-delete" (click)="eliminar(m.id, m.nombre)">Eliminar</button>
+            </div>
+        </li>
+    }
+</ul>

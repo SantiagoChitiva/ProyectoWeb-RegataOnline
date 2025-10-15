@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Modelo</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <h1>Detalle del Modelo</h1>
+    <ul>
+        <li><strong>ID:</strong> <span th:text="${modelo.id}"></span></li>
+        <li><strong>Nombre del Modelo:</strong> <span th:text="${modelo.nombreModelo}"></span></li>
+        <li><strong>Color:</strong> <span th:text="${modelo.color}"></span></li>
+    </ul>
+
+    <h2>Barcos con este Modelo</h2>
+    <div th:if="${barcosModelo != null and not #lists.isEmpty(barcosModelo)}">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Barco</th>
+                    <th>Jugador</th>
+                    <th>Velocidad X</th>
+                    <th>Velocidad Y</th>
+                    <th>Posición X</th>
+                    <th>Posición Y</th>
+                    <th>Celda</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="barco : ${barcosModelo}">
+                    <td th:text="${barco.id}"></td>
+                    <td th:text="${barco.nombreJugador != null ? barco.nombreJugador : 'Sin jugador'}"></td>
+                    <td th:text="${barco.velocidadX}"></td>
+                    <td th:text="${barco.velocidadY}"></td>
+                    <td th:text="${barco.posicionX}"></td>
+                    <td th:text="${barco.posicionY}"></td>
+                    <td th:if="${barco.tipoCelda != null and barco.tipoCelda != ''}" 
+                        th:text="'ID: ' + ${barco.celdaId} + ' - ' + ${barco.tipoCelda}"></td>
+                    <td th:if="${barco.celdaId != null and (barco.tipoCelda == null or barco.tipoCelda == '')}"
+                        th:text="'ID: ' + ${barco.celdaId} + ' - Agua'"></td>
+                    <td th:if="${barco.celdaId == null}">Sin celda</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${barcosModelo == null or #lists.isEmpty(barcosModelo)}" 
+         style="text-align: center; padding: 40px; color: #7f8c8d; background: #f8f9fa; border-radius: 8px; margin: 20px auto; max-width: 500px;">
+        <p style="font-size: 18px; margin: 0;">🚫 No hay barcos asociados a este modelo</p>
+        <p style="font-size: 14px; margin: 10px 0 0 0;">Los barcos aparecerán aquí cuando se asignen a este modelo.</p>
+    </div>
+    <div class="header-actions">
+        <a th:href="@{/modelo/list} " class="btn btn-secondary" style="margin-top: 20px; display: inline-block;">
+            Volver a la lista de modelos
+        </a>
+    </div>
+
+    <br>
+</body>
+</html>

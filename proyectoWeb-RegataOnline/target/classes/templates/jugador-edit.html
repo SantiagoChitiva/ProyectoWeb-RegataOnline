@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Jugador</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <h1>Editar Datos del Jugador</h1>
+    <form action="/jugador/save" method="post">
+        <input type="hidden" name="id" th:value="${jugador.id}">
+        <label>Nombre:</label>
+        <input type="text" id="nombre" name="nombre" th:value="${jugador.nombre}">
+        <div style="margin-top: 20px; text-align: center;">
+            <button type="submit" class="btn btn-success btn-icon">
+                Guardar Jugador
+            </button>
+            <a th:href="@{/jugador/barcos/edit/{id}(id=${jugador.id})}" class="btn btn-primary">
+                Edit Barcos
+            </a>
+            <a th:href="@{/jugador/list}" class="btn btn-secondary" style="margin-left: 10px;">
+                Cancelar
+            </a>
+
+        </div>
+    </form>
+</body>
+</html>
