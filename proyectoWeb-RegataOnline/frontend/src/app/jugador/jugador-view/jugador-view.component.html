@@ -1,0 +1,17 @@
+<h1>Detalles del Jugador</h1>
+<div class="container">
+  <div class="info-grid">
+    <div class="info-item">
+      <strong>ID</strong>
+      <span>{{ jugador()?.id }}</span>
+    </div>
+    <div class="info-item">
+      <strong>Nombre</strong>
+      <span>{{ jugador()?.nombre }}</span>
+    </div>
+  </div>
+  <div class="button-group">
+    <button class="btn-back" (click)="volver()">Volver a la Lista</button>
+    <button class="btn-delete" (click)="eliminar()">Eliminar Jugador</button>
+  </div>
+</div>

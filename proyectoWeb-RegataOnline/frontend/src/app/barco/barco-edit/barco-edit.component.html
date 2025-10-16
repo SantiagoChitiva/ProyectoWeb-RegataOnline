@@ -1,0 +1,131 @@
+<div class="container">
+  <h1>Editar Barco</h1>
+  
+  <form (ngSubmit)="guardar()">
+    <!-- Sección 1: Información del Barco -->
+    <div class="form-section">
+      <h2>Información del Barco</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" name="nombre" id="nombre" [(ngModel)]="barco().nombre" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="modeloId">Modelo</label>
+          <select id="modeloId" name="modeloId" [(ngModel)]="barco().modeloId" required>
+            <option value="" disabled>Seleccione un modelo</option>
+            @for(modelo of modelos(); track modelo.id) {
+              <option [value]="modelo.id">{{ modelo.nombreModelo }}</option>
+            }
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="jugadorId">Jugador</label>
+          <select id="jugadorId" name="jugadorId" [(ngModel)]="barco().jugadorId">
+            <option value="">Seleccione un jugador (opcional)</option>
+            @for(jugador of jugadores(); track jugador.id) {
+              <option [value]="jugador.id">{{ jugador.nombre }}</option>
+            }
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="velocidadX">Velocidad X</label>
+          <input id="velocidadX" type="number" name="velocidadX" [(ngModel)]="barco().velocidadX" />
+        </div>
+        
+        <div class="form-group">
+          <label for="velocidadY">Velocidad Y</label>
+          <input id="velocidadY" type="number" name="velocidadY" [(ngModel)]="barco().velocidadY" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección 2: Posición en el Mapa -->
+    <div class="form-section">
+      <h2>Posición en el Mapa</h2>
+      
+      <div class="form-group">
+        <label for="mapaId">Seleccionar Mapa</label>
+        <select 
+          id="mapaId" 
+          name="mapaId" 
+          [value]="mapaSeleccionado()?.id || ''"
+          (change)="onMapaSeleccionado($event)">
+          <option value="">Seleccione un mapa</option>
+          @for(mapa of mapas(); track mapa.id) {
+            <option [value]="mapa.id">{{ mapa.id }} - {{ mapa.filas }}x{{ mapa.columnas }}</option>
+          }
+        </select>
+      </div>
+
+      @if (mapaSeleccionado()) {
+        <div class="mapa-container">
+          <div class="mapa-instrucciones">
+            <p><strong>Instrucciones:</strong> Haz clic en una celda navegable para posicionar tu barco.</p>
+            <p>No puedes seleccionar paredes (🧱).</p>
+            @if (celdaSeleccionada()) {
+              <div class="celda-info">
+                ✅ Celda seleccionada: ({{ celdaSeleccionada()!.posicionX }}, {{ celdaSeleccionada()!.posicionY }}) - {{ celdaSeleccionada()!.tipo || 'Agua' }}
+              </div>
+            }
+          </div>
+
+          <div class="mapa-visual">
+            <div class="mapa-grid">
+              @for(fila of matrizCeldas(); track $index) {
+                <div class="fila">
+                  @for(celda of fila; track $index) {
+                    <div 
+                      class="celda"
+                      [class.seleccionada]="esCeldaSeleccionada(celda)"
+                      [class.no-navegable]="esCeldaNoNavegable(celda)"
+                      [style.background-color]="obtenerColorCelda(celda)"
+                      (click)="seleccionarCelda(celda)">
+                      <span class="celda-icon">{{ obtenerIconoCelda(celda) }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Leyenda -->
+          <div class="leyenda">
+            <h4>Leyenda</h4>
+            <div class="leyenda-items">
+              <div class="leyenda-item">
+                <div class="color-box agua"></div>
+                <span>🌊 Agua (navegable)</span>
+              </div>
+              <div class="leyenda-item">
+                <div class="color-box pared"></div>
+                <span>🧱 Pared (bloqueada)</span>
+              </div>
+              <div class="leyenda-item">
+                <div class="color-box partida"></div>
+                <span>🏁 Partida</span>
+              </div>
+              <div class="leyenda-item">
+                <div class="color-box meta"></div>
+                <span>🎯 Meta</span>
+              </div>
+              <div class="leyenda-item">
+                <div class="color-box seleccionada"></div>
+                <span>⭐ Celda seleccionada</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+      <button type="button" class="btn btn-cancel" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+</div>

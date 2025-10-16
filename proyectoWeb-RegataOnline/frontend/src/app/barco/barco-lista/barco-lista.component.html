@@ -1,0 +1,16 @@
+<h1>Lista de Barcos</h1>
+<div class="header-actions">
+    <a [routerLink]="['/barco/create']" class="btn-create">+ Crear Nuevo Barco</a>
+</div>
+<ul>
+    @for(p of barcos(); track $index) {
+        <li>
+            <span>{{p.id}} - {{p.nombre}}</span>
+            <div class="actions">
+                <a [routerLink]="['/barco/view', p.id]">Ver</a>
+                <a [routerLink]="['/barco/edit', p.id]">Editar</a>
+                <button class="btn-delete" (click)="eliminar(p.id, p.nombre)">Eliminar</button>
+            </div>
+        </li>
+    }
+</ul>

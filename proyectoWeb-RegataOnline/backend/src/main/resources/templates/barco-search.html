@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Barcos</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <h1>Busqueda de Barcos</h1>
+
+    <form method="get" action="#" th:action="@{/barco/search}">
+        <label for="txtSearchText">Buscar por Nombre</label>
+        <input type="text" name="searchText" id="txtSearchText" th:value="${param.searchText}">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <div class="header-actions">
+        <a href="/barco/list" class="btn btn-secondary">Volver a la lista completa</a>
+    </div>
+    <table th:if="${barcos != null and !barcos.empty}">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Modelo</th>
+                <th>Jugador</th>
+                <th>Celda</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="barco : ${listaBarcos}">
+                <td th:text="${barco.id}"></td>
+                <td th:text="${barco.nombre != null and barco.nombre != '' ? barco.nombre : 'Sin nombre'}"></td>
+                <td th:text="${barco.nombreModeloBarco != null ? barco.nombreModeloBarco : 'Sin modelo'}"></td>
+                <td th:text="${barco.nombreJugador != null ? barco.nombreJugador : 'Sin jugador'}"></td>
+                <td th:text="${barco.tipoCelda != null and barco.tipoCelda != '' ? barco.tipoCelda : (barco.celdaId != null ? 'Agua' : 'Sin celda')}"></td>
+                <td>
+                    <a th:href="@{/barco/view/{id}(id=${barco.id})}">ver</a>
+                </td>
+                <td>
+                    <a th:href="@{/barco/edit/{id}(id=${barco.id})}">editar</a>
+                </td>
+                <td>
+                        <a th:href="@{/barco/delete/{id}(id=${barco.id})}">eliminar</a>
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

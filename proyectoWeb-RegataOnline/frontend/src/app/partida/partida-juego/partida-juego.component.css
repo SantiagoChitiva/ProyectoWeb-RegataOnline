@@ -1,0 +1,374 @@
+.juego-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1.5rem 2rem;
+  border-radius: 15px;
+  color: white;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.header-left h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+}
+
+.jugador {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.header-right {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mensaje Alert */
+.mensaje-alert {
+  background: #ff6b6b;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+  animation: slideDown 0.3s ease-out;
+}
+
+.mensaje-alert.success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Layout */
+.game-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2rem;
+}
+
+/* Panels */
+.left-panel,
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cards */
+.stats-card,
+.controls-card,
+.legend-card,
+.mapa-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card h3,
+.controls-card h3,
+.legend-card h3,
+.mapa-card h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 0.5rem;
+}
+
+/* Stats */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.stat-value.velocity {
+  font-family: 'Courier New', monospace;
+  color: #667eea;
+}
+
+.estado-activa {
+  color: #27ae60;
+}
+
+.estado-pausada {
+  color: #f39c12;
+}
+
+.estado-terminada {
+  color: #e74c3c;
+}
+
+/* Controles */
+.controls-help {
+  color: #555;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.controls-help strong {
+  color: #2c3e50;
+}
+
+/* Leyenda */
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.legend-icon {
+  font-size: 1.3rem;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: #ecf0f1;
+}
+
+/* Mapa */
+.mapa-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.mapa-grid {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #bdc3c7;
+  padding: 2px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.fila {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.celda {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: default;
+  transition: all 0.2s ease;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.celda.barco {
+  animation: pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.celda.destino-posible {
+  border: 3px solid #3498db;
+  box-shadow: inset 0 0 15px rgba(52, 152, 219, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.celda.destino-posible:hover {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.3) 0%, rgba(46, 204, 113, 0.3) 100%) !important;
+  transform: scale(1.15);
+  box-shadow: 0 0 25px rgba(52, 152, 219, 0.8);
+  border-color: #2ecc71;
+  z-index: 5;
+}
+
+.celda.destino-posible:active {
+  transform: scale(1.05);
+}
+
+.celda.clickable {
+  cursor: pointer;
+}
+
+.celda.destino-invalido {
+  border: 2px solid #e74c3c;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.celda-icon {
+  position: relative;
+  z-index: 2;
+}
+
+.destino-marker {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 0.8rem;
+  z-index: 1;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-back {
+  background: #95a5a6;
+  color: white;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .left-panel {
+    order: 2;
+  }
+  
+  .right-panel {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .header-right {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .celda {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Regata Online</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/estilo.css}">
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        
+        <h1 class="error-title">¡Oops! Ha ocurrido un error</h1>
+        
+        <p class="error-description">
+            Lo sentimos, se ha producido un error inesperado en el sistema. 
+            Por favor, revisa los detalles a continuación y contacta al administrador si el problema persiste.
+        </p>
+
+        <div class="error-message">
+            <span th:text="${exceptionText}">Detalles del error aparecerán aquí</span>
+        </div>
+
+        <div class="error-suggestions">
+            <h3>¿Qué puedes hacer?</h3>
+            <ul>
+                <li><strong>Recarga la página:</strong> Algunas veces es un error temporal</li>
+                <li><strong>Verifica los datos:</strong> Asegúrate de que toda la información sea correcta</li>
+                <li><strong>Regresa al inicio:</strong> Intenta acceder desde la página principal</li>
+                <li><strong>Contacta soporte:</strong> Si el error persiste, reporta el problema</li>
+            </ul>
+        </div>
+
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="btn btn-secondary btn-icon">
+                Volver Atrás
+            </a>
+            
+            <a href="javascript:location.reload()" class="btn btn-primary btn-icon">
+                Recargar Página
+            </a>
+            
+            <a th:href="@{/}" href="/" class="btn btn-success btn-icon">
+                Ir al Inicio
+            </a>
+        </div>
+
+        <div class="timestamp">
+            <script>
+                document.write('Ocurrió el: ' + new Date().toLocaleString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                }));
+            </script>
+        </div>
+    </div>
+</body>
+</html>

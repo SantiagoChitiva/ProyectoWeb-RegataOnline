@@ -1,0 +1,56 @@
+@base_url = http://localhost:8080
+
+###
+GET https://www.google.com/
+
+###
+GET {{base_url}}/barco/list
+
+###
+GET {{base_url}}/barco/21
+
+###
+GET {{base_url}}/barco/9999
+
+###
+GET {{base_url}}/barco/list/0
+
+###
+GET {{base_url}}/barco/search?searchText=Velero
+
+###
+POST {{base_url}}/barco
+Content-Type: application/json
+
+{
+    "nombre": "Viento del Mar",
+    "velocidadX": 999,
+    "velocidadY": 122,
+    "posicionX": 120,
+    "posicionY": 440,
+    "modeloId": 8,
+    "jugadorId": 1,
+    "celdaId": 1,
+    "nombreModeloBarco": null,
+    "nombreJugador": "Jugador 3",
+    "tipoCelda": "P"
+}
+
+###
+PUT {{base_url}}/barco
+Content-Type: application/json
+
+{
+    "id": 21,
+    "nombre": "Mi Barquito",
+    "velocidadX": 0,
+    "velocidadY": 0,
+    "posicionX": 0,
+    "posicionY": 0,
+    "modeloId": null,
+    "jugadorId": 3,
+    "celdaId": 2,
+    "nombreModeloBarco": null,
+    "nombreJugador": "Jugador 4",
+    "tipoCelda": ""
+}

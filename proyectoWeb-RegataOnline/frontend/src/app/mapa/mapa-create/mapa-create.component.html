@@ -1,0 +1,130 @@
+<div class="container">
+  <div class="header">
+    <h1>Crear Mapa</h1>
+    <p>Diseña tu propio mapa de regatas</p>
+  </div>
+
+  @if (!mapaGenerado()) {
+    <!-- Configuración inicial -->
+    <div class="config-section">
+      <div class="card">
+        <h2>Dimensiones del Mapa</h2>
+        
+        <div class="form-group">
+          <label for="filas">Filas (5-20):</label>
+          <input 
+            type="number" 
+            id="filas" 
+            [(ngModel)]="filas" 
+            min="5" 
+            max="20"
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="columnas">Columnas (5-20):</label>
+          <input 
+            type="number" 
+            id="columnas" 
+            [(ngModel)]="columnas" 
+            min="5" 
+            max="20"
+            class="form-control">
+        </div>
+
+        <button (click)="generarMapa()" class="btn btn-primary">
+          Generar Mapa
+        </button>
+      </div>
+    </div>
+  } @else {
+    <!-- Editor de mapa -->
+    <div class="editor-section">
+      <!-- Selector de tipo de celda -->
+      <div class="toolbar">
+        <h3>Selecciona el tipo de celda:</h3>
+        <div class="tipo-selector">
+          <button 
+            [class.active]="tipoSeleccionado() === ''"
+            (click)="tipoSeleccionado.set('')"
+            class="btn-tipo agua">
+            🌊 Agua
+          </button>
+          <button 
+            [class.active]="tipoSeleccionado() === 'x'"
+            (click)="tipoSeleccionado.set('x')"
+            class="btn-tipo pared">
+            🧱 Pared
+          </button>
+          <button 
+            [class.active]="tipoSeleccionado() === 'P'"
+            (click)="tipoSeleccionado.set('P')"
+            class="btn-tipo partida">
+            🏁 Partida
+          </button>
+          <button 
+            [class.active]="tipoSeleccionado() === 'M'"
+            (click)="tipoSeleccionado.set('M')"
+            class="btn-tipo meta">
+            🎯 Meta
+          </button>
+        </div>
+      </div>
+
+      <!-- Mapa interactivo -->
+      <div class="mapa-container">
+        <div class="mapa-grid">
+          @for (fila of celdas(); track $index) {
+            <div class="fila">
+              @for (celda of fila; track $index) {
+                <div 
+                  class="celda"
+                  [style.background-color]="obtenerColorCelda(celda.tipo)"
+                  (click)="toggleCelda(celda)"
+                  [title]="'Posición: (' + celda.posicionX + ',' + celda.posicionY + ')'">
+                  <span class="celda-icon">{{ obtenerIconoCelda(celda.tipo) }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Leyenda -->
+      <div class="leyenda">
+        <h4>Leyenda:</h4>
+        <div class="leyenda-items">
+          <div class="leyenda-item">
+            <span class="color-box agua"></span>
+            <span>🌊 Agua - Navegable</span>
+          </div>
+          <div class="leyenda-item">
+            <span class="color-box pared"></span>
+            <span>🧱 Pared - Obstáculo</span>
+          </div>
+          <div class="leyenda-item">
+            <span class="color-box partida"></span>
+            <span>🏁 Partida - Inicio</span>
+          </div>
+          <div class="leyenda-item">
+            <span class="color-box meta"></span>
+            <span>🎯 Meta - Destino</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="acciones">
+        <button (click)="limpiarMapa()" class="btn btn-secondary">
+          Limpiar Mapa
+        </button>
+        <button (click)="guardarMapa()" class="btn btn-success">
+          Guardar Mapa
+        </button>
+        <button (click)="cancelar()" class="btn btn-danger">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  }
+</div>

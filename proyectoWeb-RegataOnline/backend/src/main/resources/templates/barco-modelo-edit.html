@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Barco Modelos Edit</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <form action="/barco/modelos/save" method="post">
+        <input type="hidden" name="barcoId" th:value="${barcoModelo.barcoId}">
+
+        <ul>
+            <li th:each="modelo : ${allModelos}">
+                <input type="checkbox" name="modelosIds" th:value="${modelo.id}"
+                       th:checked="${#lists.contains(barcoModelo.modelosIds, modelo.id)}">
+                <label th:text="${modelo.id}"></label>
+            </li>
+        </ul>
+        <button type="submit">Save</button>
+
+    </form>
+    
+</body>
+</html>

@@ -1,0 +1,125 @@
+<div class="container">
+    <h1>Crear Nuevo Barco</h1>
+    
+    <form (ngSubmit)="crear()">
+        <div class="form-section">
+            <h2>Información del Barco</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre">Nombre *</label>
+                    <input type="text" name="nombre" id="nombre" [(ngModel)]="barco().nombre" required />
+                </div>
+                
+                <div class="form-group">
+                    <label for="modeloId">Modelo *</label>
+                    <select id="modeloId" name="modeloId" [(ngModel)]="barco().modeloId" required>
+                        <option value="" disabled selected>Seleccione un modelo</option>
+                        @for(modelo of modelos(); track modelo.id) {
+                            <option [value]="modelo.id">{{ modelo.nombreModelo }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="jugadorId">Jugador</label>
+                    <select id="jugadorId" name="jugadorId" [(ngModel)]="barco().jugadorId">
+                        <option value="">Sin jugador asignado</option>
+                        @for(jugador of jugadores(); track jugador.id) {
+                            <option [value]="jugador.id">{{ jugador.nombre }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="velocidadX">Velocidad X</label>
+                    <input id="velocidadX" type="number" name="velocidadX" [(ngModel)]="barco().velocidadX" value="0" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="velocidadY">Velocidad Y</label>
+                    <input id="velocidadY" type="number" name="velocidadY" [(ngModel)]="barco().velocidadY" value="0" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Posición en el Mapa</h2>
+            
+            <div class="form-group">
+                <label for="mapaId">Selecciona un Mapa *</label>
+                <select id="mapaId" name="mapaId" [(ngModel)]="mapaSeleccionadoId" (change)="onMapaSeleccionado($event)" required>
+                    <option value="" disabled selected>Seleccione un mapa</option>
+                    @for(mapa of mapas(); track mapa.id) {
+                        <option [value]="mapa.id">Mapa #{{ mapa.id }} ({{ mapa.filas }}x{{ mapa.columnas }})</option>
+                    }
+                </select>
+            </div>
+
+            @if (mapaSeleccionado()) {
+                <div class="mapa-container">
+                    <div class="mapa-instrucciones">
+                        <p>Haz click en una celda navegable (🌊 Agua, 🏁 Partida o 🎯 Meta) para posicionar tu barco</p>
+                        @if (celdaSeleccionada()) {
+                            <div class="celda-info">
+                                <strong>Celda seleccionada:</strong> 
+                                Posición ({{ celdaSeleccionada()!.posicionX }}, {{ celdaSeleccionada()!.posicionY }}) - 
+                                Tipo: {{ celdaSeleccionada()!.tipo || 'Agua' }}
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mapa-visual">
+                        <div class="mapa-grid">
+                            @for (fila of matrizCeldas(); track $index) {
+                                <div class="fila">
+                                    @for (celda of fila; track $index) {
+                                        <div 
+                                            class="celda"
+                                            [class.seleccionada]="celdaSeleccionada()?.posicionX === celda.posicionX && celdaSeleccionada()?.posicionY === celda.posicionY"
+                                            [class.no-navegable]="celda.tipo === 'x'"
+                                            [style.background-color]="obtenerColorCelda(celda)"
+                                            (click)="seleccionarCelda(celda)"
+                                            [title]="'Posición: (' + celda.posicionX + ',' + celda.posicionY + ') - Tipo: ' + (celda.tipo || 'Agua')">
+                                            <span class="celda-icon">{{ obtenerIconoCelda(celda) }}</span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="leyenda">
+                        <h4>Leyenda:</h4>
+                        <div class="leyenda-items">
+                            <div class="leyenda-item">
+                                <span class="color-box agua"></span>
+                                <span>🌊 Agua - Navegable</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <span class="color-box pared"></span>
+                                <span>🧱 Pared - No navegable</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <span class="color-box partida"></span>
+                                <span>🏁 Partida - Punto de inicio</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <span class="color-box meta"></span>
+                                <span>🎯 Meta - Punto de llegada</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <span class="color-box seleccionada"></span>
+                                <span>⛵ Celda seleccionada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary">Crear Barco</button>
+            <button type="button" class="btn btn-cancel" (click)="cancelar()">Cancelar</button>
+        </div>
+    </form>
+</div>

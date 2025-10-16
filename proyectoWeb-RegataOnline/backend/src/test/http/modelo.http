@@ -1,0 +1,47 @@
+@base_url = http://localhost:8080
+
+###
+GET {{base_url}}/modelo/list
+
+###
+GET {{base_url}}/modelo/list/0
+
+###
+GET {{base_url}}/modelo/1
+
+###
+GET {{base_url}}/modelo/9999
+
+###
+GET {{base_url}}/modelo/search?searchText=Modelo 3
+
+###
+GET {{base_url}}/modelo/search
+
+###
+GET {{base_url}}/modelo/search?searchText=
+
+###
+POST {{base_url}}/modelo
+Content-Type: application/json
+
+{
+    "nombreModelo": "Catamarán Deportivo",
+    "color": "Azul y Blanco"
+}
+
+###
+PUT {{base_url}}/modelo
+Content-Type: application/json
+
+{
+    "id": 1,
+    "nombreModelo": "Velero Modificado",
+    "color": "Rojo y Blanco"
+}
+
+###
+DELETE {{base_url}}/modelo/12
+
+###
+DELETE {{base_url}}/modelo/9999

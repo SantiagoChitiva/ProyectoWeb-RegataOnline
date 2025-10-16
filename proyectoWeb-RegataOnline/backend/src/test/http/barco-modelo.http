@@ -1,0 +1,40 @@
+@base_url = http://localhost:8080
+
+###
+GET {{base_url}}/barco/modelos/2
+
+###
+GET {{base_url}}/barco/modelos/9999
+
+###
+PUT {{base_url}}/barco/modelos
+Content-Type: application/json
+
+{
+    "modeloId": 1,
+      "barcosIds": [
+        12, 15, 18
+        ]
+}
+
+###
+PUT {{base_url}}/barco/modelos
+Content-Type: application/json
+
+{
+    "modeloId": 2,
+      "barcosIds": [
+        12, 15, 18
+        ]
+}
+
+###
+PUT {{base_url}}/barco/modelos
+Content-Type: application/json
+
+{
+       "modeloId": 999,
+      "barcosIds": [
+        12, 15, 18
+        ]
+}

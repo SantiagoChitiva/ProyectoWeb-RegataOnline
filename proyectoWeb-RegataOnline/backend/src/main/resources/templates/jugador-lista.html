@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Jugadores</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <h1>Lista de Jugadores</h1>
+    <div class="header-actions">
+        <a href="/jugador/create" class="btn btn-primary btn-icon btn-create">Crear Nuevo Jugador</a>
+    </div>
+    <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Ver</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="jugador :${listaJugadores}">
+                    <td th:text= "${jugador.nombre}"></td>
+                    <td>
+                        <a th:href="@{/jugador/view/{id}(id=${jugador.id})}">ver</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/jugador/edit/{id}(id=${jugador.id})}">editar</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/jugador/delete/{id}(id=${jugador.id})}">eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</body>
+</html>

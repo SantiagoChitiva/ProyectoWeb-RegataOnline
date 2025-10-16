@@ -1,0 +1,10 @@
+@base_url = http://localhost:8080
+
+###
+GET {{base_url}}/celda/list
+
+###
+GET {{base_url}}/celda/1
+
+###
+GET {{base_url}}/celda/9999
