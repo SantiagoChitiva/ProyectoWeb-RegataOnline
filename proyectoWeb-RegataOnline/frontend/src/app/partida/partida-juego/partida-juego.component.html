@@ -1,0 +1,140 @@
+<div class="juego-container">
+  @if (cargando()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Cargando partida...</p>
+    </div>
+  } @else {
+    <!-- Header con información de la partida -->
+    <div class="game-header">
+      <div class="header-left">
+        <h1>🎮 Partida en Curso</h1>
+        <p class="jugador">Jugador: <strong>{{ partida()?.jugadorNombre }}</strong></p>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-secondary" (click)="pausarPartida()" [disabled]="partida()?.estado !== 'activa'">
+          ⏸️ Pausar
+        </button>
+        <button class="btn btn-danger" (click)="finalizarPartida()">
+          🛑 Finalizar
+        </button>
+        <button class="btn btn-back" (click)="volverAlMenu()">
+          ← Volver
+        </button>
+      </div>
+    </div>
+
+    @if (mensaje()) {
+      <div class="mensaje-alert" [class.success]="partida()?.haLlegadoMeta">
+        {{ mensaje() }}
+      </div>
+    }
+
+    <!-- Panel de información y controles -->
+    <div class="game-layout">
+      <!-- Panel izquierdo: Stats y Controles -->
+      <div class="left-panel">
+        <!-- Estadísticas -->
+        <div class="stats-card">
+          <h3>📊 Estadísticas</h3>
+          <div class="stat-row">
+            <span class="stat-label">Movimientos:</span>
+            <span class="stat-value">{{ partida()?.movimientos || 0 }}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Posición:</span>
+            <span class="stat-value">(X:{{ partida()?.barcoPosicionX }}, Y:{{ partida()?.barcoPosicionY }})</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Velocidad:</span>
+            <span class="stat-value velocity">
+              v = ({{ partida()?.barcoVelocidadX || 0 }}, {{ partida()?.barcoVelocidadY || 0 }})
+            </span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Estado:</span>
+            <span class="stat-value" [class]="'estado-' + partida()?.estado">
+              {{ partida()?.estado }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="controls-card">
+          <h3>🎮 Cómo Jugar</h3>
+          <p class="controls-help">
+            💡 <strong>Haz clic</strong> en cualquiera de las celdas resaltadas en <span style="color: #3498db;">azul</span> para mover tu barco.
+          </p>
+          <p class="controls-help">
+            🎯 Las celdas marcadas con <strong>📍</strong> son tus posibles destinos según tu velocidad actual.
+          </p>
+          <p class="controls-help">
+            ⚠️ Las celdas con borde rojo son destinos inválidos (fuera del mapa o paredes).
+          </p>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="legend-card">
+          <h3>🗺️ Leyenda</h3>
+          <div class="legend-items">
+            <div class="legend-item">
+              <span class="legend-icon">⛵</span>
+              <span>Tu barco</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon" style="background: #3498db80;">📍</span>
+              <span>Destinos posibles</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon">🌊</span>
+              <span>Agua (navegable)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon">🧱</span>
+              <span>Pared (bloqueada)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon">🏁</span>
+              <span>Partida</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon">🎯</span>
+              <span>Meta</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel derecho: Mapa -->
+      <div class="right-panel">
+        <div class="mapa-card">
+          <h3>🗺️ Mapa de Navegación</h3>
+          <div class="mapa-container">
+            <div class="mapa-grid">
+              @for(fila of matrizCeldas(); track $index) {
+                <div class="fila">
+                  @for(celda of fila; track $index) {
+                    <div 
+                      class="celda"
+                      [class.barco]="esBarco(celda.posicionX, celda.posicionY)"
+                      [class.destino-posible]="esDestinoPosible(celda.posicionX, celda.posicionY) && esDestinoValido(celda.posicionX, celda.posicionY)"
+                      [class.destino-invalido]="esDestinoPosible(celda.posicionX, celda.posicionY) && !esDestinoValido(celda.posicionX, celda.posicionY)"
+                      [class.clickable]="esDestinoPosible(celda.posicionX, celda.posicionY) && esDestinoValido(celda.posicionX, celda.posicionY) && partida()?.estado === 'activa' && !moviendo()"
+                      [style.background-color]="obtenerColorCelda(celda, celda.posicionX, celda.posicionY)"
+                      [title]="'Pos: (' + celda.posicionX + ',' + celda.posicionY + ')'"
+                      (click)="clickCelda(celda.posicionX, celda.posicionY)">
+                      <span class="celda-icon">{{ obtenerIconoCelda(celda, celda.posicionX, celda.posicionY) }}</span>
+                      @if (esDestinoPosible(celda.posicionX, celda.posicionY) && !esBarco(celda.posicionX, celda.posicionY)) {
+                        <span class="destino-marker">📍</span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

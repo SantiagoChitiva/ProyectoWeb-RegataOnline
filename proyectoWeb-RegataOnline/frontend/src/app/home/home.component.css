@@ -35,6 +35,76 @@
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
+/* Botones de Partida */
+.partida-buttons {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.btn-partida {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2.5rem;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  min-width: 280px;
+  text-decoration: none;
+}
+
+.btn-partida:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-crear {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+}
+
+.btn-crear:hover {
+  background: linear-gradient(135deg, #0d7a70 0%, #2dd863 100%);
+}
+
+.btn-continuar {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.btn-continuar:hover {
+  background: linear-gradient(135deg, #e571f0 0%, #eb3a50 100%);
+}
+
+.btn-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.btn-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+}
+
+.btn-text strong {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.btn-text small {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
 .hero-stats {
   display: flex;
   justify-content: center;

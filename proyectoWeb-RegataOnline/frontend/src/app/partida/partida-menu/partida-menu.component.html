@@ -1,0 +1,109 @@
+<div class="container">
+  <h1>🎮 Menú de Partida</h1>
+
+  <div class="menu-card">
+    <!-- Selección de Jugador -->
+    <div class="form-group">
+      <label for="jugador">Selecciona tu jugador:</label>
+      <select 
+        id="jugador" 
+        name="jugador" 
+        [value]="jugadorSeleccionadoId() || ''"
+        (change)="onJugadorSeleccionado($event)"
+        class="select-jugador">
+        <option value="" disabled selected>-- Selecciona un jugador --</option>
+        @for(jugador of jugadores(); track jugador.id) {
+          <option [value]="jugador.id">{{ jugador.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    @if (cargando()) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Verificando partidas...</p>
+      </div>
+    }
+
+    @if (jugadorSeleccionadoId() && !cargando()) {
+      <div class="opciones-container">
+        @if (partidaActiva()) {
+          <!-- Hay partida activa -->
+          <div class="partida-info">
+            <div class="partida-header">
+              <h2>🎯 Partida en Curso</h2>
+              <span class="badge" [class.activa]="partidaActiva()!.estado === 'activa'" 
+                                   [class.pausada]="partidaActiva()!.estado === 'pausada'">
+                {{ partidaActiva()!.estado === 'activa' ? '🟢 Activa' : '🟡 Pausada' }}
+              </span>
+            </div>
+
+            <div class="partida-detalles">
+              <div class="detalle-item">
+                <span class="icono">🗺️</span>
+                <div>
+                  <strong>Mapa:</strong>
+                  <p>{{ partidaActiva()!.mapaFilas }} x {{ partidaActiva()!.mapaColumnas }}</p>
+                </div>
+              </div>
+
+              <div class="detalle-item">
+                <span class="icono">🚢</span>
+                <div>
+                  <strong>Barco:</strong>
+                  <p>{{ partidaActiva()!.barcoNombre }}</p>
+                </div>
+              </div>
+
+              <div class="detalle-item">
+                <span class="icono">📍</span>
+                <div>
+                  <strong>Posición:</strong>
+                  <p>({{ partidaActiva()!.barcoPosicionX }}, {{ partidaActiva()!.barcoPosicionY }})</p>
+                </div>
+              </div>
+
+              <div class="detalle-item">
+                <span class="icono">🔢</span>
+                <div>
+                  <strong>Movimientos:</strong>
+                  <p>{{ partidaActiva()!.movimientos }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="acciones">
+              <button class="btn btn-primary" (click)="continuarPartida()">
+                ▶️ Continuar Partida
+              </button>
+              <button class="btn btn-secondary" (click)="verDetallesPartida()">
+                📊 Ver Detalles
+              </button>
+              <button class="btn btn-danger" (click)="finalizarPartida()">
+                🛑 Finalizar Partida
+              </button>
+            </div>
+          </div>
+        } @else {
+          <!-- No hay partida activa -->
+          <div class="sin-partida">
+            <div class="icon-grande">🎮</div>
+            <h2>No tienes partidas activas</h2>
+            <p>Crea una nueva partida para empezar a jugar</p>
+            
+            <button class="btn btn-primary btn-grande" (click)="iniciarNuevaPartida()">
+              ✨ Iniciar Nueva Partida
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    @if (!jugadorSeleccionadoId() && !cargando()) {
+      <div class="instrucciones">
+        <div class="icon-grande">👆</div>
+        <p>Selecciona un jugador para continuar</p>
+      </div>
+    }
+  </div>
+</div>

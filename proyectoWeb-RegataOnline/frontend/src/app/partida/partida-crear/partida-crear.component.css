@@ -1,0 +1,239 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1 {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.jugador-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.jugador-info .icono {
+  font-size: 2.5rem;
+}
+
+.jugador-info strong {
+  color: #27ae60;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.jugador-info p {
+  margin: 0.25rem 0 0 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.form-partida {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+  padding: 2rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem 0;
+}
+
+.grid-mapas, .grid-barcos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.card-mapa, .card-barco {
+  position: relative;
+  padding: 1.5rem;
+  border: 3px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.card-mapa:hover, .card-barco:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-color: #27ae60;
+}
+
+.card-mapa.seleccionado, .card-barco.seleccionado {
+  border-color: #27ae60;
+  background: #e8f5e9;
+  box-shadow: 0 8px 16px rgba(39, 174, 96, 0.3);
+}
+
+.card-header {
+  margin-bottom: 1rem;
+}
+
+.badge-mapa {
+  background: #27ae60;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.nombre-barco {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.card-body {
+  text-align: center;
+}
+
+.dimensiones {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #27ae60;
+  margin-bottom: 0.5rem;
+}
+
+.info-celdas {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat .label {
+  display: block;
+  color: #7f8c8d;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.stat .value {
+  display: block;
+  color: #27ae60;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.check-seleccionado {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background: #27ae60;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mensaje-vacio {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #95a5a6;
+}
+
+.mensaje-vacio p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.link-crear {
+  color: #27ae60;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.link-crear:hover {
+  text-decoration: underline;
+}
+
+.acciones {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.btn {
+  flex: 1;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .grid-mapas, .grid-barcos {
+    grid-template-columns: 1fr;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+}

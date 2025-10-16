@@ -1,0 +1,138 @@
+<div class="container">
+  @if (cargando()) {
+    <div class="loading">
+      <p>Cargando mapa...</p>
+    </div>
+  } @else if (mapa()) {
+    <div class="header">
+      <div class="header-info">
+        <h1>Mapa #{{ mapa()!.id }}</h1>
+        <p class="dimensiones">{{ mapa()!.filas }} x {{ mapa()!.columnas }}</p>
+      </div>
+      <div class="header-actions">
+        <button (click)="volver()" class="btn btn-secondary">
+          ← Volver
+        </button>
+        <button (click)="eliminar()" class="btn btn-danger">
+          Eliminar
+        </button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Mapa visual -->
+      <div class="mapa-section">
+        <div class="card">
+          <h2>Vista del Mapa</h2>
+          <div class="mapa-container">
+            <div class="mapa-grid">
+              @for (fila of matrizCeldas(); track $index) {
+                <div class="fila">
+                  @for (celda of fila; track $index) {
+                    <div 
+                      class="celda"
+                      [style.background-color]="obtenerColorCelda(celda.tipo)"
+                      [title]="'Posición: (' + celda.posicionX + ',' + celda.posicionY + ') - Tipo: ' + (celda.tipo || 'Agua')">
+                      <span class="celda-icon">{{ obtenerIconoCelda(celda.tipo) }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="stats-section">
+        <div class="card">
+          <h2>Estadísticas</h2>
+          
+          <div class="stat-group">
+            <div class="stat-item">
+              <span class="stat-icon">📏</span>
+              <div class="stat-content">
+                <span class="stat-label">Dimensiones</span>
+                <span class="stat-value">{{ mapa()!.filas }} x {{ mapa()!.columnas }}</span>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <span class="stat-icon">🔢</span>
+              <div class="stat-content">
+                <span class="stat-label">Total de Celdas</span>
+                <span class="stat-value">{{ mapa()!.filas * mapa()!.columnas }}</span>
+              </div>
+            </div>
+          </div>
+
+          <h3>Tipos de Celdas</h3>
+          
+          <div class="tipo-stats">
+            <div class="tipo-item agua">
+              <span class="tipo-icon">🌊</span>
+              <div class="tipo-info">
+                <span class="tipo-label">Agua</span>
+                <span class="tipo-count">{{ (mapa()!.filas * mapa()!.columnas) - (mapa()!.celdas?.length || 0) }}</span>
+              </div>
+            </div>
+
+            <div class="tipo-item pared">
+              <span class="tipo-icon">🧱</span>
+              <div class="tipo-info">
+                <span class="tipo-label">Paredes</span>
+                <span class="tipo-count">{{ contarCeldasPorTipo('x') }}</span>
+              </div>
+            </div>
+
+            <div class="tipo-item partida">
+              <span class="tipo-icon">🏁</span>
+              <div class="tipo-info">
+                <span class="tipo-label">Partida</span>
+                <span class="tipo-count">{{ contarCeldasPorTipo('P') }}</span>
+              </div>
+            </div>
+
+            <div class="tipo-item meta">
+              <span class="tipo-icon">🎯</span>
+              <div class="tipo-info">
+                <span class="tipo-label">Meta</span>
+                <span class="tipo-count">{{ contarCeldasPorTipo('M') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="card">
+          <h3>Leyenda</h3>
+          <div class="leyenda-items">
+            <div class="leyenda-item">
+              <span class="color-box agua"></span>
+              <span>🌊 Agua - Navegable</span>
+            </div>
+            <div class="leyenda-item">
+              <span class="color-box pared"></span>
+              <span>🧱 Pared - Obstáculo</span>
+            </div>
+            <div class="leyenda-item">
+              <span class="color-box partida"></span>
+              <span>🏁 Partida - Inicio</span>
+            </div>
+            <div class="leyenda-item">
+              <span class="color-box meta"></span>
+              <span>🎯 Meta - Destino</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="error-state">
+      <h2>Mapa no encontrado</h2>
+      <button (click)="volver()" class="btn btn-primary">
+        Volver a la lista
+      </button>
+    </div>
+  }
+</div>
