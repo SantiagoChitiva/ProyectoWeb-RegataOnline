@@ -69,25 +69,65 @@ public class DbInitializer implements CommandLineRunner {
         int barcoIndex = 0;
         for (int j = 0; j < jugadores.size(); j++) {
             Jugador jugador = jugadores.get(j);
-            List<Barco> barcosJugador = new ArrayList<>(); // Lista de barcos para este jugador
+            List<Barco> barcosJugador = new ArrayList<>();
 
             for (int b = 0; b < 10; b++) {
                 String nombreBarco = nombresBarcos[barcoIndex % nombresBarcos.length];
-                Barco barco = new Barco(nombreBarco, 0, 0, barcoIndex * 5, barcoIndex * 5); // Velocidad X=0, Y=0
-                barco.setJugador(jugador); // Asignar jugador al barco
-                barco.setModelo(modeloRepositorio.findById(barcoIndex % 10L).orElse(null)); // Asignar modelo (esto es un ejemplo, puedes ajustarlo)
-                barco = barcoRepositorio.save(barco); // Guardar el barco en la base de datos
-                barcosJugador.add(barco); // Añadir el barco a la lista del jugador
+                // Todos los barcos inician en posición (0,0) con velocidad (0,0)
+                Barco barco = new Barco(nombreBarco, 0, 0, 0, 0);
+                barco.setJugador(jugador);
+                barco.setModelo(modeloRepositorio.findById(barcoIndex % 10L).orElse(null));
+                barco = barcoRepositorio.save(barco);
+                barcosJugador.add(barco);
                 barcoIndex++;
             }
 
-            // Ahora guardamos la relación de los barcos con el jugador
-            jugador.setBarcos(barcosJugador); // Añadir los barcos al jugador
-            jugadorRepositorio.save(jugador); // Guardar al jugador con su lista de barcos
+            jugador.setBarcos(barcosJugador);
+            jugadorRepositorio.save(jugador);
         }
 
-        // Crear el mapa de 10x10
-        Mapa mapa = new Mapa(10, 10); // 10 filas, 10 columnas
+        // ========================================
+        // Mapa de prueba 5x5 (FÁCIL - para probar física)
+        // ========================================
+        log.info("Creando mapa de prueba 5x5...");
+        Mapa mapaPrueba = new Mapa(5, 5);
+        mapaPrueba = mapaRepositorio.save(mapaPrueba);
+
+        List<Celda> celdasPrueba = new ArrayList<>();
+        
+        // Crear mapa 5x5: todo el contorno son paredes, Partida en (1,1), Meta en (3,3)
+        for (int fila = 0; fila < 5; fila++) {
+            for (int col = 0; col < 5; col++) {
+                String tipo = "";
+                
+                // Todo el contorno son paredes
+                if (fila == 0 || fila == 4 || col == 0 || col == 4) {
+                    tipo = "x";
+                }
+                // Celda de partida en (1, 1)
+                else if (fila == 1 && col == 1) {
+                    tipo = "P";
+                }
+                // Celda de meta en (3, 3)
+                else if (fila == 3 && col == 3) {
+                    tipo = "M";
+                }
+                // Resto son agua
+                
+                Celda celda = new Celda(tipo, col, fila);
+                celda.setMapa(mapaPrueba);
+                celda = celdaRepositorio.save(celda);
+                celdasPrueba.add(celda);
+            }
+        }
+        
+        log.info("✅ Mapa de prueba 5x5 creado - Partida:(1,1) Meta:(3,3)");
+
+        // ========================================
+        // Mapa principal 10x10 (DIFÍCIL - para juego completo)
+        // ========================================
+        log.info("Creando mapa principal 10x10...");
+        Mapa mapa = new Mapa(10, 10);
         mapa = mapaRepositorio.save(mapa);
 
         List<Celda> celdas = new ArrayList<>();
@@ -97,23 +137,22 @@ public class DbInitializer implements CommandLineRunner {
             for (int col = 0; col < 10; col++) {
                 String tipo = "";
                 
-                // Todo el contorno son paredes, EXCEPTO fila 9 (que solo tiene paredes en primera y última columna)
+                // Todo el contorno son paredes, EXCEPTO fila 9
                 if (fila == 0 || col == 0 || col == 9) {
-                    tipo = "x";  // Pared en fila superior y columnas laterales
+                    tipo = "x";
                 }
                 // Fila 9: solo las esquinas son paredes
                 else if (fila == 9 && (col == 0 || col == 9)) {
                     tipo = "x";
                 }
-                // Celda de partida en posición (1, 1) - esquina superior izquierda interior
+                // Celda de partida en (1, 1)
                 else if (fila == 1 && col == 1) {
                     tipo = "P";
                 }
-                // Celda de meta en posición (8, 8) - esquina inferior derecha interior
+                // Celda de meta en (8, 8)
                 else if (fila == 8 && col == 8) {
                     tipo = "M";
                 }
-                // Resto son agua (navegables), incluyendo fila 9 excepto las esquinas
                 
                 Celda celda = new Celda(tipo, col, fila);
                 celda.setMapa(mapa);
@@ -121,6 +160,8 @@ public class DbInitializer implements CommandLineRunner {
                 celdas.add(celda);
             }
         }
+        
+        log.info("✅ Mapa principal 10x10 creado - Partida:(1,1) Meta:(8,8)");
 
         List<Barco> todosLosBarcos = barcoRepositorio.findAll();
         List<Celda> celdasNavegables = celdas.stream()

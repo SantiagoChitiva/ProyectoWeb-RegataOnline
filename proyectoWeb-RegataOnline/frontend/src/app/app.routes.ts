@@ -12,6 +12,7 @@ import { MapaCreateComponent } from './mapa/mapa-create/mapa-create.component';
 import { MapaViewComponent } from './mapa/mapa-view/mapa-view.component';
 import { PartidaMenuComponent } from './partida/partida-menu/partida-menu.component';
 import { PartidaCrearComponent } from './partida/partida-crear/partida-crear.component';
+import { PartidaJuegoComponent } from './partida/partida-juego/partida-juego.component';
 import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
@@ -28,5 +29,6 @@ export const routes: Routes = [
     { path: 'mapa/create', component: MapaCreateComponent },
     { path: 'mapa/view/:id', component: MapaViewComponent },
     { path: 'partida/menu', component: PartidaMenuComponent },
-    { path: 'partida/crear', component: PartidaCrearComponent }
+    { path: 'partida/crear', component: PartidaCrearComponent },
+    { path: 'partida/juego/:id', component: PartidaJuegoComponent }
 ];

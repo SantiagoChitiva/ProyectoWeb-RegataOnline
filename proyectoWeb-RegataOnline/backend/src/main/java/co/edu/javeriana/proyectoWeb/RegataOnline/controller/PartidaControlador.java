@@ -124,17 +124,17 @@ public class PartidaControlador {
     }
 
     @PutMapping("/{id}/mover")
-    @Operation(summary = "Mover barco", description = "Mueve el barco a una nueva posición y registra el movimiento")
+    @Operation(summary = "Mover barco", description = "Mueve el barco aplicando aceleración (-1, 0, o +1) a cada componente de velocidad")
     @ApiResponse(responseCode = "200", description = "Barco movido exitosamente")
     public ResponseEntity<?> moverBarco(
         @Parameter(description = "ID de la partida", example = "1", required = true)
         @PathVariable Long id,
-        @Parameter(description = "Nueva posición X", required = true)
-        @RequestParam Integer x,
-        @Parameter(description = "Nueva posición Y", required = true)
-        @RequestParam Integer y) {
+        @Parameter(description = "Aceleración en X (-1, 0, o +1)", required = true)
+        @RequestParam Integer aceleracionX,
+        @Parameter(description = "Aceleración en Y (-1, 0, o +1)", required = true)
+        @RequestParam Integer aceleracionY) {
         try {
-            PartidaDTO partida = partidaServicio.moverBarco(id, x, y);
+            PartidaDTO partida = partidaServicio.moverBarco(id, aceleracionX, aceleracionY);
             return ResponseEntity.ok(partida);
         } catch (Exception e) {
             log.error("Error al mover barco: {}", e.getMessage());

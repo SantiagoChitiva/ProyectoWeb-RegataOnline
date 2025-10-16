@@ -12,6 +12,8 @@ export interface Partida {
   mapaColumnas?: number;
   barcoId: number;
   barcoNombre?: string;
+  barcoVelocidadX?: number;  // Velocidad actual en X
+  barcoVelocidadY?: number;  // Velocidad actual en Y
   barcoPosicionX?: number;
   barcoPosicionY?: number;
   estado: string; // "activa", "pausada", "terminada"
@@ -28,8 +30,8 @@ export interface CrearPartidaRequest {
 }
 
 export interface MoverBarcoRequest {
-  x: number;
-  y: number;
+  aceleracionX: number;  // -1, 0, o +1
+  aceleracionY: number;  // -1, 0, o +1
 }
 
 @Injectable({
@@ -63,7 +65,10 @@ export class PartidaService {
     return this.http.put<Partida>(`${this.url}/${id}/finalizar`, {});
   }
 
-  moverBarco(partidaId: number, x: number, y: number): Observable<Partida> {
-    return this.http.put<Partida>(`${this.url}/${partidaId}/mover?x=${x}&y=${y}`, {});
+  moverBarco(partidaId: number, aceleracionX: number, aceleracionY: number): Observable<Partida> {
+    return this.http.put<Partida>(
+      `${this.url}/${partidaId}/mover?aceleracionX=${aceleracionX}&aceleracionY=${aceleracionY}`, 
+      {}
+    );
   }
 }
