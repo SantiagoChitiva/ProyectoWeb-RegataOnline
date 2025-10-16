@@ -1,6 +1,28 @@
-<h1>Detalles del Modelo</h1>
-<div>
-  <p><strong>ID:</strong> {{ modelo()?.id }}</p>
-  <p><strong>Nombre:</strong> {{ modelo()?.nombre }}</p>
+<div class="container">
+  <h1>Detalles del Modelo</h1>
+  
+  <div class="info-card">
+    <div class="info-grid">
+      <div class="info-item">
+        <strong>ID</strong>
+        <span>{{ modelo()?.id }}</span>
+      </div>
+      <div class="info-item">
+        <strong>Nombre del Modelo</strong>
+        <span>{{ modelo()?.nombreModelo }}</span>
+      </div>
+      <div class="info-item full-width">
+        <strong>Color</strong>
+        <div class="color-display">
+          <span class="color-box" [style.background-color]="modelo()?.color"></span>
+          <span>{{ modelo()?.color }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button class="btn-back" (click)="volver()">Volver a la Lista</button>
+    <button class="btn-edit" [routerLink]="['/modelo/edit', modelo()?.id]">Editar Modelo</button>
+  </div>
 </div>
-<button (click)="volver()">Volver</button>

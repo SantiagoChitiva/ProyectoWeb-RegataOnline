@@ -3,6 +3,7 @@ import { ModeloService } from '../../shared/modelo.service';
 import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Modelo } from '../../model/modelo';
 
 @Component({
     selector: 'app-modelo-lista',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
     styleUrl: './modelo-lista.component.css'
   })
 export class ModeloListaComponent {
-  modelos = signal<any[]>([]);
+  modelos = signal<Modelo[]>([]);
   modeloService = inject(ModeloService);
 
   ngOnInit(): void {

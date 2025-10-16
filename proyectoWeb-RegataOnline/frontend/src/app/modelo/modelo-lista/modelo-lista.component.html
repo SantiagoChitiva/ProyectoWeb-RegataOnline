@@ -5,11 +5,14 @@
 <ul>
     @for(m of modelos(); track $index) {
         <li>
-            <span>{{m.id}} - {{m.nombre}}</span>
+            <div class="modelo-info">
+                <span class="modelo-nombre">{{m.nombreModelo}}</span>
+                <span class="modelo-color" [style.background-color]="m.color" [title]="'Color: ' + m.color"></span>
+            </div>
             <div class="actions">
                 <a [routerLink]="['/modelo/view', m.id]">Ver</a>
                 <a [routerLink]="['/modelo/edit', m.id]">Editar</a>
-                <button class="btn-delete" (click)="eliminar(m.id, m.nombre)">Eliminar</button>
+                <button class="btn-delete" (click)="eliminar(m.id, m.nombreModelo)">Eliminar</button>
             </div>
         </li>
     }

@@ -1,7 +1,8 @@
-import { Component, inject, model } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ModeloService } from '../../shared/modelo.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
+import { Modelo } from '../../model/modelo';
 
 @Component({
   selector: 'app-modelo-edit',
@@ -14,7 +15,7 @@ export class ModeloEditComponent {
   route = inject(ActivatedRoute);
   router = inject(Router);
 
-  modelo = model<any>({});
+  modelo = signal<Modelo>({ nombreModelo: '', color: '#3498db' });
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
