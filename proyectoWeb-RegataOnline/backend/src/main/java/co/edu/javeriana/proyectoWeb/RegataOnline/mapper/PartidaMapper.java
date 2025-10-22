@@ -33,6 +33,8 @@ public class PartidaMapper {
             dto.setBarcoNombre(partida.getBarco().getNombre());
             dto.setBarcoPosicionX(partida.getBarco().getPosicionX());
             dto.setBarcoPosicionY(partida.getBarco().getPosicionY());
+            dto.setBarcoVelocidadX(partida.getBarco().getVelocidadX());
+            dto.setBarcoVelocidadY(partida.getBarco().getVelocidadY());
         }
         
         return dto;

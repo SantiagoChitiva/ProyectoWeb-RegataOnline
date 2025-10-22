@@ -13,6 +13,8 @@ public class PartidaDTO {
     private String barcoNombre;
     private Integer barcoPosicionX;
     private Integer barcoPosicionY;
+    private Integer barcoVelocidadX;
+    private Integer barcoVelocidadY;
     private String estado;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaUltimaJugada;
@@ -98,6 +100,22 @@ public class PartidaDTO {
 
     public void setBarcoPosicionY(Integer barcoPosicionY) {
         this.barcoPosicionY = barcoPosicionY;
+    }
+
+    public Integer getBarcoVelocidadX() {
+        return barcoVelocidadX;
+    }
+
+    public void setBarcoVelocidadX(Integer barcoVelocidadX) {
+        this.barcoVelocidadX = barcoVelocidadX;
+    }
+
+    public Integer getBarcoVelocidadY() {
+        return barcoVelocidadY;
+    }
+
+    public void setBarcoVelocidadY(Integer barcoVelocidadY) {
+        this.barcoVelocidadY = barcoVelocidadY;
     }
 
     public String getEstado() {

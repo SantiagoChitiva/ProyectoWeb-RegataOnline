@@ -209,41 +209,107 @@ public class PartidaServicio {
         // 3. Validar que la nueva posición esté dentro del mapa
         if (nuevaPosicionX < 0 || nuevaPosicionX >= mapa.getColumnas() || 
             nuevaPosicionY < 0 || nuevaPosicionY >= mapa.getFilas()) {
-            throw new RuntimeException("Movimiento fuera del mapa. Nueva posición: (" + 
+            log.warn("Movimiento inválido: fuera del mapa");
+            throw new RuntimeException("❌ No puedes moverte ahí. El movimiento sale del mapa. Nueva posición: (" + 
                 nuevaPosicionX + ", " + nuevaPosicionY + ")");
         }
 
-        // 4. Validar que la celda destino no sea una pared
+        // 4. Validar trayectoria: revisar todas las celdas intermedias
+        List<int[]> trayectoria = calcularTrayectoria(
+            barco.getPosicionX(), barco.getPosicionY(),
+            nuevaPosicionX, nuevaPosicionY
+        );
+
+        for (int[] punto : trayectoria) {
+            int px = punto[0];
+            int py = punto[1];
+
+            // Verificar si está fuera del mapa
+            if (px < 0 || px >= mapa.getColumnas() || py < 0 || py >= mapa.getFilas()) {
+                log.warn("Movimiento inválido: Trayectoria sale del mapa en ({}, {})", px, py);
+                throw new RuntimeException("❌ No puedes moverte ahí. La trayectoria cruza el límite del mapa en (" + px + ", " + py + ")");
+            }
+
+            // Verificar si atraviesa una pared
+            Celda celda = mapa.getCeldas().stream()
+                .filter(c -> c.getPosicionX() == px && c.getPosicionY() == py)
+                .findFirst()
+                .orElse(null);
+
+            if (celda != null && "x".equals(celda.getTipo())) {
+                log.warn("Movimiento inválido: Colisionó con pared en ({}, {})", px, py);
+                throw new RuntimeException("💥 ¡Chocaste con una pared en (" + px + ", " + py + ")! Elige otra dirección.");
+            }
+        }
+
+        // 5. Obtener celda de destino final
         Celda celdaDestino = mapa.getCeldas().stream()
             .filter(c -> c.getPosicionX() == nuevaPosicionX && c.getPosicionY() == nuevaPosicionY)
             .findFirst()
             .orElse(null);
 
-        if (celdaDestino != null && celdaDestino.getTipo() != null && celdaDestino.getTipo().equals("x")) {
-            throw new RuntimeException("No puedes moverte a una pared");
-        }
-
-        // 5. Actualizar velocidad y posición del barco
+        // 6. Actualizar velocidad y posición del barco
         barco.setVelocidadX(nuevaVelocidadX);
         barco.setVelocidadY(nuevaVelocidadY);
         barco.setPosicionX(nuevaPosicionX);
         barco.setPosicionY(nuevaPosicionY);
         barcoRepositorio.save(barco);
 
-        // 6. Verificar si llegó a la meta
-        if (celdaDestino != null && celdaDestino.getTipo() != null && celdaDestino.getTipo().equals("M")) {
+        // 7. Verificar si llegó a la meta
+        if (celdaDestino != null && "M".equals(celdaDestino.getTipo())) {
             partida.setHaLlegadoMeta(true);
             partida.setEstado("terminada");
             log.info("¡Barco llegó a la meta!");
         }
 
-        // 7. Incrementar contador de movimientos
+        // 8. Incrementar contador de movimientos
         partida.setMovimientos(partida.getMovimientos() + 1);
         partida = partidaRepositorio.save(partida);
 
-        log.info("Barco movido. Velocidad: ({}, {}), Posición: ({}, {}), Movimientos: {}", 
+        log.info("Barco movido exitosamente. Velocidad: ({}, {}), Posición: ({}, {}), Movimientos: {}", 
             nuevaVelocidadX, nuevaVelocidadY, nuevaPosicionX, nuevaPosicionY, partida.getMovimientos());
         
         return PartidaMapper.toDTO(partida);
+    }
+
+    /**
+     * Calcula la trayectoria del barco usando algoritmo de Bresenham
+     * para verificar todas las celdas intermedias entre origen y destino
+     */
+    private List<int[]> calcularTrayectoria(int x0, int y0, int x1, int y1) {
+        List<int[]> trayectoria = new java.util.ArrayList<>();
+        
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        
+        int x = x0;
+        int y = y0;
+        
+        while (true) {
+            // No incluir la posición inicial (ya está validada)
+            if (!(x == x0 && y == y0)) {
+                trayectoria.add(new int[]{x, y});
+            }
+            
+            if (x == x1 && y == y1) {
+                break;
+            }
+            
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y += sy;
+            }
+        }
+        
+        log.info("Trayectoria calculada: {} celdas intermedias", trayectoria.size());
+        return trayectoria;
     }
 }
