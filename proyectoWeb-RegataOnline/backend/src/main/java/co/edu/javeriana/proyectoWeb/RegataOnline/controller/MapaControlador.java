@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.CrearMapaRequest;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.MapaDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.MapaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +29,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/mapa")
-@Tag(name = "Mapa", description = "Endpoints para gestionar los mapas del juego")
+@Secured({ Role.Code.ADMINISTRADOR })
+@Tag(name = "Mapa", description = "Endpoints para gestionar los mapas del juego. Solo ADMINISTRADOR.")
 public class MapaControlador {
 
     private Logger log = LoggerFactory.getLogger(getClass());

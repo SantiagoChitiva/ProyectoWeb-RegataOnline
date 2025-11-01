@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.CrearPartidaRequest;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.PartidaDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.PartidaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +29,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/partida")
-@Tag(name = "Partida", description = "Endpoints para gestionar las partidas del juego")
+@Secured({ Role.Code.JUGADOR })
+@Tag(name = "Partida", description = "Endpoints para que los JUGADORES gestionen sus partidas")
 public class PartidaControlador {
 
     private Logger log = LoggerFactory.getLogger(getClass());
@@ -36,7 +39,7 @@ public class PartidaControlador {
     private PartidaServicio partidaServicio;
 
     @PostMapping("/crear")
-    @Operation(summary = "Crear nueva partida", description = "Crea una nueva partida con jugador, mapa y barco")
+    @Operation(summary = "Crear nueva partida", description = "Crea una nueva partida con jugador, mapa y barco. Solo JUGADOR.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Partida creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos o jugador ya tiene partida activa")
@@ -57,7 +60,7 @@ public class PartidaControlador {
     }
 
     @GetMapping("/activa/{jugadorId}")
-    @Operation(summary = "Obtener partida activa", description = "Busca la partida activa o pausada de un jugador")
+    @Operation(summary = "Obtener partida activa", description = "Busca la partida activa o pausada de un jugador. Solo JUGADOR.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Partida encontrada"),
         @ApiResponse(responseCode = "404", description = "No hay partida activa")

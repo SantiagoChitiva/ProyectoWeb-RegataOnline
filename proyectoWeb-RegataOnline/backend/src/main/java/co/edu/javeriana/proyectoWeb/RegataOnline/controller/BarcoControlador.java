@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.ErrorDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.BarcoServicio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.CeldaServicio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.JugadorServicio;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +35,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/barco")   
-@Tag(name = "Barco", description = "Endpoints para gestionar los barcos") 
+@RequestMapping("/barco")
+@Secured({ Role.Code.ADMINISTRADOR })
+@Tag(name = "Barco", description = "Endpoints para gestionar los barcos. Solo ADMINISTRADOR.") 
 public class BarcoControlador {
     @Autowired 
     private BarcoServicio barcoServicio;

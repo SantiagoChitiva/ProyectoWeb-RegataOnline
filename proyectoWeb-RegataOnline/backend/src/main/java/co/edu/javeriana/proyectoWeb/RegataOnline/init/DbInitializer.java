@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
@@ -15,11 +16,14 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.model.Celda;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Mapa;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Modelo;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.User;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.CeldaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.UserRepository;
 
 
 @Component
@@ -40,6 +44,12 @@ public class DbInitializer implements CommandLineRunner {
     @Autowired
     private CeldaRepositorio celdaRepositorio;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private final String[] nombresBarcos = {
@@ -57,6 +67,16 @@ public class DbInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // ========================================
+        // CREAR USUARIOS DE AUTENTICACIÓN
+        // ========================================
+        log.info("🔐 Inicializando usuarios de autenticación...");
+        crearUsuarioAdministrador();
+        crearUsuarioJugadorPrueba();
+        
+        // ========================================
+        // CREAR JUGADORES Y MODELOS
+        // ========================================
         List<Jugador> jugadores = new ArrayList<>();
         for(int i = 0; i < 5; i++) {
             Jugador jugador = jugadorRepositorio.save(new Jugador("Jugador " + i));
@@ -174,5 +194,48 @@ public class DbInitializer implements CommandLineRunner {
             barco.setCelda(celda);
             barcoRepositorio.save(barco);
         }
+    }
+
+    private void crearUsuarioAdministrador() {
+        String adminEmail = "admin@regata.com";
+        
+        if (userRepository.existsByEmail(adminEmail)) {
+            log.info("👤 Usuario administrador ya existe: {}", adminEmail);
+            return;
+        }
+        
+        User admin = new User(
+            "Administrador",
+            adminEmail,
+            passwordEncoder.encode("admin123"),
+            Role.ADMINISTRADOR
+        );
+        
+        userRepository.save(admin);
+        log.info("✅ Usuario administrador creado:");
+        log.info("   📧 Email: {}", adminEmail);
+        log.info("   🔑 Password: admin123");
+        log.info("   ⚠️  IMPORTANTE: Cambia esta contraseña en producción");
+    }
+    
+    private void crearUsuarioJugadorPrueba() {
+        String jugadorEmail = "jugador@regata.com";
+        
+        if (userRepository.existsByEmail(jugadorEmail)) {
+            log.info("👤 Usuario jugador de prueba ya existe: {}", jugadorEmail);
+            return;
+        }
+        
+        User jugador = new User(
+            "Jugador Demo",
+            jugadorEmail,
+            passwordEncoder.encode("jugador123"),
+            Role.JUGADOR
+        );
+        
+        userRepository.save(jugador);
+        log.info("✅ Usuario jugador de prueba creado:");
+        log.info("   📧 Email: {}", jugadorEmail);
+        log.info("   🔑 Password: jugador123");
     }
 }

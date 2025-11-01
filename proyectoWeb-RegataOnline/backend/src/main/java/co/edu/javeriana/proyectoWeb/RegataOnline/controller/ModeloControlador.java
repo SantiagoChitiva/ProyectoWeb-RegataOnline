@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.ErrorDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.ModeloDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.ModeloServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +32,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/modelo")   
-@Tag(name = "Modelo", description = "Endpoints para gestionar los modelos de barcos") 
+@RequestMapping("/modelo")
+@Secured({ Role.Code.ADMINISTRADOR })
+@Tag(name = "Modelo", description = "Endpoints para gestionar los modelos de barcos. Solo ADMINISTRADOR.") 
 public class ModeloControlador {
     @Autowired 
     private ModeloServicio modeloServicio;
