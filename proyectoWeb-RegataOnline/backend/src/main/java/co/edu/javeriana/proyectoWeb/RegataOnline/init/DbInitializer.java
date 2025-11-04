@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
@@ -22,6 +23,7 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
 
 
+@Profile({"default"})
 @Component
 public class DbInitializer implements CommandLineRunner {
 
@@ -86,9 +88,7 @@ public class DbInitializer implements CommandLineRunner {
             jugadorRepositorio.save(jugador);
         }
 
-        // ========================================
         // Mapa de prueba 5x5 (FÁCIL - para probar física)
-        // ========================================
         log.info("Creando mapa de prueba 5x5...");
         Mapa mapaPrueba = new Mapa(5, 5);
         mapaPrueba = mapaRepositorio.save(mapaPrueba);
@@ -121,11 +121,9 @@ public class DbInitializer implements CommandLineRunner {
             }
         }
         
-        log.info("✅ Mapa de prueba 5x5 creado - Partida:(1,1) Meta:(3,3)");
+        log.info("Mapa de prueba 5x5 creado - Partida:(1,1) Meta:(3,3)");
 
-        // ========================================
         // Mapa principal 10x10 (DIFÍCIL - para juego completo)
-        // ========================================
         log.info("Creando mapa principal 10x10...");
         Mapa mapa = new Mapa(10, 10);
         mapa = mapaRepositorio.save(mapa);
@@ -161,7 +159,7 @@ public class DbInitializer implements CommandLineRunner {
             }
         }
         
-        log.info("✅ Mapa principal 10x10 creado - Partida:(1,1) Meta:(8,8)");
+        log.info("Mapa principal 10x10 creado - Partida:(1,1) Meta:(8,8)");
 
         List<Barco> todosLosBarcos = barcoRepositorio.findAll();
         List<Celda> celdasNavegables = celdas.stream()
