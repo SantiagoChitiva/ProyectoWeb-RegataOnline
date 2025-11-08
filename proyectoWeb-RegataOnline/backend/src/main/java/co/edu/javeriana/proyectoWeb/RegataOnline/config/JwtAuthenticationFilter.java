@@ -37,6 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+        
+        // Ignorar rutas públicas (auth y h2)
+        String path = request.getRequestURI();
+        if (path.startsWith("/auth/") || path.startsWith("/h2")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         try {
             String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (invalidAuthHeader(authHeader)) {

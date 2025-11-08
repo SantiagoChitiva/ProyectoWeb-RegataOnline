@@ -29,8 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/partida")
-@Secured({ Role.Code.JUGADOR })
-@Tag(name = "Partida", description = "Endpoints para que los JUGADORES gestionen sus partidas")
+@Tag(name = "Partida", description = "Endpoints para gestionar partidas")
 public class PartidaControlador {
 
     private Logger log = LoggerFactory.getLogger(getClass());
@@ -38,8 +37,9 @@ public class PartidaControlador {
     @Autowired
     private PartidaServicio partidaServicio;
 
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @PostMapping("/crear")
-    @Operation(summary = "Crear nueva partida", description = "Crea una nueva partida con jugador, mapa y barco. Solo JUGADOR.")
+    @Operation(summary = "Crear nueva partida", description = "Crea una nueva partida con jugador, mapa y barco. ADMIN y JUGADOR.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Partida creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos o jugador ya tiene partida activa")
@@ -59,8 +59,9 @@ public class PartidaControlador {
         }
     }
 
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @GetMapping("/activa/{jugadorId}")
-    @Operation(summary = "Obtener partida activa", description = "Busca la partida activa o pausada de un jugador. Solo JUGADOR.")
+    @Operation(summary = "Obtener partida activa", description = "Busca la partida activa o pausada de un jugador. ADMIN y JUGADOR.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Partida encontrada"),
         @ApiResponse(responseCode = "404", description = "No hay partida activa")
@@ -73,8 +74,9 @@ public class PartidaControlador {
             .orElse(ResponseEntity.notFound().build());
     }
 
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener partida por ID", description = "Obtiene los detalles de una partida específica")
+    @Operation(summary = "Obtener partida por ID", description = "Obtiene los detalles de una partida específica. ADMIN y JUGADOR.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Partida encontrada"),
         @ApiResponse(responseCode = "404", description = "Partida no encontrada")
@@ -87,8 +89,9 @@ public class PartidaControlador {
             .orElse(ResponseEntity.notFound().build());
     }
 
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @GetMapping("/jugador/{jugadorId}")
-    @Operation(summary = "Listar partidas del jugador", description = "Obtiene todas las partidas de un jugador")
+    @Operation(summary = "Listar partidas del jugador", description = "Obtiene todas las partidas de un jugador. ADMIN y JUGADOR.")
     @ApiResponse(responseCode = "200", description = "Lista de partidas obtenida exitosamente")
     public List<PartidaDTO> listarPartidasJugador(
         @Parameter(description = "ID del jugador", example = "1", required = true)
@@ -96,8 +99,9 @@ public class PartidaControlador {
         return partidaServicio.listarPartidasJugador(jugadorId);
     }
 
+    @Secured({ Role.Code.JUGADOR })
     @PutMapping("/{id}/pausar")
-    @Operation(summary = "Pausar partida", description = "Pausa una partida activa")
+    @Operation(summary = "Pausar partida", description = "Pausa una partida activa. Solo JUGADOR.")
     @ApiResponse(responseCode = "200", description = "Partida pausada exitosamente")
     public ResponseEntity<PartidaDTO> pausarPartida(
         @Parameter(description = "ID de la partida", example = "1", required = true)
@@ -111,8 +115,9 @@ public class PartidaControlador {
         }
     }
 
+    @Secured({ Role.Code.JUGADOR })
     @PutMapping("/{id}/finalizar")
-    @Operation(summary = "Finalizar partida", description = "Marca una partida como terminada")
+    @Operation(summary = "Finalizar partida", description = "Marca una partida como terminada. Solo JUGADOR.")
     @ApiResponse(responseCode = "200", description = "Partida finalizada exitosamente")
     public ResponseEntity<PartidaDTO> finalizarPartida(
         @Parameter(description = "ID de la partida", example = "1", required = true)
@@ -126,8 +131,9 @@ public class PartidaControlador {
         }
     }
 
+    @Secured({ Role.Code.JUGADOR })
     @PutMapping("/{id}/mover")
-    @Operation(summary = "Mover barco", description = "Mueve el barco aplicando aceleración (-1, 0, o +1) a cada componente de velocidad")
+    @Operation(summary = "Mover barco", description = "Mueve el barco aplicando aceleración (-1, 0, o +1) a cada componente de velocidad. Solo JUGADOR.")
     @ApiResponse(responseCode = "200", description = "Barco movido exitosamente")
     public ResponseEntity<?> moverBarco(
         @Parameter(description = "ID de la partida", example = "1", required = true)

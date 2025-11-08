@@ -43,8 +43,14 @@ public class AuthenticationService {
     }
 
     public JwtAuthenticationResponse login(LoginDTO request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        } catch (AuthenticationException e) {
+            log.error("Authentication failed for user: {}", request.getEmail());
+            throw e; // Re-lanzar para que GlobalExceptionHandler la maneje
+        }
+        
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         String jwt = jwtService.generateToken(user.getUsername());

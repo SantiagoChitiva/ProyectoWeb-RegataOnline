@@ -1,4 +1,4 @@
-package co.edu.javeriana.bancosec.advice;
+package co.edu.javeriana.proyectoWeb.RegataOnline.advice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
