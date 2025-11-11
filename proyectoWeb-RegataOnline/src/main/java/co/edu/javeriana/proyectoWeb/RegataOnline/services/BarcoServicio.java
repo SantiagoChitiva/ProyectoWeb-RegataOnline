@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import ch.qos.logback.core.model.Model;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoCeldaDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoDTO;
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoJugadorDTO;
@@ -131,18 +132,9 @@ public class BarcoServicio {
     public void updateBarcosJugador(BarcoJugadorDTO barcoJugadorDTO){
         Jugador jugador = jugadorRepositorio.findById(barcoJugadorDTO.getJugadorId()).orElseThrow();
         
-        // Desasociar y guardar los barcos que actualmente están asociados al jugador
-        List<Barco> barcosActuales = List.copyOf(jugador.getBarcos());
-        for (Barco barco : barcosActuales) {
-            barco.setJugador(null);
-        }
-        if (!barcosActuales.isEmpty()) {
-            barcoRepositorio.saveAll(barcosActuales);
-        }
-
-        // Limpiar la lista del jugador
+        // Limpiar los barcos actuales del jugador
         jugador.getBarcos().clear();
-
+        
         // Solo buscar barcos si la lista de IDs no es null y no está vacía
         if (barcoJugadorDTO.getBarcosIds() != null && !barcoJugadorDTO.getBarcosIds().isEmpty()) {
             List<Barco> barcosSeleccionados = barcoRepositorio.findAllById(barcoJugadorDTO.getBarcosIds());
@@ -153,8 +145,6 @@ public class BarcoServicio {
             }
             
             jugador.getBarcos().addAll(barcosSeleccionados);
-            // Guardar los barcos actualizados
-            barcoRepositorio.saveAll(barcosSeleccionados);
         }
         
         jugadorRepositorio.save(jugador);
@@ -169,21 +159,8 @@ public class BarcoServicio {
                 .orElseThrow(() -> new RuntimeException("Modelo no encontrado con ID: " + barcoModeloDTO.getModeloId()));
         }
         
-        // Si la lista de IDs es nula o vacía, desasociar todos los barcos que tengan el modelo indicado
-        if (barcoModeloDTO.getBarcosIds() == null || barcoModeloDTO.getBarcosIds().isEmpty()) {
-            if (barcoModeloDTO.getModeloId() != null) {
-                List<Barco> asociados = barcoRepositorio.findAll().stream()
-                    .filter(b -> b.getModelo() != null && b.getModelo().getId().equals(barcoModeloDTO.getModeloId()))
-                    .toList();
-                for (Barco barco : asociados) {
-                    barco.setModelo(null);
-                }
-                if (!asociados.isEmpty()) {
-                    barcoRepositorio.saveAll(asociados);
-                }
-            }
-        } else {
-            // Procesar cada barco especificado
+        // Procesar cada barco
+        if (barcoModeloDTO.getBarcosIds() != null && !barcoModeloDTO.getBarcosIds().isEmpty()) {
             List<Barco> barcosAActualizar = barcoRepositorio.findAllById(barcoModeloDTO.getBarcosIds());
             
             for (Barco barco : barcosAActualizar) {
@@ -216,21 +193,17 @@ public class BarcoServicio {
     }
 
     public Optional <BarcoModeloDTO> getBarcoModelo(Long barcoId){
-        // Buscar el barco por su id y devolver el modelo y los barcos asociados a ese modelo
-        Optional<Barco> barcoOpt = barcoRepositorio.findById(barcoId);
-        if (barcoOpt.isEmpty()) {
+        Optional<Modelo> modeloBarcoOpt = modeloRepositorio.findById(barcoId);
+
+        if(modeloBarcoOpt.isEmpty()){
             return Optional.empty();
         }
 
-        Barco barco = barcoOpt.get();
-        Modelo modelo = barco.getModelo();
-        if (modelo == null) {
-            // barco existe pero no tiene modelo asignado
-            return Optional.of(new BarcoModeloDTO(null, List.of()));
-        }
+        Modelo modeloBarco = modeloBarcoOpt.get();
+        List<Long> modelosIds = modeloBarco.getBarcos().stream().map(Barco::getId).toList();
 
-        List<Long> barcosIds = modelo.getBarcos().stream().map(Barco::getId).toList();
-        BarcoModeloDTO barcoModeloDTO = new BarcoModeloDTO(modelo.getId(), barcosIds);
+        BarcoModeloDTO barcoModeloDTO = new BarcoModeloDTO(barcoId, modelosIds);
+
         return Optional.of(barcoModeloDTO);
     }
 

@@ -1,5 +1,14 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,10 +47,10 @@ public class BarcoModeloControlador {
         @ApiResponse(responseCode = "200", description = "Relación barco-modelo obtenida exitosamente"),
         @ApiResponse(responseCode = "404", description = "Barco no encontrado")
     })
-    public BarcoModeloDTO obtenerBarcoModelo(
+    public Optional<BarcoModeloDTO> obtenerBarcoModelo(
         @Parameter(description = "Identificador único del barco", example = "1", required = true)
         @PathVariable Long barcoId) {
-        return barcoServicio.getBarcoModelo(barcoId).orElseThrow();
+        return barcoServicio.getBarcoModelo(barcoId);
     }
 
     @PutMapping
