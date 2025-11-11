@@ -52,6 +52,38 @@ label {
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+.jugador-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-radius: 12px;
+  border: 2px solid #667eea30;
+  margin-bottom: 2rem;
+}
+
+.jugador-info .icono {
+  font-size: 2rem;
+}
+
+.jugador-info div {
+  flex: 1;
+}
+
+.jugador-info strong {
+  display: block;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.jugador-info p {
+  margin: 0;
+  color: #667eea;
+  font-weight: 600;
+}
+
 .loading {
   text-align: center;
   padding: 3rem;

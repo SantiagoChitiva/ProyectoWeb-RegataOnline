@@ -70,7 +70,7 @@ Authorization: Bearer {{tokenAdmin}}
 
 ### ADMIN: Puede crear/consultar partidas pero NO jugarlas
 
-### 13. Admin puede crear partida ✅
+### 13. Admin puede crear partida
 POST http://localhost:8080/partida/crear
 Content-Type: application/json
 Authorization: Bearer {{tokenAdmin}}
@@ -81,19 +81,19 @@ Authorization: Bearer {{tokenAdmin}}
     "barcoId": 1
 }
 
-### 14. Admin puede consultar partida ✅
+### 14. Admin puede consultar partida
 GET http://localhost:8080/partida/1
 Authorization: Bearer {{tokenAdmin}}
 
-### 15. Admin NO puede mover barco ❌ (403 Forbidden)
+### 15. Admin NO puede mover barco
 PUT http://localhost:8080/partida/1/mover?aceleracionX=1&aceleracionY=0
 Authorization: Bearer {{tokenAdmin}}
 
-### 16. Admin NO puede pausar partida ❌ (403 Forbidden)
+### 16. Admin NO puede pausar partida
 PUT http://localhost:8080/partida/1/pausar
 Authorization: Bearer {{tokenAdmin}}
 
-### 17. Admin NO puede finalizar partida ❌ (403 Forbidden)
+### 17. Admin NO puede finalizar partida
 PUT http://localhost:8080/partida/1/finalizar
 Authorization: Bearer {{tokenAdmin}}
 
@@ -101,7 +101,7 @@ Authorization: Bearer {{tokenAdmin}}
 
 @tokenJugador = {{loginJugador.response.body.$.token}}
 
-### 18. Jugador puede crear partida ✅
+### 18. Jugador puede crear partida
 POST http://localhost:8080/partida/crear
 Content-Type: application/json
 Authorization: Bearer {{tokenJugador}}
@@ -112,29 +112,29 @@ Authorization: Bearer {{tokenJugador}}
     "barcoId": 1
 }
 
-### 19. Jugador puede consultar partida ✅
+### 19. Jugador puede consultar partida
 GET http://localhost:8080/partida/1
 Authorization: Bearer {{tokenJugador}}
 
-### 20. Jugador puede mover barco ✅
+### 20. Jugador puede mover barco
 PUT http://localhost:8080/partida/1/mover?aceleracionX=1&aceleracionY=0
 Authorization: Bearer {{tokenJugador}}
 
-### 21. Jugador puede pausar partida ✅
+### 21. Jugador puede pausar partida
 PUT http://localhost:8080/partida/1/pausar
 Authorization: Bearer {{tokenJugador}}
 
-### 22. Jugador puede finalizar partida ✅
+### 22. Jugador puede finalizar partida
 PUT http://localhost:8080/partida/1/finalizar
 Authorization: Bearer {{tokenJugador}}
 
 ### JUGADOR: Denegado - CRUD Endpoints
 
-### 23. Jugador NO puede listar jugadores ❌ (403 Forbidden) 
+### 23. Jugador NO puede listar jugadores
 GET http://localhost:8080/jugador/list
 Authorization: Bearer {{tokenJugador}}
 
-### 22. Jugador NO puede crear jugador ❌ (403 Forbidden)
+### 22. Jugador NO puede crear jugador
 POST http://localhost:8080/jugador
 Content-Type: application/json
 Authorization: Bearer {{tokenJugador}}
@@ -143,41 +143,26 @@ Authorization: Bearer {{tokenJugador}}
     "nombre": "Test Jugador Player"
 }
 
-### 24. Jugador NO puede listar barcos ❌ (403 Forbidden)
+### 24. Jugador NO puede listar barcos
 GET http://localhost:8080/barco/list
 Authorization: Bearer {{tokenJugador}}
 
-### 25. Jugador NO puede listar modelos ❌ (403 Forbidden)
+### 25. Jugador NO puede listar modelos
 GET http://localhost:8080/modelo/list
 Authorization: Bearer {{tokenJugador}}
 
-### 26. Jugador NO puede listar mapas ❌ (403 Forbidden)
+### 26. Jugador NO puede listar mapas
 GET http://localhost:8080/mapa/list
 Authorization: Bearer {{tokenJugador}}
 
-### 27. Jugador NO puede listar celdas ❌ (403 Forbidden)
+### 27. Jugador NO puede listar celdas
 GET http://localhost:8080/celda/list
 Authorization: Bearer {{tokenJugador}}
 
-### 28. Jugador NO puede acceder a barco-modelo ❌ (403 Forbidden)
+### 28. Jugador NO puede acceder a barco-modelo
 GET http://localhost:8080/barco/modelos/1
 Authorization: Bearer {{tokenJugador}}
 
-### 29. Jugador NO puede acceder a barco-jugador ❌ (403 Forbidden)
+### 29. Jugador NO puede acceder a barco-jugador
 GET http://localhost:8080/jugador/barcos/1
-Authorization: Bearer {{tokenJugador}}
-
-### ========================================
-### PRUEBAS DE SEGURIDAD
-### ========================================
-
-### 30. H2 Console sin autenticación - Público (desarrollo)
-GET http://localhost:8080/h2
-
-### 31. H2 Console con token Admin - Público (desarrollo)
-GET http://localhost:8080/h2
-Authorization: Bearer {{tokenAdmin}}
-
-### 32. H2 Console con token Jugador - Público (desarrollo)
-GET http://localhost:8080/h2
 Authorization: Bearer {{tokenJugador}}

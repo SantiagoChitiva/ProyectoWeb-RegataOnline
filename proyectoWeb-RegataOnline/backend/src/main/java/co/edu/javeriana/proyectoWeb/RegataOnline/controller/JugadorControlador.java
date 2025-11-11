@@ -40,8 +40,8 @@ public class JugadorControlador {
     }
 
     @GetMapping("/{id}")
-    @Secured({ Role.Code.ADMINISTRADOR })
-    @Operation(summary = "Buscar jugador por ID", description = "Obtiene los detalles de un jugador específico. Solo ADMINISTRADOR.")
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
+    @Operation(summary = "Buscar jugador por ID", description = "Obtiene los detalles de un jugador específico. ADMINISTRADOR puede ver cualquier jugador, JUGADOR solo puede ver su propio perfil.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Jugador encontrado exitosamente"),
         @ApiResponse(responseCode = "404", description = "Jugador no encontrado")

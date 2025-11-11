@@ -79,7 +79,7 @@ public class DbInitializer implements CommandLineRunner {
         // ========================================
         List<Jugador> jugadores = new ArrayList<>();
         for(int i = 0; i < 5; i++) {
-            Jugador jugador = jugadorRepositorio.save(new Jugador("Jugador " + i));
+            Jugador jugador = jugadorRepositorio.save(new Jugador("Jugador " + i, "jugador" + i + "@test.com"));
             jugadores.add(jugador);
         }
         for(int i = 0; i < 10; i++) {
@@ -226,16 +226,24 @@ public class DbInitializer implements CommandLineRunner {
             return;
         }
         
+        // Crear la entidad Jugador primero
+        Jugador jugadorEntidad = new Jugador("Jugador Demo", jugadorEmail);
+        jugadorEntidad = jugadorRepositorio.save(jugadorEntidad);
+        
+        // Crear el usuario y asociarlo con el jugador
         User jugador = new User(
             "Jugador Demo",
             jugadorEmail,
             passwordEncoder.encode("jugador123"),
             Role.JUGADOR
         );
+        jugador.setJugador(jugadorEntidad);
         
         userRepository.save(jugador);
+        
         log.info("✅ Usuario jugador de prueba creado:");
         log.info("   📧 Email: {}", jugadorEmail);
         log.info("   🔑 Password: jugador123");
+        log.info("   🎮 Entidad Jugador asociada: ID {}", jugadorEntidad.getId());
     }
 }

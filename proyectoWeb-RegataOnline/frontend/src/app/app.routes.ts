@@ -18,25 +18,46 @@ import { PartidaMenuComponent } from './partida/partida-menu/partida-menu.compon
 import { PartidaCrearComponent } from './partida/partida-crear/partida-crear.component';
 import { PartidaJuegoComponent } from './partida/partida-juego/partida-juego.component';
 import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './security/login/login.component';
+import { SignupComponent } from './security/signup/signup.component';
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
+    // Rutas públicas - Login y Signup
+    { path: 'login', component: LoginComponent },
+    { path: 'signup', component: SignupComponent },
+    
+    // Ruta raíz - Home
     { path: '', component: HomeComponent },
-    { path: 'barco/list', component: BarcoListaComponent },
-    { path: 'barco/create', component: BarcoCreateComponent },
-    { path: 'barco/view/:id', component: BarcoViewComponent },
-    { path: 'barco/edit/:id', component: BarcoEditComponent },
-    { path: 'jugador/list', component: JugadorListaComponent },
-    { path: 'jugador/create', component: JugadorCreateComponent },
-    { path: 'jugador/view/:id', component: JugadorViewComponent },
-    { path: 'jugador/edit/:id', component: JugadorEditComponent },
-    { path: 'modelo/list', component: ModeloListaComponent },
-    { path: 'modelo/create', component: ModeloCreateComponent },
-    { path: 'modelo/view/:id', component: ModeloViewComponent },
-    { path: 'modelo/edit/:id', component: ModeloEditComponent },
-    { path: 'mapa/list', component: MapaListaComponent },
-    { path: 'mapa/create', component: MapaCreateComponent },
-    { path: 'mapa/view/:id', component: MapaViewComponent },
-    { path: 'partida/menu', component: PartidaMenuComponent },
-    { path: 'partida/crear', component: PartidaCrearComponent },
-    { path: 'partida/juego/:id', component: PartidaJuegoComponent }
+
+    // Rutas de Barco - Solo ADMINISTRADOR
+    { path: 'barco/list', component: BarcoListaComponent, canActivate: [adminGuard] },
+    { path: 'barco/create', component: BarcoCreateComponent, canActivate: [adminGuard] },
+    { path: 'barco/view/:id', component: BarcoViewComponent, canActivate: [adminGuard] },
+    { path: 'barco/edit/:id', component: BarcoEditComponent, canActivate: [adminGuard] },
+
+    // Rutas de Jugador - Solo ADMINISTRADOR
+    { path: 'jugador/list', component: JugadorListaComponent, canActivate: [adminGuard] },
+    { path: 'jugador/create', component: JugadorCreateComponent, canActivate: [adminGuard] },
+    { path: 'jugador/view/:id', component: JugadorViewComponent, canActivate: [adminGuard] },
+    { path: 'jugador/edit/:id', component: JugadorEditComponent, canActivate: [adminGuard] },
+
+    // Rutas de Modelo - Solo ADMINISTRADOR
+    { path: 'modelo/list', component: ModeloListaComponent, canActivate: [adminGuard] },
+    { path: 'modelo/create', component: ModeloCreateComponent, canActivate: [adminGuard] },
+    { path: 'modelo/view/:id', component: ModeloViewComponent, canActivate: [adminGuard] },
+    { path: 'modelo/edit/:id', component: ModeloEditComponent, canActivate: [adminGuard] },
+
+    // Rutas de Mapa - Solo ADMINISTRADOR
+    { path: 'mapa/list', component: MapaListaComponent, canActivate: [adminGuard] },
+    { path: 'mapa/create', component: MapaCreateComponent, canActivate: [adminGuard] },
+    { path: 'mapa/view/:id', component: MapaViewComponent, canActivate: [adminGuard] },
+
+    // Rutas de Partida - ADMINISTRADOR y JUGADOR (autenticados)
+    // Crear/ver partidas: ambos roles pueden hacerlo
+    // Jugar: el backend valida que solo JUGADOR puede hacer movimientos
+    { path: 'partida/menu', component: PartidaMenuComponent, canActivate: [authGuard] },
+    { path: 'partida/crear', component: PartidaCrearComponent, canActivate: [authGuard] },
+    { path: 'partida/juego/:id', component: PartidaJuegoComponent, canActivate: [authGuard] }
 ];

@@ -51,6 +51,7 @@ public class BarcoControlador {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     @GetMapping("/list")
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @Operation(summary = "Listar todos los barcos", description = "Obtiene una lista completa de todos los barcos registrados en el sistema")
     @ApiResponse(responseCode = "200", description = "Lista de barcos obtenida exitosamente")
     public List<BarcoDTO> listarBarcos() {
@@ -97,6 +98,7 @@ public class BarcoControlador {
     }
 
     @GetMapping("{id}")
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @Operation(summary = "Buscar barco por ID", description = "Obtiene los detalles de un barco específico mediante su identificador único")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Barco encontrado exitosamente"),

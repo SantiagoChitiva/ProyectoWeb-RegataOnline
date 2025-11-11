@@ -13,4 +13,6 @@ public interface JugadorRepositorio extends JpaRepository<Jugador, Long> {
 
     List<Jugador> findByNombreContainingIgnoreCase(String searchText);
     
+    java.util.Optional<Jugador> findByEmail(String email);
+    
 }

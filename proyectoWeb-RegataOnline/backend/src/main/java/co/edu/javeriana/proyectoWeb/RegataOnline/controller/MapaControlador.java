@@ -59,6 +59,7 @@ public class MapaControlador {
     }
 
     @GetMapping("/list")
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @Operation(summary = "Listar todos los mapas", description = "Obtiene una lista completa de todos los mapas creados")
     @ApiResponse(responseCode = "200", description = "Lista de mapas obtenida exitosamente")
     public List<MapaDTO> listarMapas() {
@@ -69,6 +70,7 @@ public class MapaControlador {
     }
 
     @GetMapping("/{id}")
+    @Secured({ Role.Code.ADMINISTRADOR, Role.Code.JUGADOR })
     @Operation(summary = "Obtener mapa por ID", description = "Obtiene los detalles de un mapa específico")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Mapa encontrado"),
