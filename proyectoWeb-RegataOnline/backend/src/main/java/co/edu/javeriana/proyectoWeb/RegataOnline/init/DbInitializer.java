@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
@@ -198,7 +198,7 @@ public class DbInitializer implements CommandLineRunner {
         String adminEmail = "admin@regata.com";
         
         if (userRepository.existsByEmail(adminEmail)) {
-            log.info("👤 Usuario administrador ya existe: {}", adminEmail);
+            log.info("Usuario administrador ya existe: {}", adminEmail);
             return;
         }
         
@@ -210,17 +210,17 @@ public class DbInitializer implements CommandLineRunner {
         );
         
         userRepository.save(admin);
-        log.info("✅ Usuario administrador creado:");
-        log.info("   📧 Email: {}", adminEmail);
-        log.info("   🔑 Password: admin123");
-        log.info("   ⚠️  IMPORTANTE: Cambia esta contraseña en producción");
+        log.info("Usuario administrador creado:");
+        log.info("Email: {}", adminEmail);
+        log.info("Password: admin123");
+        log.info("IMPORTANTE: Cambiar esta contraseña en producción");
     }
     
     private void crearUsuarioJugadorPrueba() {
         String jugadorEmail = "jugador@regata.com";
         
         if (userRepository.existsByEmail(jugadorEmail)) {
-            log.info("👤 Usuario jugador de prueba ya existe: {}", jugadorEmail);
+            log.info("Usuario jugador de prueba ya existe: {}", jugadorEmail);
             return;
         }
         
@@ -239,9 +239,9 @@ public class DbInitializer implements CommandLineRunner {
         
         userRepository.save(jugador);
         
-        log.info("✅ Usuario jugador de prueba creado:");
-        log.info("   📧 Email: {}", jugadorEmail);
-        log.info("   🔑 Password: jugador123");
-        log.info("   🎮 Entidad Jugador asociada: ID {}", jugadorEntidad.getId());
+        log.info("Usuario jugador de prueba creado:");
+        log.info("Email: {}", jugadorEmail);
+        log.info("Password: jugador123");
+        log.info("Entidad Jugador asociada: ID {}", jugadorEntidad.getId());
     }
 }

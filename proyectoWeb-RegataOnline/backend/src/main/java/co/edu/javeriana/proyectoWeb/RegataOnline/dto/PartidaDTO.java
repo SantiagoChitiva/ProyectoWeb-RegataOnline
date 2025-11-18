@@ -21,6 +21,32 @@ public class PartidaDTO {
     private Integer movimientos;
     private Boolean haLlegadoMeta;
 
+    public PartidaDTO() {
+    }
+
+    public PartidaDTO(Long id, Long jugadorId, String jugadorNombre, Long mapaId, Integer mapaFilas,
+            Integer mapaColumnas, Long barcoId, String barcoNombre, Integer barcoPosicionX, Integer barcoPosicionY,
+            Integer barcoVelocidadX, Integer barcoVelocidadY, String estado, LocalDateTime fechaInicio,
+            LocalDateTime fechaUltimaJugada, Integer movimientos, Boolean haLlegadoMeta) {
+        this.id = id;
+        this.jugadorId = jugadorId;
+        this.jugadorNombre = jugadorNombre;
+        this.mapaId = mapaId;
+        this.mapaFilas = mapaFilas;
+        this.mapaColumnas = mapaColumnas;
+        this.barcoId = barcoId;
+        this.barcoNombre = barcoNombre;
+        this.barcoPosicionX = barcoPosicionX;
+        this.barcoPosicionY = barcoPosicionY;
+        this.barcoVelocidadX = barcoVelocidadX;
+        this.barcoVelocidadY = barcoVelocidadY;
+        this.estado = estado;
+        this.fechaInicio = fechaInicio;
+        this.fechaUltimaJugada = fechaUltimaJugada;
+        this.movimientos = movimientos;
+        this.haLlegadoMeta = haLlegadoMeta;
+    }
+
     // Getters y Setters
     public Long getId() {
         return id;

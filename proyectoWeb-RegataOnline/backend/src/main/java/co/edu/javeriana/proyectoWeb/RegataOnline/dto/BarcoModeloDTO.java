@@ -6,6 +6,9 @@ public class BarcoModeloDTO {
     private Long modeloId;
     private List<Long> barcosIds;
 
+    public BarcoModeloDTO() {
+    }
+
     public BarcoModeloDTO(Long modeloId, List<Long> barcosIds) {
         this.modeloId = modeloId;
         this.barcosIds = barcosIds;
