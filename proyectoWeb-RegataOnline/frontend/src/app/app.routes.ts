@@ -17,6 +17,10 @@ import { ModeloEditComponent } from './modelo/modelo-edit/modelo-edit.component'
 import { PartidaMenuComponent } from './partida/partida-menu/partida-menu.component';
 import { PartidaCrearComponent } from './partida/partida-crear/partida-crear.component';
 import { PartidaJuegoComponent } from './partida/partida-juego/partida-juego.component';
+import { PartidaMultijugadorLobbyComponent } from './partida-multijugador/partida-multijugador-lobby/partida-multijugador-lobby.component';
+import { PartidaMultijugadorCrearComponent } from './partida-multijugador/partida-multijugador-crear/partida-multijugador-crear.component';
+import { PartidaMultijugadorUnirseComponent } from './partida-multijugador/partida-multijugador-unirse/partida-multijugador-unirse.component';
+import { PartidaMultijugadorSalaComponent } from './partida-multijugador/partida-multijugador-sala/partida-multijugador-sala.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './security/login/login.component';
 import { SignupComponent } from './security/signup/signup.component';
@@ -59,5 +63,11 @@ export const routes: Routes = [
     // Jugar: el backend valida que solo JUGADOR puede hacer movimientos
     { path: 'partida/menu', component: PartidaMenuComponent, canActivate: [authGuard] },
     { path: 'partida/crear', component: PartidaCrearComponent, canActivate: [authGuard] },
-    { path: 'partida/juego/:id', component: PartidaJuegoComponent, canActivate: [authGuard] }
+    { path: 'partida/juego/:id', component: PartidaJuegoComponent, canActivate: [authGuard] },
+
+    // Rutas de Partida Multijugador - Requiere autenticación
+    { path: 'partida-multijugador/lobby', component: PartidaMultijugadorLobbyComponent, canActivate: [authGuard] },
+    { path: 'partida-multijugador/crear', component: PartidaMultijugadorCrearComponent, canActivate: [authGuard] },
+    { path: 'partida-multijugador/unirse/:id', component: PartidaMultijugadorUnirseComponent, canActivate: [authGuard] },
+    { path: 'partida-multijugador/sala/:id', component: PartidaMultijugadorSalaComponent, canActivate: [authGuard] },
 ];

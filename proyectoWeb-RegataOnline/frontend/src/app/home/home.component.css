@@ -203,6 +203,10 @@
   box-shadow: 0 12px 40px rgba(155, 89, 182, 0.25);
 }
 
+.multijugador-card:hover {
+  box-shadow: 0 12px 40px rgba(241, 196, 15, 0.25);
+}
+
 .card-header {
   margin-bottom: 1.5rem;
 }

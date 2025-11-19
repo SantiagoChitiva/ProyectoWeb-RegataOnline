@@ -18,7 +18,9 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.model.Celda;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Mapa;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Partida;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.PartidaJugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.PartidaJugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.PartidaRepositorio;
@@ -40,9 +42,9 @@ public class PartidaServicio {
     @Autowired
     private BarcoRepositorio barcoRepositorio;
 
-    /**
-     * Crea una nueva partida
-     */
+    @Autowired
+    private PartidaJugadorRepositorio partidaJugadorRepositorio;
+
     @Transactional
     public PartidaDTO crearPartida(CrearPartidaRequest request) {
         log.info("Creando nueva partida para jugador {}", request.getJugadorId());
@@ -51,9 +53,9 @@ public class PartidaServicio {
         Jugador jugador = jugadorRepositorio.findById(request.getJugadorId())
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + request.getJugadorId()));
 
-        Optional<Partida> partidaExistente = partidaRepositorio.findByJugadorAndEstadoIn(
+        Optional<Partida> partidaExistente = partidaRepositorio.findByJugadorCreadorAndEstadoIn(
             jugador, 
-            Arrays.asList("activa", "pausada")
+            Arrays.asList("activa", "pausada", "en_curso")
         );
 
         if (partidaExistente.isPresent()) {
@@ -89,50 +91,47 @@ public class PartidaServicio {
         log.info("Barco colocado en posición de partida: ({}, {})", 
             celdaPartida.getPosicionX(), celdaPartida.getPosicionY());
 
-        // Crear partida
-        Partida partida = new Partida(jugador, mapa, barco);
+        // Crear partida (modo single player usando estructura multijugador)
+        Partida partida = new Partida(jugador, mapa);
+        partida.setEstado("activa"); // En single player va directo a activa
+        partida.setCantidadJugadores(1);
         partida = partidaRepositorio.save(partida);
 
-        log.info("Partida creada exitosamente con ID: {}", partida.getId());
+        // Crear PartidaJugador para el único jugador
+        PartidaJugador partidaJugador = new PartidaJugador(
+            partida, jugador, barco, 1,
+            celdaPartida.getPosicionX(), celdaPartida.getPosicionY()
+        );
+        partidaJugadorRepositorio.save(partidaJugador);
+
+        log.info("Partida creada exitosamente con ID: {} (modo single player)", partida.getId());
         return PartidaMapper.toDTO(partida);
     }
 
-    /**
-     * Busca una partida activa del jugador
-     */
     public Optional<PartidaDTO> buscarPartidaActiva(Long jugadorId) {
         log.info("Buscando partida activa para jugador {}", jugadorId);
 
         Jugador jugador = jugadorRepositorio.findById(jugadorId)
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + jugadorId));
 
-        return partidaRepositorio.findByJugadorAndEstadoIn(jugador, Arrays.asList("activa", "pausada"))
+        return partidaRepositorio.findByJugadorCreadorAndEstadoIn(jugador, Arrays.asList("activa", "pausada", "en_curso"))
             .map(PartidaMapper::toDTO);
     }
 
-    /**
-     * Obtiene una partida por ID
-     */
     public Optional<PartidaDTO> obtenerPartida(Long id) {
         return partidaRepositorio.findById(id)
             .map(PartidaMapper::toDTO);
     }
 
-    /**
-     * Lista todas las partidas de un jugador
-     */
     public List<PartidaDTO> listarPartidasJugador(Long jugadorId) {
         Jugador jugador = jugadorRepositorio.findById(jugadorId)
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + jugadorId));
 
-        return partidaRepositorio.findByJugador(jugador).stream()
+        return partidaRepositorio.findByJugadorCreador(jugador).stream()
             .map(PartidaMapper::toDTO)
             .toList();
     }
 
-    /**
-     * Pausa una partida
-     */
     @Transactional
     public PartidaDTO pausarPartida(Long id) {
         log.info("Pausando partida {}", id);
@@ -146,9 +145,6 @@ public class PartidaServicio {
         return PartidaMapper.toDTO(partida);
     }
 
-    /**
-     * Finaliza una partida
-     */
     @Transactional
     public PartidaDTO finalizarPartida(Long id) {
         log.info("Finalizando partida {}", id);
@@ -162,12 +158,6 @@ public class PartidaServicio {
         return PartidaMapper.toDTO(partida);
     }
 
-    /**
-     * Mueve el barco aplicando cambios de aceleración a la velocidad
-     * @param partidaId ID de la partida
-     * @param aceleracionX Cambio en velocidadX (-1, 0, o +1)
-     * @param aceleracionY Cambio en velocidadY (-1, 0, o +1)
-     */
     @Transactional
     public PartidaDTO moverBarco(Long partidaId, Integer aceleracionX, Integer aceleracionY) {
         log.info("Moviendo barco en partida {} con aceleración ({}, {})", partidaId, aceleracionX, aceleracionY);
@@ -180,11 +170,16 @@ public class PartidaServicio {
         Partida partida = partidaRepositorio.findById(partidaId)
             .orElseThrow(() -> new RuntimeException("Partida no encontrada con ID: " + partidaId));
 
-        if (!partida.getEstado().equals("activa")) {
+        if (!"activa".equals(partida.getEstado()) && !"en_curso".equals(partida.getEstado())) {
             throw new RuntimeException("La partida no está activa");
         }
 
-        Barco barco = partida.getBarco();
+        // Obtener el barco del PartidaJugador
+        PartidaJugador partidaJugador = partidaJugadorRepositorio.findByPartidaId(partida.getId())
+            .stream().findFirst()
+            .orElseThrow(() -> new RuntimeException("No se encontró jugador en la partida"));
+        
+        Barco barco = partidaJugador.getBarco();
         Mapa mapa = partida.getMapa();
 
         log.info("=== ESTADO ANTES DEL MOVIMIENTO ===");
@@ -255,27 +250,31 @@ public class PartidaServicio {
         barco.setPosicionY(nuevaPosicionY);
         barcoRepositorio.save(barco);
 
+        // Actualizar PartidaJugador
+        partidaJugador.setPosicionX(nuevaPosicionX);
+        partidaJugador.setPosicionY(nuevaPosicionY);
+        partidaJugador.setVelocidadX(nuevaVelocidadX);
+        partidaJugador.setVelocidadY(nuevaVelocidadY);
+        partidaJugador.setMovimientosRealizados(partidaJugador.getMovimientosRealizados() + 1);
+
         // 7. Verificar si llegó a la meta
         if (celdaDestino != null && "M".equals(celdaDestino.getTipo())) {
-            partida.setHaLlegadoMeta(true);
+            partidaJugador.setHaLlegadoMeta(true);
+            partidaJugador.setEstado("terminado");
             partida.setEstado("terminada");
+            partida.setGanador(partidaJugador.getJugador());
             log.info("¡Barco llegó a la meta!");
         }
 
-        // 8. Incrementar contador de movimientos
-        partida.setMovimientos(partida.getMovimientos() + 1);
+        partidaJugadorRepositorio.save(partidaJugador);
         partida = partidaRepositorio.save(partida);
 
         log.info("Barco movido exitosamente. Velocidad: ({}, {}), Posición: ({}, {}), Movimientos: {}", 
-            nuevaVelocidadX, nuevaVelocidadY, nuevaPosicionX, nuevaPosicionY, partida.getMovimientos());
+            nuevaVelocidadX, nuevaVelocidadY, nuevaPosicionX, nuevaPosicionY, partidaJugador.getMovimientosRealizados());
         
         return PartidaMapper.toDTO(partida);
     }
 
-    /**
-     * Calcula la trayectoria del barco usando algoritmo de Bresenham
-     * para verificar todas las celdas intermedias entre origen y destino
-     */
     private List<int[]> calcularTrayectoria(int x0, int y0, int x1, int y1) {
         List<int[]> trayectoria = new java.util.ArrayList<>();
         

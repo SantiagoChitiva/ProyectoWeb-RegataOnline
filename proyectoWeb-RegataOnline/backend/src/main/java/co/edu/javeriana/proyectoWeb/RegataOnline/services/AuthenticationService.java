@@ -63,7 +63,8 @@ public class AuthenticationService {
         userRepository.save(user);
 
         String jwt = jwtService.generateToken(user.getUsername());
-        return new JwtAuthenticationResponse(jwt, user.getEmail(), user.getRole());
+        Long userId = (user.getJugador() != null) ? user.getJugador().getId() : null;
+        return new JwtAuthenticationResponse(jwt, user.getEmail(), user.getRole(), userId);
     }
 
     public JwtAuthenticationResponse login(LoginDTO request) {
@@ -78,7 +79,8 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         String jwt = jwtService.generateToken(user.getUsername());
-        return new JwtAuthenticationResponse(jwt, user.getEmail(), user.getRole());
+        Long userId = (user.getJugador() != null) ? user.getJugador().getId() : null;
+        return new JwtAuthenticationResponse(jwt, user.getEmail(), user.getRole(), userId);
     }
 
 }

@@ -1,0 +1,139 @@
+<div class="sala-container">
+  <div class="sala-header">
+    <h1>Partida Multijugador #{{ partida()?.id }}</h1>
+    <button class="btn-back" (click)="volverALobby()">← Volver al Lobby</button>
+  </div>
+
+  @if (cargando()) {
+    <div class="loading">Cargando partida...</div>
+  }
+
+  @if (mensaje()) {
+    <div class="alert" [ngClass]="partida()?.estado === 'terminada' ? 'alert-success' : 'alert-info'">
+      {{ mensaje() }}
+    </div>
+  }
+
+  @if (!cargando() && partida()) {
+    <div class="sala-content">
+      <!-- Panel de información de la partida -->
+      <div class="info-panel">
+        <div class="estado-partida">
+          <h2>Estado: {{ getEstadoTexto() }}</h2>
+          <p class="turno-info">
+            @if (partida()?.estado === 'en_curso') {
+              <span>Turno #{{ partida()?.numeroTurnoActual }}</span>
+              <span class="turno-jugador">{{ getTurnoActualNombre() }}</span>
+              @if (esMiTurno()) {
+                <span class="mi-turno">¡ES TU TURNO!</span>
+              }
+            }
+          </p>
+        </div>
+
+        <!-- Lista de jugadores -->
+        <div class="jugadores-panel">
+          <h3>Jugadores ({{ partida()?.cantidadJugadores }}/{{ partida()?.maxJugadores }})</h3>
+          <ul class="jugadores-lista">
+            @for(jugador of partida()?.jugadores; track jugador.id) {
+              <li [ngClass]="{
+                'jugador-item': true,
+                'jugador-activo': jugador.ordenTurno === partida()?.ordenTurnoActual,
+                'jugador-propio': jugador.jugadorId === jugadorActualId(),
+                'jugador-meta': jugador.haLlegadoMeta,
+                'jugador-eliminado': jugador.estado === 'eliminado'
+              }">
+                <span class="jugador-orden">{{ jugador.ordenTurno }}</span>
+                <div class="jugador-info">
+                  <span class="jugador-nombre">
+                    {{ jugador.jugadorNombre }}
+                    @if (jugador.jugadorId === jugadorActualId()) {
+                      <span class="badge-tu">(Tú)</span>
+                    }
+                    @if (jugador.jugadorId === partida()?.jugadorCreadorId) {
+                      <span class="badge-host">Host</span>
+                    }
+                    @if (jugador.estado === 'eliminado') {
+                      <span class="badge-eliminado">❌ ELIMINADO</span>
+                    }
+                  </span>
+                  <span class="jugador-barco">{{ jugador.barcoNombre }}</span>
+                </div>
+                <div class="jugador-stats">
+                  <span>Pos: ({{ jugador.posicionX }}, {{ jugador.posicionY }})</span>
+                  <span>Vel: ({{ jugador.velocidadX }}, {{ jugador.velocidadY }})</span>
+                  <span>Movs: {{ jugador.movimientosRealizados }}</span>
+                  @if (jugador.haLlegadoMeta) {
+                    <span class="meta-badge">🏁 Pos {{ jugador.posicionFinal }}</span>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Botón de iniciar partida (solo para el creador) -->
+        @if (puedeIniciar()) {
+          <button class="btn-iniciar" (click)="iniciarPartida()">
+            Iniciar Partida
+          </button>
+        }
+
+        @if (partida()?.estado === 'esperando' && !esCreador()) {
+          <p class="esperando-msg">Esperando a que el host inicie la partida...</p>
+        }
+      </div>
+
+      <!-- Tablero de juego -->
+      @if (partida()?.estado !== 'esperando' && mapa()) {
+        <div class="tablero-container">
+          <h3>Mapa #{{ mapa()?.id }}</h3>
+          <div class="tablero">
+            @for(fila of matrizCeldas(); track $index) {
+              <div class="fila">
+                @for(celda of fila; track celda.posicionX) {
+                  <div 
+                    class="celda"
+                    [ngClass]="[
+                      getClaseCelda(celda),
+                      esDestinoValido(celda.posicionX, celda.posicionY) && esMiTurno() ? 'destino-posible' : ''
+                    ]"
+                    [style.background-color]="obtenerColorCelda(celda)"
+                    [attr.title]="'(' + celda.posicionX + ',' + celda.posicionY + ') ' + celda.tipo"
+                    (click)="esDestinoValido(celda.posicionX, celda.posicionY) && esMiTurno() ? 
+                             moverBarco(obtenerDestino(celda.posicionX, celda.posicionY)!) : null">
+                    
+                    <!-- Mostrar etiqueta del barco si hay uno aquí -->
+                    @for(jugador of partida()?.jugadores; track jugador.id) {
+                      @if (jugador.posicionX === celda.posicionX && jugador.posicionY === celda.posicionY) {
+                        <span class="barco-label">{{ jugador.ordenTurno }}</span>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          @if (moviendo()) {
+            <div class="moviendo-overlay">
+              <p>Realizando movimiento...</p>
+            </div>
+          }
+
+          <!-- Leyenda -->
+          <div class="leyenda">
+            <div class="leyenda-item"><span class="cuadro agua"></span> Agua</div>
+            <div class="leyenda-item"><span class="cuadro tierra"></span> Tierra</div>
+            <div class="leyenda-item"><span class="cuadro meta"></span> Meta</div>
+            <div class="leyenda-item"><span class="cuadro barco-propio"></span> Tu Barco</div>
+            <div class="leyenda-item"><span class="cuadro barco-enemigo"></span> Otros Barcos</div>
+            @if (esMiTurno()) {
+              <div class="leyenda-item"><span class="cuadro destino-posible"></span> Destino Posible</div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

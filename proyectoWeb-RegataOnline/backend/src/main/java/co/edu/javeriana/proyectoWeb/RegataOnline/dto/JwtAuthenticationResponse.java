@@ -6,6 +6,7 @@ public class JwtAuthenticationResponse {
     private String token;
     private String email;
     private Role role;
+    private Long userId;
 
     public JwtAuthenticationResponse() {
     }
@@ -14,6 +15,13 @@ public class JwtAuthenticationResponse {
         this.token = token;
         this.email = email;
         this.role = role;
+    }
+
+    public JwtAuthenticationResponse(String token, String email, Role role, Long userId) {
+        this.token = token;
+        this.email = email;
+        this.role = role;
+        this.userId = userId;
     }
 
     public String getToken() {
@@ -38,5 +46,13 @@ public class JwtAuthenticationResponse {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

@@ -1,0 +1,48 @@
+<div class="unirse-container">
+  <h1>Unirse a Partida #{{ partidaId() }}</h1>
+
+  @if (mensaje()) {
+    <div class="alert alert-error">
+      {{ mensaje() }}
+    </div>
+  }
+
+  <form (ngSubmit)="unirse()" class="unirse-form">
+    <div class="form-group">
+      <label for="barco">Selecciona tu Barco:</label>
+      <select 
+        id="barco" 
+        [(ngModel)]="barcoSeleccionadoId" 
+        name="barco" 
+        class="form-control"
+        required>
+        <option [value]="0">-- Selecciona un barco --</option>
+        @for(barco of barcos(); track barco.id) {
+          <option [value]="barco.id!">
+            {{ barco.nombre }} - {{ barco.nombreModeloBarco }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        class="btn-submit" 
+        [disabled]="cargando() || !barcoSeleccionadoId">
+        @if (cargando()) {
+          Uniéndose...
+        } @else {
+          Unirse a la Partida
+        }
+      </button>
+      <button 
+        type="button" 
+        class="btn-cancel" 
+        (click)="cancelar()"
+        [disabled]="cargando()">
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>

@@ -243,6 +243,34 @@ label {
 .btn-grande {
   padding: 1.5rem 3rem;
   font-size: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-grande small {
+  font-size: 0.85rem;
+  font-weight: normal;
+  opacity: 0.9;
+}
+
+.botones-modo {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
 }
 
 .instrucciones {

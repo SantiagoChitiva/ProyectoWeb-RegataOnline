@@ -1,7 +1,10 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
@@ -20,19 +24,30 @@ public class Partida {
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "jugador_id", nullable = false)
-    private Jugador jugador;
+    @JoinColumn(name = "jugador_creador_id", nullable = false)
+    private Jugador jugadorCreador; // Jugador que creó la partida
     
     @ManyToOne
     @JoinColumn(name = "mapa_id", nullable = false)
     private Mapa mapa;
     
-    @ManyToOne
-    @JoinColumn(name = "barco_id", nullable = false)
-    private Barco barco;
-    
     @Column(nullable = false)
-    private String estado; // "activa", "pausada", "terminada"
+    private String estado; // "esperando", "en_curso", "terminada"
+    
+    @Column(name = "numero_turno_actual", nullable = false)
+    private Integer numeroTurnoActual = 1; // Turno global de la partida
+    
+    @Column(name = "orden_turno_actual", nullable = false)
+    private Integer ordenTurnoActual = 1; // Qué jugador debe jugar (1-4)
+    
+    @Column(name = "cantidad_jugadores", nullable = false)
+    private Integer cantidadJugadores = 0; // Cuántos jugadores están en la partida
+    
+    @Column(name = "max_jugadores", nullable = false)
+    private Integer maxJugadores = 4; // Máximo 4 jugadores
+    
+    @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL)
+    private List<PartidaJugador> jugadores = new ArrayList<>();
     
     @Column(name = "fecha_inicio")
     private LocalDateTime fechaInicio;
@@ -40,23 +55,26 @@ public class Partida {
     @Column(name = "fecha_ultima_jugada")
     private LocalDateTime fechaUltimaJugada;
     
-    @Column(name = "movimientos")
-    private Integer movimientos = 0;
+    @Column(name = "fecha_fin")
+    private LocalDateTime fechaFin;
     
-    @Column(name = "ha_llegado_meta")
-    private Boolean haLlegadoMeta = false;
+    @ManyToOne
+    @JoinColumn(name = "ganador_id")
+    private Jugador ganador; // Jugador que llegó primero a la meta
 
     public Partida() {
-        this.estado = "activa";
-        this.movimientos = 0;
-        this.haLlegadoMeta = false;
+        this.estado = "esperando";
+        this.numeroTurnoActual = 1;
+        this.ordenTurnoActual = 1;
+        this.cantidadJugadores = 0;
+        this.maxJugadores = 4;
+        this.jugadores = new ArrayList<>();
     }
 
-    public Partida(Jugador jugador, Mapa mapa, Barco barco) {
+    public Partida(Jugador jugadorCreador, Mapa mapa) {
         this();
-        this.jugador = jugador;
+        this.jugadorCreador = jugadorCreador;
         this.mapa = mapa;
-        this.barco = barco;
     }
 
     @PrePersist
@@ -79,12 +97,12 @@ public class Partida {
         this.id = id;
     }
 
-    public Jugador getJugador() {
-        return jugador;
+    public Jugador getJugadorCreador() {
+        return jugadorCreador;
     }
 
-    public void setJugador(Jugador jugador) {
-        this.jugador = jugador;
+    public void setJugadorCreador(Jugador jugadorCreador) {
+        this.jugadorCreador = jugadorCreador;
     }
 
     public Mapa getMapa() {
@@ -95,20 +113,52 @@ public class Partida {
         this.mapa = mapa;
     }
 
-    public Barco getBarco() {
-        return barco;
-    }
-
-    public void setBarco(Barco barco) {
-        this.barco = barco;
-    }
-
     public String getEstado() {
         return estado;
     }
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Integer getNumeroTurnoActual() {
+        return numeroTurnoActual;
+    }
+
+    public void setNumeroTurnoActual(Integer numeroTurnoActual) {
+        this.numeroTurnoActual = numeroTurnoActual;
+    }
+
+    public Integer getOrdenTurnoActual() {
+        return ordenTurnoActual;
+    }
+
+    public void setOrdenTurnoActual(Integer ordenTurnoActual) {
+        this.ordenTurnoActual = ordenTurnoActual;
+    }
+
+    public Integer getCantidadJugadores() {
+        return cantidadJugadores;
+    }
+
+    public void setCantidadJugadores(Integer cantidadJugadores) {
+        this.cantidadJugadores = cantidadJugadores;
+    }
+
+    public Integer getMaxJugadores() {
+        return maxJugadores;
+    }
+
+    public void setMaxJugadores(Integer maxJugadores) {
+        this.maxJugadores = maxJugadores;
+    }
+
+    public List<PartidaJugador> getJugadores() {
+        return jugadores;
+    }
+
+    public void setJugadores(List<PartidaJugador> jugadores) {
+        this.jugadores = jugadores;
     }
 
     public LocalDateTime getFechaInicio() {
@@ -127,19 +177,19 @@ public class Partida {
         this.fechaUltimaJugada = fechaUltimaJugada;
     }
 
-    public Integer getMovimientos() {
-        return movimientos;
+    public LocalDateTime getFechaFin() {
+        return fechaFin;
     }
 
-    public void setMovimientos(Integer movimientos) {
-        this.movimientos = movimientos;
+    public void setFechaFin(LocalDateTime fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
-    public Boolean getHaLlegadoMeta() {
-        return haLlegadoMeta;
+    public Jugador getGanador() {
+        return ganador;
     }
 
-    public void setHaLlegadoMeta(Boolean haLlegadoMeta) {
-        this.haLlegadoMeta = haLlegadoMeta;
+    public void setGanador(Jugador ganador) {
+        this.ganador = ganador;
     }
 }
