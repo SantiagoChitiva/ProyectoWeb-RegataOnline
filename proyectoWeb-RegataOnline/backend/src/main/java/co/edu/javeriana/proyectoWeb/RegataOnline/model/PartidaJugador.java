@@ -49,7 +49,7 @@ public class PartidaJugador {
     private Integer velocidadY = 0;
     
     @Column(nullable = false)
-    private String estado; // "jugando", "terminado", "abandonado"
+    private String estado; // "jugando", "terminado", "abandonado", "eliminado"
     
     @Column(name = "ha_llegado_meta")
     private Boolean haLlegadoMeta = false;

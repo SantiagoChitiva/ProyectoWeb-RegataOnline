@@ -8,8 +8,6 @@ public class PartidaDTO {
     private Long jugadorCreadorId;
     private String jugadorCreadorNombre;
     private Long mapaId;
-    private Integer mapaFilas;
-    private Integer mapaColumnas;
     private String estado; // "esperando", "en_curso", "terminada"
     private Integer numeroTurnoActual;
     private Integer ordenTurnoActual;
@@ -65,22 +63,6 @@ public class PartidaDTO {
 
     public void setMapaId(Long mapaId) {
         this.mapaId = mapaId;
-    }
-
-    public Integer getMapaFilas() {
-        return mapaFilas;
-    }
-
-    public void setMapaFilas(Integer mapaFilas) {
-        this.mapaFilas = mapaFilas;
-    }
-
-    public Integer getMapaColumnas() {
-        return mapaColumnas;
-    }
-
-    public void setMapaColumnas(Integer mapaColumnas) {
-        this.mapaColumnas = mapaColumnas;
     }
 
     public String getEstado() {

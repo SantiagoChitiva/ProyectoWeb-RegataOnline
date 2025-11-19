@@ -100,11 +100,19 @@
           <div class="sin-partida">
             <div class="icon-grande">🎮</div>
             <h2>No tienes partidas activas</h2>
-            <p>Crea una nueva partida para empezar a jugar</p>
+            <p>Selecciona el modo de juego que prefieres</p>
             
-            <button class="btn btn-primary btn-grande" (click)="iniciarNuevaPartida()">
-              ✨ Iniciar Nueva Partida
-            </button>
+            <div class="botones-modo">
+              <button class="btn btn-primary btn-grande" (click)="iniciarNuevaPartida()">
+                ✨ Iniciar Nueva Partida
+                <small>Modo Un Jugador</small>
+              </button>
+              
+              <button class="btn btn-success btn-grande" (click)="irAMultijugador()">
+                🎮 Partida Multijugador
+                <small>Hasta 4 Jugadores</small>
+              </button>
+            </div>
           </div>
         }
       </div>

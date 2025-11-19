@@ -45,8 +45,6 @@ public class PartidaMapper {
         // Datos del mapa
         if (partida.getMapa() != null) {
             dto.setMapaId(partida.getMapa().getId());
-            dto.setMapaFilas(partida.getMapa().getFilas());
-            dto.setMapaColumnas(partida.getMapa().getColumnas());
         }
         
         return dto;

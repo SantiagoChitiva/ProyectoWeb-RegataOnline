@@ -20,8 +20,6 @@ public class PartidaMultijugadorMapper {
         dto.setJugadorCreadorId(partida.getJugadorCreador().getId());
         dto.setJugadorCreadorNombre(partida.getJugadorCreador().getNombre());
         dto.setMapaId(partida.getMapa().getId());
-        dto.setMapaFilas(partida.getMapa().getFilas());
-        dto.setMapaColumnas(partida.getMapa().getColumnas());
         dto.setEstado(partida.getEstado());
         dto.setNumeroTurnoActual(partida.getNumeroTurnoActual());
         dto.setOrdenTurnoActual(partida.getOrdenTurnoActual());

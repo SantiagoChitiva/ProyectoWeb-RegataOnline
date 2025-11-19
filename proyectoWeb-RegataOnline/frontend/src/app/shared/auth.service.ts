@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment';
 const JWT_TOKEN = 'jwt-token';
 const EMAIL = 'user-email';
 const ROLE = 'user-role';
+const USER_ID = 'user-id';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +40,9 @@ export class AuthService {
           sessionStorage.setItem(JWT_TOKEN, jwt.token); //localStorage
           sessionStorage.setItem(EMAIL, jwt.email);
           sessionStorage.setItem(ROLE, jwt.role);
+          if (jwt.userId) {
+            sessionStorage.setItem(USER_ID, jwt.userId.toString());
+          }
           // Actualizamos el signal después de guardar el token
           this._isAuthenticated.set(true);
           return jwt;
@@ -57,6 +61,9 @@ export class AuthService {
           sessionStorage.setItem(JWT_TOKEN, jwt.token);
           sessionStorage.setItem(EMAIL, jwt.email);
           sessionStorage.setItem(ROLE, jwt.role);
+          if (jwt.userId) {
+            sessionStorage.setItem(USER_ID, jwt.userId.toString());
+          }
           // Actualizamos el signal después de registrarse
           this._isAuthenticated.set(true);
           return jwt;
@@ -68,6 +75,7 @@ export class AuthService {
     sessionStorage.removeItem(JWT_TOKEN);
     sessionStorage.removeItem(EMAIL);
     sessionStorage.removeItem(ROLE);
+    sessionStorage.removeItem(USER_ID);
     // Actualizamos el signal después de limpiar el token
     this._isAuthenticated.set(false);
   }
@@ -86,6 +94,11 @@ export class AuthService {
 
   email() {
     return sessionStorage.getItem(EMAIL);
+  }
+
+  getUserId(): number | null {
+    const userId = sessionStorage.getItem(USER_ID);
+    return userId ? parseInt(userId, 10) : null;
   }
 
   getCurrentUser(): Observable<any> {

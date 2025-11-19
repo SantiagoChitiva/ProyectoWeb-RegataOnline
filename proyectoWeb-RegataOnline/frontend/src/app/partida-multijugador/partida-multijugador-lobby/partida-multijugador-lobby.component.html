@@ -1,0 +1,84 @@
+<div class="lobby-container">
+  <h1>Lobby Multijugador</h1>
+  
+  <div class="header-actions">
+    <button (click)="crearPartida()" class="btn-create">+ Crear Nueva Partida</button>
+    <a [routerLink]="['/']" class="btn-back">← Volver al Menú</a>
+  </div>
+
+  @if (cargando()) {
+    <p class="loading">Cargando partidas disponibles...</p>
+  }
+
+  @if (mensaje()) {
+    <div class="alert alert-error">{{ mensaje() }}</div>
+  }
+
+  @if (!cargando() && partidasDisponibles().length === 0) {
+    <div class="empty-state">
+      <p>No hay partidas disponibles en este momento</p>
+      <p>¡Crea una nueva partida para comenzar!</p>
+    </div>
+  }
+
+  @if (partidasDisponibles().length > 0) {
+    <div class="partidas-grid">
+      @for(partida of partidasDisponibles(); track partida.id) {
+        <div class="partida-card">
+          <div class="partida-header">
+            <h3>Partida #{{ partida.id }}</h3>
+            <span class="estado-badge" [ngClass]="getEstadoClase(partida.estado)">
+              {{ getEstadoTexto(partida.estado) }}
+            </span>
+          </div>
+          
+          <div class="partida-info">
+            <div class="info-row">
+              <span class="label">Creador:</span>
+              <span class="value">{{ partida.jugadorCreadorNombre }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Mapa:</span>
+              <span class="value">{{ partida.mapaNombre }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Jugadores:</span>
+              <span class="value">{{ partida.cantidadJugadores }} / {{ partida.maxJugadores }}</span>
+            </div>
+          </div>
+
+          <div class="partida-jugadores">
+            <h4>Jugadores en sala:</h4>
+            <ul>
+              @for(jugador of partida.jugadores; track jugador.id) {
+                <li>
+                  <span class="jugador-orden">{{ jugador.ordenTurno }}</span>
+                  <span class="jugador-nombre">{{ jugador.jugadorNombre }}</span>
+                  <span class="jugador-barco">{{ jugador.barcoNombre }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+
+          <div class="partida-actions">
+            @if (partida.estado === 'esperando' && partida.cantidadJugadores! < partida.maxJugadores!) {
+              <button (click)="unirseAPartida(partida.id)" class="btn-join">
+                Unirse a la Partida
+              </button>
+            }
+            @if (partida.estado === 'esperando') {
+              <button (click)="verSala(partida.id)" class="btn-view">
+                Ver Sala
+              </button>
+            }
+            @if (partida.estado === 'en_curso') {
+              <button (click)="verSala(partida.id)" class="btn-play">
+                Jugar
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

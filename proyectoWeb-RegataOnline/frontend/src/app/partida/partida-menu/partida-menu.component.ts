@@ -155,4 +155,8 @@ export class PartidaMenuComponent {
       }
     });
   }
+
+  irAMultijugador(): void {
+    this.router.navigate(['/partida-multijugador/lobby']);
+  }
 }

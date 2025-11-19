@@ -1,0 +1,76 @@
+<div class="crear-container">
+  <h1>Crear Partida Multijugador</h1>
+
+  @if (mensaje()) {
+    <div class="alert" [ngClass]="cargando() ? 'alert-info' : 'alert-error'">
+      {{ mensaje() }}
+    </div>
+  }
+
+  <form (ngSubmit)="crearPartida()" class="crear-form">
+    <div class="form-group">
+      <label for="mapa">Selecciona un Mapa:</label>
+      <select 
+        id="mapa" 
+        [(ngModel)]="mapaSeleccionadoId" 
+        name="mapa" 
+        class="form-control"
+        required>
+        <option [value]="0">-- Selecciona un mapa --</option>
+        @for(mapa of mapas(); track mapa.id) {
+          <option [value]="mapa.id!">
+            Mapa {{ mapa.id }} ({{ mapa.filas }}x{{ mapa.columnas }})
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="barco">Selecciona tu Barco:</label>
+      <select 
+        id="barco" 
+        [(ngModel)]="barcoSeleccionadoId" 
+        name="barco" 
+        class="form-control"
+        required>
+        <option [value]="0">-- Selecciona un barco --</option>
+        @for(barco of barcos(); track barco.id) {
+          <option [value]="barco.id!">
+            {{ barco.nombre }} - {{ barco.nombreModeloBarco }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="info-box">
+      <h3>Reglas del Multijugador:</h3>
+      <ul>
+        <li>Máximo 4 jugadores por partida</li>
+        <li>Los turnos son secuenciales (1, 2, 3, 4)</li>
+        <li>El turno cambia cada vez que un jugador mueve su barco</li>
+        <li>El juego termina cuando el primer jugador llega a la meta</li>
+        <li>Los demás jugadores pueden ver su posición final</li>
+      </ul>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        class="btn-submit" 
+        [disabled]="cargando() || !mapaSeleccionadoId || !barcoSeleccionadoId">
+        @if (cargando()) {
+          Creando...
+        } @else {
+          Crear Partida
+        }
+      </button>
+      <button 
+        type="button" 
+        class="btn-cancel" 
+        (click)="cancelar()"
+        [disabled]="cargando()">
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>

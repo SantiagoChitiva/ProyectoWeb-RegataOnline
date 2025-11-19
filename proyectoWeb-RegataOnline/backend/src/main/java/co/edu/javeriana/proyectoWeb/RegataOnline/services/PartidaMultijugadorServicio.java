@@ -2,6 +2,7 @@ package co.edu.javeriana.proyectoWeb.RegataOnline.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -18,7 +19,6 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.repository.*;
 
 
 @Service
-@Transactional
 public class PartidaMultijugadorServicio {
 
     private Logger log = LoggerFactory.getLogger(getClass());
@@ -44,6 +44,7 @@ public class PartidaMultijugadorServicio {
     @Autowired
     private CeldaRepositorio celdaRepositorio;
 
+    @Transactional
     public PartidaDTO crearPartida(CrearPartidaRequest request) {
         log.info("Creando partida multijugador para jugador {}", request.getJugadorId());
         
@@ -82,6 +83,7 @@ public class PartidaMultijugadorServicio {
         return PartidaMultijugadorMapper.toDTO(partida, jugadores);
     }
 
+    @Transactional
     public PartidaDTO unirseAPartida(UnirsePartidaRequest request) {
         Partida partida = partidaRepositorio.findById(request.getPartidaId())
             .orElseThrow(() -> new RuntimeException("Partida no encontrada"));
@@ -130,6 +132,7 @@ public class PartidaMultijugadorServicio {
         return PartidaMultijugadorMapper.toDTO(partida, jugadores);
     }
 
+    @Transactional
     public PartidaDTO iniciarPartida(Long partidaId) {
         Partida partida = partidaRepositorio.findById(partidaId)
             .orElseThrow(() -> new RuntimeException("Partida no encontrada"));
@@ -152,6 +155,7 @@ public class PartidaMultijugadorServicio {
         return PartidaMultijugadorMapper.toDTO(partida, jugadores);
     }
 
+    @Transactional
     public MovimientoDTO realizarMovimiento(RealizarMovimientoRequest request) {
         log.info("Jugador {} realizando movimiento en partida {}", request.getJugadorId(), request.getPartidaId());
         
@@ -176,6 +180,19 @@ public class PartidaMultijugadorServicio {
         // Validar que el jugador no ha terminado
         if ("terminado".equals(jugadorActual.getEstado())) {
             throw new RuntimeException("Ya llegaste a la meta");
+        }
+
+        // Validar que el jugador no está eliminado
+        if ("eliminado".equals(jugadorActual.getEstado())) {
+            throw new RuntimeException("Has sido eliminado del juego");
+        }
+
+        // Verificar si el jugador tiene movimientos válidos antes de permitir el movimiento
+        if (!tieneMovimientosValidos(jugadorActual, partida.getMapa())) {
+            jugadorActual.setEstado("eliminado");
+            partidaJugadorRepositorio.save(jugadorActual);
+            log.info("Jugador {} eliminado por no tener movimientos válidos", jugadorActual.getJugador().getNombre());
+            throw new RuntimeException("Has sido eliminado: no tienes movimientos válidos");
         }
 
         // Validar aceleración (-1, 0, +1)
@@ -211,6 +228,7 @@ public class PartidaMultijugadorServicio {
 
         boolean chocoConPared = false;
         boolean llegoAMeta = false;
+        boolean quedoEliminado = false;
 
         if ("W".equals(celdaDestino.getTipo())) {
             // Chocó con pared - pierde el turno y se queda en la posición anterior
@@ -219,6 +237,11 @@ public class PartidaMultijugadorServicio {
             posicionYNueva = posicionYAnterior;
             velocidadXNueva = 0;
             velocidadYNueva = 0;
+        } else if ("x".equals(celdaDestino.getTipo())) {
+            // Cayó en tierra - queda eliminado
+            quedoEliminado = true;
+            jugadorActual.setEstado("eliminado");
+            log.info("Jugador {} cayó en tierra y ha sido eliminado", jugadorActual.getJugador().getNombre());
         } else if ("M".equals(celdaDestino.getTipo())) {
             // Llegó a la meta
             llegoAMeta = true;
@@ -266,11 +289,7 @@ public class PartidaMultijugadorServicio {
 
         // Pasar al siguiente turno si la partida no ha terminado
         if (!"terminada".equals(partida.getEstado())) {
-            int siguienteOrden = partida.getOrdenTurnoActual() + 1;
-            if (siguienteOrden > partida.getCantidadJugadores()) {
-                siguienteOrden = 1;
-                partida.setNumeroTurnoActual(partida.getNumeroTurnoActual() + 1);
-            }
+            int siguienteOrden = avanzarAlSiguienteTurno(partida);
             partida.setOrdenTurnoActual(siguienteOrden);
             partida.setFechaUltimaJugada(LocalDateTime.now());
         }
@@ -287,7 +306,7 @@ public class PartidaMultijugadorServicio {
         Partida partida = partidaRepositorio.findById(partidaId)
             .orElseThrow(() -> new RuntimeException("Partida no encontrada"));
         
-        List<PartidaJugador> jugadores = partidaJugadorRepositorio.findByPartidaIdOrderByOrdenTurnoAsc(partida.getId());
+        List<PartidaJugador> jugadores = partidaJugadorRepositorio.findByPartidaIdOrderByOrdenTurnoAsc(partidaId);
         return PartidaMultijugadorMapper.toDTO(partida, jugadores);
     }
 
@@ -310,5 +329,94 @@ public class PartidaMultijugadorServicio {
             .stream()
             .map(MovimientoMapper::toDTO)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Verifica si un jugador tiene al menos un movimiento válido
+     */
+    private boolean tieneMovimientosValidos(PartidaJugador jugador, Mapa mapa) {
+        int velocidadX = jugador.getVelocidadX();
+        int velocidadY = jugador.getVelocidadY();
+        int posicionX = jugador.getPosicionX();
+        int posicionY = jugador.getPosicionY();
+        
+        // Probar todas las combinaciones de aceleración (-1, 0, 1)
+        for (int acX = -1; acX <= 1; acX++) {
+            for (int acY = -1; acY <= 1; acY++) {
+                int nuevaVelX = velocidadX + acX;
+                int nuevaVelY = velocidadY + acY;
+                int nuevaPosX = posicionX + nuevaVelX;
+                int nuevaPosY = posicionY + nuevaVelY;
+                
+                // Verificar si está dentro del mapa
+                if (nuevaPosX >= 0 && nuevaPosX < mapa.getColumnas() && 
+                    nuevaPosY >= 0 && nuevaPosY < mapa.getFilas()) {
+                    
+                    // Verificar tipo de celda
+                    Optional<Celda> celdaOpt = celdaRepositorio.findByMapaIdAndPosicionXAndPosicionY(
+                        mapa.getId(), nuevaPosX, nuevaPosY);
+                    
+                    if (celdaOpt.isPresent()) {
+                        String tipoCelda = celdaOpt.get().getTipo();
+                        // Es válido si no es pared ni tierra
+                        if (!"W".equals(tipoCelda) && !"x".equals(tipoCelda)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Avanza al siguiente turno, saltando jugadores eliminados
+     */
+    private int avanzarAlSiguienteTurno(Partida partida) {
+        List<PartidaJugador> todosJugadores = partidaJugadorRepositorio.findByPartidaIdOrderByOrdenTurnoAsc(partida.getId());
+        
+        int ordenActual = partida.getOrdenTurnoActual();
+        int intentos = 0;
+        int maxIntentos = partida.getCantidadJugadores() + 1;
+        
+        while (intentos < maxIntentos) {
+            // Calcular siguiente orden
+            ordenActual++;
+            if (ordenActual > partida.getCantidadJugadores()) {
+                ordenActual = 1;
+                partida.setNumeroTurnoActual(partida.getNumeroTurnoActual() + 1);
+            }
+            
+            // Buscar el jugador con este orden (usar variable final para lambda)
+            final int ordenBuscado = ordenActual;
+            PartidaJugador siguienteJugador = todosJugadores.stream()
+                .filter(pj -> pj.getOrdenTurno().equals(ordenBuscado))
+                .findFirst()
+                .orElse(null);
+            
+            // Si el jugador está jugando (no terminado ni eliminado), es su turno
+            if (siguienteJugador != null && "jugando".equals(siguienteJugador.getEstado())) {
+                log.info("Siguiente turno asignado al jugador con orden {}", ordenActual);
+                return ordenActual;
+            }
+            
+            // Si todos están eliminados o terminados, verificar
+            long jugadoresActivos = todosJugadores.stream()
+                .filter(pj -> "jugando".equals(pj.getEstado()))
+                .count();
+            
+            if (jugadoresActivos == 0) {
+                log.warn("No quedan jugadores activos en la partida");
+                partida.setEstado("terminada");
+                partida.setFechaFin(LocalDateTime.now());
+                return ordenActual;
+            }
+            
+            intentos++;
+        }
+        
+        log.warn("No se pudo encontrar siguiente jugador activo después de {} intentos", maxIntentos);
+        return ordenActual;
     }
 }
