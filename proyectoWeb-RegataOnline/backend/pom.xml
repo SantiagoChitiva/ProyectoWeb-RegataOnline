@@ -98,11 +98,12 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.microsoft.playwrigth</groupId>
-			<artifactId>playwrigth</artifactId>
-			<version>1.51.0</version>
-		</dependency>
+	<dependency>
+    <groupId>com.microsoft.playwright</groupId>
+    <artifactId>playwright</artifactId>
+    <version>1.51.0</version>
+</dependency>
+
  </dependencies>
 
 	<build>
