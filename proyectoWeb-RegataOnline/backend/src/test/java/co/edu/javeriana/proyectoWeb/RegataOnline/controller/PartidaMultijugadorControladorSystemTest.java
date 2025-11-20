@@ -39,6 +39,14 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.repository.CeldaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.UserRepository;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.BrowserType;
+
+import org.junit.jupiter.api.AfterEach;
+
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -68,6 +76,11 @@ public class PartidaMultijugadorControladorSystemTest {
 
     @Autowired
     private BarcoRepositorio barcoRepositorio;
+    private Playwright playwright;
+    private Browser browser;
+    private BrowserContext context;
+    private Page page;
+private String SERVER_URL;
 
     private JwtAuthenticationResponse login(String email, String password) {
         RequestEntity<LoginDTO> request = RequestEntity.post(BASE_URL + "/auth/login")
@@ -196,8 +209,22 @@ public class PartidaMultijugadorControladorSystemTest {
         barco2Id = b2.getId();
         barco3Id = b3.getId();
         barco4Id = b4.getId();
+        this.playwright = Playwright.create();
+        this.browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        this.context = browser.newContext();
+        this.page = context.newPage();  
+        this.SERVER_URL = "http://localhost:4200";
+    }
+    @AfterEach
+    void end(){
+        browser.close();
+        playwright.close();
     }
 
+@Test
+void prueba1(){
+        page.navigate(SERVER_URL);
+}
     @Test
     void testCrearPartidaMultijugadorConAdmin() throws Exception {
         JwtAuthenticationResponse adminLogin = login("admin@example.com", "adminpass");
