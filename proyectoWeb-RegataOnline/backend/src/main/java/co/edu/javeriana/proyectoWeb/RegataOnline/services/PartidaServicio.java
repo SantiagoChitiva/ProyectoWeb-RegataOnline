@@ -18,7 +18,9 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.model.Celda;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Mapa;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Partida;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.PartidaJugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.PartidaJugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.PartidaRepositorio;
@@ -40,9 +42,9 @@ public class PartidaServicio {
     @Autowired
     private BarcoRepositorio barcoRepositorio;
 
-    /**
-     * Crea una nueva partida
-     */
+    @Autowired
+    private PartidaJugadorRepositorio partidaJugadorRepositorio;
+
     @Transactional
     public PartidaDTO crearPartida(CrearPartidaRequest request) {
         log.info("Creando nueva partida para jugador {}", request.getJugadorId());
@@ -51,9 +53,9 @@ public class PartidaServicio {
         Jugador jugador = jugadorRepositorio.findById(request.getJugadorId())
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + request.getJugadorId()));
 
-        Optional<Partida> partidaExistente = partidaRepositorio.findByJugadorAndEstadoIn(
+        Optional<Partida> partidaExistente = partidaRepositorio.findByJugadorCreadorAndEstadoIn(
             jugador, 
-            Arrays.asList("activa", "pausada")
+            Arrays.asList("activa", "pausada", "en_curso")
         );
 
         if (partidaExistente.isPresent()) {
@@ -89,50 +91,47 @@ public class PartidaServicio {
         log.info("Barco colocado en posición de partida: ({}, {})", 
             celdaPartida.getPosicionX(), celdaPartida.getPosicionY());
 
-        // Crear partida
-        Partida partida = new Partida(jugador, mapa, barco);
+        // Crear partida (modo single player usando estructura multijugador)
+        Partida partida = new Partida(jugador, mapa);
+        partida.setEstado("activa"); // En single player va directo a activa
+        partida.setCantidadJugadores(1);
         partida = partidaRepositorio.save(partida);
 
-        log.info("Partida creada exitosamente con ID: {}", partida.getId());
+        // Crear PartidaJugador para el único jugador
+        PartidaJugador partidaJugador = new PartidaJugador(
+            partida, jugador, barco, 1,
+            celdaPartida.getPosicionX(), celdaPartida.getPosicionY()
+        );
+        partidaJugadorRepositorio.save(partidaJugador);
+
+        log.info("Partida creada exitosamente con ID: {} (modo single player)", partida.getId());
         return PartidaMapper.toDTO(partida);
     }
 
-    /**
-     * Busca una partida activa del jugador
-     */
     public Optional<PartidaDTO> buscarPartidaActiva(Long jugadorId) {
         log.info("Buscando partida activa para jugador {}", jugadorId);
 
         Jugador jugador = jugadorRepositorio.findById(jugadorId)
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + jugadorId));
 
-        return partidaRepositorio.findByJugadorAndEstadoIn(jugador, Arrays.asList("activa", "pausada"))
+        return partidaRepositorio.findByJugadorCreadorAndEstadoIn(jugador, Arrays.asList("activa", "pausada", "en_curso"))
             .map(PartidaMapper::toDTO);
     }
 
-    /**
-     * Obtiene una partida por ID
-     */
     public Optional<PartidaDTO> obtenerPartida(Long id) {
         return partidaRepositorio.findById(id)
             .map(PartidaMapper::toDTO);
     }
 
-    /**
-     * Lista todas las partidas de un jugador
-     */
     public List<PartidaDTO> listarPartidasJugador(Long jugadorId) {
         Jugador jugador = jugadorRepositorio.findById(jugadorId)
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + jugadorId));
 
-        return partidaRepositorio.findByJugador(jugador).stream()
+        return partidaRepositorio.findByJugadorCreador(jugador).stream()
             .map(PartidaMapper::toDTO)
             .toList();
     }
 
-    /**
-     * Pausa una partida
-     */
     @Transactional
     public PartidaDTO pausarPartida(Long id) {
         log.info("Pausando partida {}", id);
@@ -146,9 +145,6 @@ public class PartidaServicio {
         return PartidaMapper.toDTO(partida);
     }
 
-    /**
-     * Finaliza una partida
-     */
     @Transactional
     public PartidaDTO finalizarPartida(Long id) {
         log.info("Finalizando partida {}", id);
@@ -162,12 +158,6 @@ public class PartidaServicio {
         return PartidaMapper.toDTO(partida);
     }
 
-    /**
-     * Mueve el barco aplicando cambios de aceleración a la velocidad
-     * @param partidaId ID de la partida
-     * @param aceleracionX Cambio en velocidadX (-1, 0, o +1)
-     * @param aceleracionY Cambio en velocidadY (-1, 0, o +1)
-     */
     @Transactional
     public PartidaDTO moverBarco(Long partidaId, Integer aceleracionX, Integer aceleracionY) {
         log.info("Moviendo barco en partida {} con aceleración ({}, {})", partidaId, aceleracionX, aceleracionY);
@@ -180,11 +170,16 @@ public class PartidaServicio {
         Partida partida = partidaRepositorio.findById(partidaId)
             .orElseThrow(() -> new RuntimeException("Partida no encontrada con ID: " + partidaId));
 
-        if (!partida.getEstado().equals("activa")) {
+        if (!"activa".equals(partida.getEstado()) && !"en_curso".equals(partida.getEstado())) {
             throw new RuntimeException("La partida no está activa");
         }
 
-        Barco barco = partida.getBarco();
+        // Obtener el barco del PartidaJugador
+        PartidaJugador partidaJugador = partidaJugadorRepositorio.findByPartidaId(partida.getId())
+            .stream().findFirst()
+            .orElseThrow(() -> new RuntimeException("No se encontró jugador en la partida"));
+        
+        Barco barco = partidaJugador.getBarco();
         Mapa mapa = partida.getMapa();
 
         log.info("=== ESTADO ANTES DEL MOVIMIENTO ===");
@@ -209,41 +204,111 @@ public class PartidaServicio {
         // 3. Validar que la nueva posición esté dentro del mapa
         if (nuevaPosicionX < 0 || nuevaPosicionX >= mapa.getColumnas() || 
             nuevaPosicionY < 0 || nuevaPosicionY >= mapa.getFilas()) {
-            throw new RuntimeException("Movimiento fuera del mapa. Nueva posición: (" + 
+            log.warn("Movimiento inválido: fuera del mapa");
+            throw new RuntimeException("❌ No puedes moverte ahí. El movimiento sale del mapa. Nueva posición: (" + 
                 nuevaPosicionX + ", " + nuevaPosicionY + ")");
         }
 
-        // 4. Validar que la celda destino no sea una pared
+        // 4. Validar trayectoria: revisar todas las celdas intermedias
+        List<int[]> trayectoria = calcularTrayectoria(
+            barco.getPosicionX(), barco.getPosicionY(),
+            nuevaPosicionX, nuevaPosicionY
+        );
+
+        for (int[] punto : trayectoria) {
+            int px = punto[0];
+            int py = punto[1];
+
+            // Verificar si está fuera del mapa
+            if (px < 0 || px >= mapa.getColumnas() || py < 0 || py >= mapa.getFilas()) {
+                log.warn("Movimiento inválido: Trayectoria sale del mapa en ({}, {})", px, py);
+                throw new RuntimeException("❌ No puedes moverte ahí. La trayectoria cruza el límite del mapa en (" + px + ", " + py + ")");
+            }
+
+            // Verificar si atraviesa una pared
+            Celda celda = mapa.getCeldas().stream()
+                .filter(c -> c.getPosicionX() == px && c.getPosicionY() == py)
+                .findFirst()
+                .orElse(null);
+
+            if (celda != null && "x".equals(celda.getTipo())) {
+                log.warn("Movimiento inválido: Colisionó con pared en ({}, {})", px, py);
+                throw new RuntimeException("💥 ¡Chocaste con una pared en (" + px + ", " + py + ")! Elige otra dirección.");
+            }
+        }
+
+        // 5. Obtener celda de destino final
         Celda celdaDestino = mapa.getCeldas().stream()
             .filter(c -> c.getPosicionX() == nuevaPosicionX && c.getPosicionY() == nuevaPosicionY)
             .findFirst()
             .orElse(null);
 
-        if (celdaDestino != null && celdaDestino.getTipo() != null && celdaDestino.getTipo().equals("x")) {
-            throw new RuntimeException("No puedes moverte a una pared");
-        }
-
-        // 5. Actualizar velocidad y posición del barco
+        // 6. Actualizar velocidad y posición del barco
         barco.setVelocidadX(nuevaVelocidadX);
         barco.setVelocidadY(nuevaVelocidadY);
         barco.setPosicionX(nuevaPosicionX);
         barco.setPosicionY(nuevaPosicionY);
         barcoRepositorio.save(barco);
 
-        // 6. Verificar si llegó a la meta
-        if (celdaDestino != null && celdaDestino.getTipo() != null && celdaDestino.getTipo().equals("M")) {
-            partida.setHaLlegadoMeta(true);
+        // Actualizar PartidaJugador
+        partidaJugador.setPosicionX(nuevaPosicionX);
+        partidaJugador.setPosicionY(nuevaPosicionY);
+        partidaJugador.setVelocidadX(nuevaVelocidadX);
+        partidaJugador.setVelocidadY(nuevaVelocidadY);
+        partidaJugador.setMovimientosRealizados(partidaJugador.getMovimientosRealizados() + 1);
+
+        // 7. Verificar si llegó a la meta
+        if (celdaDestino != null && "M".equals(celdaDestino.getTipo())) {
+            partidaJugador.setHaLlegadoMeta(true);
+            partidaJugador.setEstado("terminado");
             partida.setEstado("terminada");
+            partida.setGanador(partidaJugador.getJugador());
             log.info("¡Barco llegó a la meta!");
         }
 
-        // 7. Incrementar contador de movimientos
-        partida.setMovimientos(partida.getMovimientos() + 1);
+        partidaJugadorRepositorio.save(partidaJugador);
         partida = partidaRepositorio.save(partida);
 
-        log.info("Barco movido. Velocidad: ({}, {}), Posición: ({}, {}), Movimientos: {}", 
-            nuevaVelocidadX, nuevaVelocidadY, nuevaPosicionX, nuevaPosicionY, partida.getMovimientos());
+        log.info("Barco movido exitosamente. Velocidad: ({}, {}), Posición: ({}, {}), Movimientos: {}", 
+            nuevaVelocidadX, nuevaVelocidadY, nuevaPosicionX, nuevaPosicionY, partidaJugador.getMovimientosRealizados());
         
         return PartidaMapper.toDTO(partida);
+    }
+
+    private List<int[]> calcularTrayectoria(int x0, int y0, int x1, int y1) {
+        List<int[]> trayectoria = new java.util.ArrayList<>();
+        
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        
+        int x = x0;
+        int y = y0;
+        
+        while (true) {
+            // No incluir la posición inicial (ya está validada)
+            if (!(x == x0 && y == y0)) {
+                trayectoria.add(new int[]{x, y});
+            }
+            
+            if (x == x1 && y == y1) {
+                break;
+            }
+            
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y += sy;
+            }
+        }
+        
+        log.info("Trayectoria calculada: {} celdas intermedias", trayectoria.size());
+        return trayectoria;
     }
 }

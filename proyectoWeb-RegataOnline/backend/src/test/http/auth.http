@@ -1,0 +1,67 @@
+### 1. Login Admin (ADMINISTRADOR)
+# @name loginAdmin
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@regata.com",
+    "password": "admin123"
+}
+
+### 2. Login Jugador (JUGADOR)
+# @name loginJugador
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "email": "jugador@regata.com",
+    "password": "jugador123"
+}
+
+### 3. Login incorrecto - Email no existe
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "email": "noexiste@regata.com",
+    "password": "admin123"
+}
+
+### 4. Login incorrecto - Contraseña incorrecta
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@regata.com",
+    "password": "wrongpassword"
+}
+
+### 5. Signup - Crear nuevo jugador
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+    "nombre": "Carlos Pérez",
+    "email": "carlos@regata.com",
+    "password": "carlos123"
+}
+
+### 6. Signup - Crear otro jugador
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+    "nombre": "María González",
+    "email": "maria@regata.com",
+    "password": "maria123"
+}
+
+### 7. Signup - Email duplicado (debe fallar)
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+    "nombre": "Admin Duplicado",
+    "email": "admin@regata.com",
+    "password": "admin123"
+}

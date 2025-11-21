@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Barco;
@@ -15,13 +17,17 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.model.Celda;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Jugador;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Mapa;
 import co.edu.javeriana.proyectoWeb.RegataOnline.model.Modelo;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.User;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.BarcoRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.CeldaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.JugadorRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.MapaRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
+import co.edu.javeriana.proyectoWeb.RegataOnline.repository.UserRepository;
 
 
+@Profile({"default", "system-testing"})
 @Component
 public class DbInitializer implements CommandLineRunner {
 
@@ -40,6 +46,12 @@ public class DbInitializer implements CommandLineRunner {
     @Autowired
     private CeldaRepositorio celdaRepositorio;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private final String[] nombresBarcos = {
@@ -57,9 +69,20 @@ public class DbInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // ========================================
+        // CREAR USUARIOS DE AUTENTICACIÓN
+        // ========================================
+        log.info("🔐 Inicializando usuarios de autenticación...");
+        crearUsuarioAdministrador();
+        crearUsuarioJugadorPrueba();
+        crearUsuariosPruebaSystemTesting();
+        
+        // ========================================
+        // CREAR JUGADORES Y MODELOS
+        // ========================================
         List<Jugador> jugadores = new ArrayList<>();
         for(int i = 0; i < 5; i++) {
-            Jugador jugador = jugadorRepositorio.save(new Jugador("Jugador " + i));
+            Jugador jugador = jugadorRepositorio.save(new Jugador("Jugador " + i, "jugador" + i + "@test.com"));
             jugadores.add(jugador);
         }
         for(int i = 0; i < 10; i++) {
@@ -86,9 +109,7 @@ public class DbInitializer implements CommandLineRunner {
             jugadorRepositorio.save(jugador);
         }
 
-        // ========================================
         // Mapa de prueba 5x5 (FÁCIL - para probar física)
-        // ========================================
         log.info("Creando mapa de prueba 5x5...");
         Mapa mapaPrueba = new Mapa(5, 5);
         mapaPrueba = mapaRepositorio.save(mapaPrueba);
@@ -121,11 +142,9 @@ public class DbInitializer implements CommandLineRunner {
             }
         }
         
-        log.info("✅ Mapa de prueba 5x5 creado - Partida:(1,1) Meta:(3,3)");
+        log.info("Mapa de prueba 5x5 creado - Partida:(1,1) Meta:(3,3)");
 
-        // ========================================
         // Mapa principal 10x10 (DIFÍCIL - para juego completo)
-        // ========================================
         log.info("Creando mapa principal 10x10...");
         Mapa mapa = new Mapa(10, 10);
         mapa = mapaRepositorio.save(mapa);
@@ -161,7 +180,7 @@ public class DbInitializer implements CommandLineRunner {
             }
         }
         
-        log.info("✅ Mapa principal 10x10 creado - Partida:(1,1) Meta:(8,8)");
+        log.info("Mapa principal 10x10 creado - Partida:(1,1) Meta:(8,8)");
 
         List<Barco> todosLosBarcos = barcoRepositorio.findAll();
         List<Celda> celdasNavegables = celdas.stream()
@@ -173,6 +192,89 @@ public class DbInitializer implements CommandLineRunner {
             Celda celda = celdasNavegables.get(i % celdasNavegables.size());
             barco.setCelda(celda);
             barcoRepositorio.save(barco);
+        }
+    }
+
+    private void crearUsuarioAdministrador() {
+        String adminEmail = "admin@regata.com";
+        
+        if (userRepository.existsByEmail(adminEmail)) {
+            log.info("Usuario administrador ya existe: {}", adminEmail);
+            return;
+        }
+        
+        User admin = new User(
+            "Administrador",
+            adminEmail,
+            passwordEncoder.encode("admin123"),
+            Role.ADMINISTRADOR
+        );
+        
+        userRepository.save(admin);
+        log.info("Usuario administrador creado:");
+        log.info("Email: {}", adminEmail);
+        log.info("Password: admin123");
+        log.info("IMPORTANTE: Cambiar esta contraseña en producción");
+    }
+    
+    private void crearUsuarioJugadorPrueba() {
+        String jugadorEmail = "jugador@regata.com";
+        
+        if (userRepository.existsByEmail(jugadorEmail)) {
+            log.info("Usuario jugador de prueba ya existe: {}", jugadorEmail);
+            return;
+        }
+        
+        // Crear la entidad Jugador primero
+        Jugador jugadorEntidad = new Jugador("Jugador Demo", jugadorEmail);
+        jugadorEntidad = jugadorRepositorio.save(jugadorEntidad);
+        
+        // Crear el usuario y asociarlo con el jugador
+        User jugador = new User(
+            "Jugador Demo",
+            jugadorEmail,
+            passwordEncoder.encode("jugador123"),
+            Role.JUGADOR
+        );
+        jugador.setJugador(jugadorEntidad);
+        
+        userRepository.save(jugador);
+        
+        log.info("Usuario jugador de prueba creado:");
+        log.info("Email: {}", jugadorEmail);
+        log.info("Password: jugador123");
+        log.info("Entidad Jugador asociada: ID {}", jugadorEntidad.getId());
+    }
+    
+    private void crearUsuariosPruebaSystemTesting() {
+        log.info("🧪 Creando usuarios para pruebas de sistema...");
+        
+        // Crear 4 usuarios de prueba para los tests E2E
+        String[] emails = {"user1@example.com", "user2@example.com", "user3@example.com", "user4@example.com"};
+        String[] nombres = {"User1", "User2", "User3", "User4"};
+        String[] passwords = {"user1pass", "user2pass", "user3pass", "user4pass"};
+        
+        for (int i = 0; i < emails.length; i++) {
+            if (userRepository.existsByEmail(emails[i])) {
+                log.info("Usuario de prueba ya existe: {}", emails[i]);
+                continue;
+            }
+            
+            // Crear entidad Jugador
+            Jugador jugadorEntidad = new Jugador(nombres[i] + " Testing");
+            jugadorEntidad = jugadorRepositorio.save(jugadorEntidad);
+            
+            // Crear usuario y asociarlo
+            User user = new User(
+                nombres[i],
+                emails[i],
+                passwordEncoder.encode(passwords[i]),
+                Role.JUGADOR
+            );
+            user.setJugador(jugadorEntidad);
+            userRepository.save(user);
+            
+            log.info("Usuario de prueba creado: {} / Password: {}", emails[i], passwords[i]);
         }
     }
 }

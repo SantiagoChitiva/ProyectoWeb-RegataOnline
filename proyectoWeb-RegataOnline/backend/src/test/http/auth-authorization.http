@@ -1,0 +1,168 @@
+### 1. Login Admin
+# @name loginAdmin
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@regata.com",
+    "password": "admin123"
+}
+
+### 2. Login Jugador
+# @name loginJugador
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "email": "jugador@regata.com",
+    "password": "jugador123"
+}
+
+### PRUEBAS CON TOKEN INVÁLIDO
+
+### 3. Sin token
+GET http://localhost:8080/jugador/list
+
+### 4. Token inválido
+GET http://localhost:8080/jugador/list
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.invalidToken.signature
+
+### 5. Token expirado
+GET http://localhost:8080/jugador/list
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkByZWdhdGEuY29tIiwiaWF0IjoxNjAwMDAwMDAwLCJleHAiOjE2MDAwMDAwMDB9.signature
+
+
+### ADMIN: Autorizado - CRUD Endpoints
+@tokenAdmin = {{loginAdmin.response.body.$.token}}
+
+### 6. Admin puede listar jugadores
+GET http://localhost:8080/jugador/list
+Authorization: Bearer {{tokenAdmin}}
+
+### 7. Admin puede buscar jugador por ID
+GET http://localhost:8080/jugador/1
+Authorization: Bearer {{tokenAdmin}}
+
+### 8. Admin puede crear jugador
+POST http://localhost:8080/jugador
+Content-Type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "nombre": "Test Admin Player"
+}
+
+### 9. Admin puede listar barcos
+GET http://localhost:8080/barco/list
+Authorization: Bearer {{tokenAdmin}}
+
+### 10. Admin puede listar modelos
+GET http://localhost:8080/modelo/list
+Authorization: Bearer {{tokenAdmin}}
+
+### 11. Admin puede listar mapas
+GET http://localhost:8080/mapa/list
+Authorization: Bearer {{tokenAdmin}}
+
+### 12. Admin puede listar celdas
+GET http://localhost:8080/celda/list
+Authorization: Bearer {{tokenAdmin}}
+
+### ADMIN: Puede crear/consultar partidas pero NO jugarlas
+
+### 13. Admin puede crear partida
+POST http://localhost:8080/partida/crear
+Content-Type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "jugadorId": 1,
+    "mapaId": 1,
+    "barcoId": 1
+}
+
+### 14. Admin puede consultar partida
+GET http://localhost:8080/partida/1
+Authorization: Bearer {{tokenAdmin}}
+
+### 15. Admin NO puede mover barco
+PUT http://localhost:8080/partida/1/mover?aceleracionX=1&aceleracionY=0
+Authorization: Bearer {{tokenAdmin}}
+
+### 16. Admin NO puede pausar partida
+PUT http://localhost:8080/partida/1/pausar
+Authorization: Bearer {{tokenAdmin}}
+
+### 17. Admin NO puede finalizar partida
+PUT http://localhost:8080/partida/1/finalizar
+Authorization: Bearer {{tokenAdmin}}
+
+### JUGADOR: Puede crear/consultar y JUGAR partidas
+
+@tokenJugador = {{loginJugador.response.body.$.token}}
+
+### 18. Jugador puede crear partida
+POST http://localhost:8080/partida/crear
+Content-Type: application/json
+Authorization: Bearer {{tokenJugador}}
+
+{
+    "jugadorId": 1,
+    "mapaId": 1,
+    "barcoId": 1
+}
+
+### 19. Jugador puede consultar partida
+GET http://localhost:8080/partida/1
+Authorization: Bearer {{tokenJugador}}
+
+### 20. Jugador puede mover barco
+PUT http://localhost:8080/partida/1/mover?aceleracionX=1&aceleracionY=0
+Authorization: Bearer {{tokenJugador}}
+
+### 21. Jugador puede pausar partida
+PUT http://localhost:8080/partida/1/pausar
+Authorization: Bearer {{tokenJugador}}
+
+### 22. Jugador puede finalizar partida
+PUT http://localhost:8080/partida/1/finalizar
+Authorization: Bearer {{tokenJugador}}
+
+### JUGADOR: Denegado - CRUD Endpoints
+
+### 23. Jugador NO puede listar jugadores
+GET http://localhost:8080/jugador/list
+Authorization: Bearer {{tokenJugador}}
+
+### 22. Jugador NO puede crear jugador
+POST http://localhost:8080/jugador
+Content-Type: application/json
+Authorization: Bearer {{tokenJugador}}
+
+{
+    "nombre": "Test Jugador Player"
+}
+
+### 24. Jugador NO puede listar barcos
+GET http://localhost:8080/barco/list
+Authorization: Bearer {{tokenJugador}}
+
+### 25. Jugador NO puede listar modelos
+GET http://localhost:8080/modelo/list
+Authorization: Bearer {{tokenJugador}}
+
+### 26. Jugador NO puede listar mapas
+GET http://localhost:8080/mapa/list
+Authorization: Bearer {{tokenJugador}}
+
+### 27. Jugador NO puede listar celdas
+GET http://localhost:8080/celda/list
+Authorization: Bearer {{tokenJugador}}
+
+### 28. Jugador NO puede acceder a barco-modelo
+GET http://localhost:8080/barco/modelos/1
+Authorization: Bearer {{tokenJugador}}
+
+### 29. Jugador NO puede acceder a barco-jugador
+GET http://localhost:8080/jugador/barcos/1
+Authorization: Bearer {{tokenJugador}}

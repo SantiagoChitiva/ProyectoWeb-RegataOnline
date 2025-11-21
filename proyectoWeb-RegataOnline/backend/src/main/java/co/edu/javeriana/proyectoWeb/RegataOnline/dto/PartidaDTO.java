@@ -1,23 +1,64 @@
 package co.edu.javeriana.proyectoWeb.RegataOnline.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PartidaDTO {
     private Long id;
-    private Long jugadorId;
-    private String jugadorNombre;
+    private Long jugadorCreadorId;
+    private String jugadorCreadorNombre;
     private Long mapaId;
+    private String estado; // "esperando", "en_curso", "terminada"
+    private Integer numeroTurnoActual;
+    private Integer ordenTurnoActual;
+    private Integer cantidadJugadores;
+    private Integer maxJugadores;
+    private List<PartidaJugadorDTO> jugadores;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaUltimaJugada;
+    private LocalDateTime fechaFin;
+    private Long ganadorId;
+    private String ganadorNombre;
+
+    // Campos para compatibilidad con modo single player
+    private Long jugadorId; // Alias de jugadorCreadorId
+    private String jugadorNombre; // Alias de jugadorCreadorNombre
     private Integer mapaFilas;
     private Integer mapaColumnas;
     private Long barcoId;
     private String barcoNombre;
     private Integer barcoPosicionX;
     private Integer barcoPosicionY;
-    private String estado;
-    private LocalDateTime fechaInicio;
-    private LocalDateTime fechaUltimaJugada;
+    private Integer barcoVelocidadX;
+    private Integer barcoVelocidadY;
     private Integer movimientos;
     private Boolean haLlegadoMeta;
+
+    public PartidaDTO() {
+    }
+
+    public PartidaDTO(Long id, Long jugadorId, String jugadorNombre, Long mapaId, Integer mapaFilas,
+            Integer mapaColumnas, Long barcoId, String barcoNombre, Integer barcoPosicionX, Integer barcoPosicionY,
+            Integer barcoVelocidadX, Integer barcoVelocidadY, String estado, LocalDateTime fechaInicio,
+            LocalDateTime fechaUltimaJugada, Integer movimientos, Boolean haLlegadoMeta) {
+        this.id = id;
+        this.jugadorId = jugadorId;
+        this.jugadorNombre = jugadorNombre;
+        this.mapaId = mapaId;
+        this.mapaFilas = mapaFilas;
+        this.mapaColumnas = mapaColumnas;
+        this.barcoId = barcoId;
+        this.barcoNombre = barcoNombre;
+        this.barcoPosicionX = barcoPosicionX;
+        this.barcoPosicionY = barcoPosicionY;
+        this.barcoVelocidadX = barcoVelocidadX;
+        this.barcoVelocidadY = barcoVelocidadY;
+        this.estado = estado;
+        this.fechaInicio = fechaInicio;
+        this.fechaUltimaJugada = fechaUltimaJugada;
+        this.movimientos = movimientos;
+        this.haLlegadoMeta = haLlegadoMeta;
+    }
 
     // Getters y Setters
     public Long getId() {
@@ -28,20 +69,20 @@ public class PartidaDTO {
         this.id = id;
     }
 
-    public Long getJugadorId() {
-        return jugadorId;
+    public Long getJugadorCreadorId() {
+        return jugadorCreadorId;
     }
 
-    public void setJugadorId(Long jugadorId) {
-        this.jugadorId = jugadorId;
+    public void setJugadorCreadorId(Long jugadorCreadorId) {
+        this.jugadorCreadorId = jugadorCreadorId;
     }
 
-    public String getJugadorNombre() {
-        return jugadorNombre;
+    public String getJugadorCreadorNombre() {
+        return jugadorCreadorNombre;
     }
 
-    public void setJugadorNombre(String jugadorNombre) {
-        this.jugadorNombre = jugadorNombre;
+    public void setJugadorCreadorNombre(String jugadorCreadorNombre) {
+        this.jugadorCreadorNombre = jugadorCreadorNombre;
     }
 
     public Long getMapaId() {
@@ -50,6 +91,111 @@ public class PartidaDTO {
 
     public void setMapaId(Long mapaId) {
         this.mapaId = mapaId;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Integer getNumeroTurnoActual() {
+        return numeroTurnoActual;
+    }
+
+    public void setNumeroTurnoActual(Integer numeroTurnoActual) {
+        this.numeroTurnoActual = numeroTurnoActual;
+    }
+
+    public Integer getOrdenTurnoActual() {
+        return ordenTurnoActual;
+    }
+
+    public void setOrdenTurnoActual(Integer ordenTurnoActual) {
+        this.ordenTurnoActual = ordenTurnoActual;
+    }
+
+    public Integer getCantidadJugadores() {
+        return cantidadJugadores;
+    }
+
+    public void setCantidadJugadores(Integer cantidadJugadores) {
+        this.cantidadJugadores = cantidadJugadores;
+    }
+
+    public Integer getMaxJugadores() {
+        return maxJugadores;
+    }
+
+    public void setMaxJugadores(Integer maxJugadores) {
+        this.maxJugadores = maxJugadores;
+    }
+
+    public List<PartidaJugadorDTO> getJugadores() {
+        return jugadores;
+    }
+
+    public void setJugadores(List<PartidaJugadorDTO> jugadores) {
+        this.jugadores = jugadores;
+    }
+
+    public LocalDateTime getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDateTime fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDateTime getFechaUltimaJugada() {
+        return fechaUltimaJugada;
+    }
+
+    public void setFechaUltimaJugada(LocalDateTime fechaUltimaJugada) {
+        this.fechaUltimaJugada = fechaUltimaJugada;
+    }
+
+    public LocalDateTime getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDateTime fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public Long getGanadorId() {
+        return ganadorId;
+    }
+
+    public void setGanadorId(Long ganadorId) {
+        this.ganadorId = ganadorId;
+    }
+
+    public String getGanadorNombre() {
+        return ganadorNombre;
+    }
+
+    public void setGanadorNombre(String ganadorNombre) {
+        this.ganadorNombre = ganadorNombre;
+    }
+
+    // Getters y Setters para compatibilidad con single player
+    public Long getJugadorId() {
+        return jugadorId != null ? jugadorId : jugadorCreadorId;
+    }
+
+    public void setJugadorId(Long jugadorId) {
+        this.jugadorId = jugadorId;
+    }
+
+    public String getJugadorNombre() {
+        return jugadorNombre != null ? jugadorNombre : jugadorCreadorNombre;
+    }
+
+    public void setJugadorNombre(String jugadorNombre) {
+        this.jugadorNombre = jugadorNombre;
     }
 
     public Integer getMapaFilas() {
@@ -100,28 +246,20 @@ public class PartidaDTO {
         this.barcoPosicionY = barcoPosicionY;
     }
 
-    public String getEstado() {
-        return estado;
+    public Integer getBarcoVelocidadX() {
+        return barcoVelocidadX;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setBarcoVelocidadX(Integer barcoVelocidadX) {
+        this.barcoVelocidadX = barcoVelocidadX;
     }
 
-    public LocalDateTime getFechaInicio() {
-        return fechaInicio;
+    public Integer getBarcoVelocidadY() {
+        return barcoVelocidadY;
     }
 
-    public void setFechaInicio(LocalDateTime fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public LocalDateTime getFechaUltimaJugada() {
-        return fechaUltimaJugada;
-    }
-
-    public void setFechaUltimaJugada(LocalDateTime fechaUltimaJugada) {
-        this.fechaUltimaJugada = fechaUltimaJugada;
+    public void setBarcoVelocidadY(Integer barcoVelocidadY) {
+        this.barcoVelocidadY = barcoVelocidadY;
     }
 
     public Integer getMovimientos() {

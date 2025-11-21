@@ -119,6 +119,32 @@ body {
   display: none;
 }
 
+/* Logout Button */
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+  margin-left: 1rem;
+}
+
+.btn-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+.btn-logout:active {
+  transform: translateY(0);
+}
+
 /* Main Content */
 .app-main {
   flex: 1;
@@ -179,6 +205,13 @@ body {
 
   .nav-icon {
     font-size: 1rem;
+  }
+
+  .btn-logout {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 1rem;
+    justify-content: center;
   }
 
   .app-main {

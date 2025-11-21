@@ -1,0 +1,100 @@
+package co.edu.javeriana.proyectoWeb.RegataOnline.config;
+
+import java.io.IOException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import co.edu.javeriana.proyectoWeb.RegataOnline.services.JwtService;
+import co.edu.javeriana.proyectoWeb.RegataOnline.services.UserService;
+import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private Logger log = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private UserService userService;
+
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
+        
+        // Ignorar rutas públicas (auth y h2)
+        String path = request.getRequestURI();
+        if (path.startsWith("/auth/") || path.startsWith("/h2")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        try {
+            String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if (invalidAuthHeader(authHeader)) {
+                // Si no hay header de autorización o es inválido, continua con la petición
+                // Si el usuario no quedó autenticado, fallará automáticamente si la petición
+                // hace algo no permitido
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String jwt = authHeader.substring(7);
+
+            if (jwtService.isTokenExpired(jwt)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String username = jwtService.extractUserName(jwt);
+
+            if (StringUtils.isEmpty(username)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // Si el usuario no existe en la BD, lanzará UsernameNotFoundException
+            UserDetails userDetails = userService.userDetailsService()
+                    .loadUserByUsername(username);
+
+            // Si la información de autenticación no ha sido extraída previamente,
+            // la extrae del token jwt y la guarda en un contexto de Spring Security
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                context.setAuthentication(authToken);
+                SecurityContextHolder.setContext(context);
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (SignatureException e) {
+            log.error("Invalid token:", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token");
+            return;
+        }
+
+    }
+
+    private boolean invalidAuthHeader(final String authHeader) {
+        return StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ");
+    }
+}

@@ -2,21 +2,32 @@
   <h1>🎮 Menú de Partida</h1>
 
   <div class="menu-card">
-    <!-- Selección de Jugador -->
-    <div class="form-group">
-      <label for="jugador">Selecciona tu jugador:</label>
-      <select 
-        id="jugador" 
-        name="jugador" 
-        [value]="jugadorSeleccionadoId() || ''"
-        (change)="onJugadorSeleccionado($event)"
-        class="select-jugador">
-        <option value="" disabled selected>-- Selecciona un jugador --</option>
-        @for(jugador of jugadores(); track jugador.id) {
-          <option [value]="jugador.id">{{ jugador.nombre }}</option>
-        }
-      </select>
-    </div>
+    <!-- Selección de Jugador (solo para administradores) -->
+    @if (esAdministrador()) {
+      <div class="form-group">
+        <label for="jugador">Selecciona un jugador:</label>
+        <select 
+          id="jugador" 
+          name="jugador" 
+          [value]="jugadorSeleccionadoId() || ''"
+          (change)="onJugadorSeleccionado($event)"
+          class="select-jugador">
+          <option value="" disabled selected>-- Selecciona un jugador --</option>
+          @for(jugador of jugadores(); track jugador.id) {
+            <option [value]="jugador.id">{{ jugador.nombre }}</option>
+          }
+        </select>
+      </div>
+    } @else if (autoSeleccionado()) {
+      <!-- Información del jugador auto-seleccionado -->
+      <div class="jugador-info">
+        <span class="icono">👤</span>
+        <div>
+          <strong>Jugador:</strong>
+          <p>Tu cuenta está vinculada</p>
+        </div>
+      </div>
+    }
 
     @if (cargando()) {
       <div class="loading">
@@ -89,11 +100,19 @@
           <div class="sin-partida">
             <div class="icon-grande">🎮</div>
             <h2>No tienes partidas activas</h2>
-            <p>Crea una nueva partida para empezar a jugar</p>
+            <p>Selecciona el modo de juego que prefieres</p>
             
-            <button class="btn btn-primary btn-grande" (click)="iniciarNuevaPartida()">
-              ✨ Iniciar Nueva Partida
-            </button>
+            <div class="botones-modo">
+              <button class="btn btn-primary btn-grande" (click)="iniciarNuevaPartida()">
+                ✨ Iniciar Nueva Partida
+                <small>Modo Un Jugador</small>
+              </button>
+              
+              <button class="btn btn-success btn-grande" (click)="irAMultijugador()">
+                🎮 Partida Multijugador
+                <small>Hasta 4 Jugadores</small>
+              </button>
+            </div>
           </div>
         }
       </div>

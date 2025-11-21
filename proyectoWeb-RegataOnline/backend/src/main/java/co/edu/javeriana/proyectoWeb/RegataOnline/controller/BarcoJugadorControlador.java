@@ -4,6 +4,7 @@ package co.edu.javeriana.proyectoWeb.RegataOnline.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.BarcoJugadorDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.BarcoServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +22,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/jugador/barcos")
-@Tag(name = "BarcoJugador", description = "Endpoints para gestionar la relación entre jugador y barcos")
+@Secured({ Role.Code.ADMINISTRADOR })
+@Tag(name = "BarcoJugador", description = "Endpoints para gestionar la relación entre jugador y barcos. Solo ADMINISTRADOR.")
 public class BarcoJugadorControlador {
     @Autowired
     private BarcoServicio barcoServicio;

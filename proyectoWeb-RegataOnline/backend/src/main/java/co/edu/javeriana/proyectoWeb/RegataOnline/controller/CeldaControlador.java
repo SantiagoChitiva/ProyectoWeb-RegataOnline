@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +18,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 import co.edu.javeriana.proyectoWeb.RegataOnline.dto.CeldaDTO;
+import co.edu.javeriana.proyectoWeb.RegataOnline.model.Role;
 import co.edu.javeriana.proyectoWeb.RegataOnline.services.CeldaServicio;
 
 @RestController
 @RequestMapping("/celda")
-@Tag(name = "Celda", description = "Endpoints para gestionar las celdas")
+@Secured({ Role.Code.ADMINISTRADOR })
+@Tag(name = "Celda", description = "Endpoints para gestionar las celdas. Solo ADMINISTRADOR.")
 public class CeldaControlador {
     @Autowired
     private CeldaServicio celdaServicio;

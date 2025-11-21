@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PartidaService, Partida } from '../../shared/partida.service';
 import { JugadorService } from '../../shared/jugador.service';
+import { AuthService } from '../../shared/auth.service';
 import { Jugador } from '../../model/jugador';
 
 @Component({
@@ -15,6 +16,7 @@ import { Jugador } from '../../model/jugador';
 export class PartidaMenuComponent {
   partidaService = inject(PartidaService);
   jugadorService = inject(JugadorService);
+  authService = inject(AuthService);
   router = inject(Router);
 
   jugadores = signal<Jugador[]>([]);
@@ -22,9 +24,33 @@ export class PartidaMenuComponent {
   partidaActiva = signal<Partida | null>(null);
   cargando = signal<boolean>(false);
   mensaje = signal<string>('');
+  esAdministrador = signal<boolean>(false);
+  autoSeleccionado = signal<boolean>(false);
 
   ngOnInit(): void {
-    this.cargarJugadores();
+    // Primero obtenemos info del usuario actual
+    this.authService.getCurrentUser().subscribe({
+      next: user => {
+        console.log('✅ Usuario obtenido:', user);
+        this.esAdministrador.set(user.role === 'ADMINISTRADOR');
+        
+        if (user.role === 'JUGADOR' && user.jugadorId) {
+          // Si es jugador, auto-seleccionar su jugadorId
+          console.log('🎮 Auto-seleccionando jugadorId:', user.jugadorId);
+          this.jugadorSeleccionadoId.set(user.jugadorId);
+          this.autoSeleccionado.set(true);
+          this.buscarPartidaActiva(user.jugadorId);
+        } else {
+          // Si es admin, cargar lista de jugadores
+          console.log('👑 Es administrador, cargando lista de jugadores');
+          this.cargarJugadores();
+        }
+      },
+      error: err => {
+        console.error('❌ Error obteniendo usuario actual', err);
+        this.cargarJugadores(); // Fallback
+      }
+    });
   }
 
   cargarJugadores(): void {
@@ -69,13 +95,18 @@ export class PartidaMenuComponent {
   }
 
   iniciarNuevaPartida(): void {
-    if (!this.jugadorSeleccionadoId()) {
+    const jugadorId = this.jugadorSeleccionadoId();
+    console.log('🚀 Intentando iniciar nueva partida con jugadorId:', jugadorId);
+    
+    if (!jugadorId) {
+      console.warn('⚠️ No hay jugador seleccionado');
       alert('Por favor selecciona un jugador');
       return;
     }
     
+    console.log('✅ Navegando a /partida/crear con jugadorId:', jugadorId);
     this.router.navigate(['/partida/crear'], {
-      queryParams: { jugadorId: this.jugadorSeleccionadoId() }
+      queryParams: { jugadorId: jugadorId }
     });
   }
 
@@ -123,5 +154,9 @@ export class PartidaMenuComponent {
         alert('Error al finalizar la partida');
       }
     });
+  }
+
+  irAMultijugador(): void {
+    this.router.navigate(['/partida-multijugador/lobby']);
   }
 }

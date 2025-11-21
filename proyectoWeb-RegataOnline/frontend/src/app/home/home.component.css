@@ -35,8 +35,8 @@
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
-/* Botones de Partida */
-.partida-buttons {
+/* Botones de Autenticación */
+.auth-buttons {
   display: flex;
   gap: 2rem;
   justify-content: center;
@@ -45,7 +45,7 @@
   animation: fadeInUp 0.8s ease-out 0.4s both;
 }
 
-.btn-partida {
+.btn-auth {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -59,36 +59,27 @@
   text-decoration: none;
 }
 
-.btn-partida:hover {
+.btn-auth:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
 }
 
-.btn-crear {
+.btn-login-hero {
+  background: white;
+  color: #667eea;
+}
+
+.btn-login-hero:hover {
+  background: #f8f9ff;
+}
+
+.btn-signup-hero {
   background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   color: white;
 }
 
-.btn-crear:hover {
+.btn-signup-hero:hover {
   background: linear-gradient(135deg, #0d7a70 0%, #2dd863 100%);
-}
-
-.btn-continuar {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-}
-
-.btn-continuar:hover {
-  background: linear-gradient(135deg, #e571f0 0%, #eb3a50 100%);
-}
-
-.btn-modelos {
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-  color: white;
-}
-
-.btn-modelos:hover {
-  background: linear-gradient(135deg, #8e44ad 0%, #732d91 100%);
 }
 
 .btn-icon {
@@ -210,6 +201,10 @@
 
 .modelos-card:hover {
   box-shadow: 0 12px 40px rgba(155, 89, 182, 0.25);
+}
+
+.multijugador-card:hover {
+  box-shadow: 0 12px 40px rgba(241, 196, 15, 0.25);
 }
 
 .card-header {
@@ -428,8 +423,13 @@
     font-size: 1.1rem;
   }
 
-  .hero-stats {
-    gap: 1.5rem;
+  .auth-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn-auth {
+    min-width: 100%;
   }
 
   .cards-grid {

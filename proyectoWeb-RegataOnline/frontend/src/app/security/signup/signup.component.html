@@ -1,0 +1,105 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <div class="signup-header">
+      <h1>🚢 Regata Online</h1>
+      <p>Crear Cuenta Nueva</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="signup-form">
+      <div class="form-group">
+        <label for="nombre">Nombre Completo</label>
+        <input 
+          type="text" 
+          id="nombre" 
+          name="nombre"
+          [(ngModel)]="signupDto().nombre"
+          placeholder="Juan Pérez"
+          required
+          [disabled]="isLoading()"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email"
+          [(ngModel)]="signupDto().email"
+          placeholder="usuario@ejemplo.com"
+          required
+          [disabled]="isLoading()"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password"
+          [(ngModel)]="signupDto().password"
+          placeholder="Mínimo 6 caracteres"
+          required
+          [disabled]="isLoading()"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Contraseña</label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          name="confirmPassword"
+          [(ngModel)]="signupDto().confirmPassword"
+          placeholder="Repite tu contraseña"
+          required
+          [disabled]="isLoading()"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="role">Tipo de Cuenta</label>
+        <select 
+          id="role" 
+          name="role"
+          [(ngModel)]="signupDto().role"
+          [disabled]="isLoading()"
+          class="form-control"
+        >
+          <option value="JUGADOR">Jugador</option>
+          <option value="ADMINISTRADOR">Administrador</option>
+        </select>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="alert alert-error">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          Creando cuenta...
+        } @else {
+          Crear Cuenta
+        }
+      </button>
+
+      <div class="signup-footer">
+        <p>¿Ya tienes cuenta? 
+          <a (click)="goToLogin()" class="link">Inicia sesión aquí</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
