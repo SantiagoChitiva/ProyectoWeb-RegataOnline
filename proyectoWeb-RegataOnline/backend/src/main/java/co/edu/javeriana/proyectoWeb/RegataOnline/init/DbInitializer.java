@@ -27,7 +27,7 @@ import co.edu.javeriana.proyectoWeb.RegataOnline.repository.ModeloRepositorio;
 import co.edu.javeriana.proyectoWeb.RegataOnline.repository.UserRepository;
 
 
-@Profile({"default"})
+@Profile({"default", "system-testing"})
 @Component
 public class DbInitializer implements CommandLineRunner {
 
@@ -75,6 +75,7 @@ public class DbInitializer implements CommandLineRunner {
         log.info("🔐 Inicializando usuarios de autenticación...");
         crearUsuarioAdministrador();
         crearUsuarioJugadorPrueba();
+        crearUsuariosPruebaSystemTesting();
         
         // ========================================
         // CREAR JUGADORES Y MODELOS
@@ -243,5 +244,37 @@ public class DbInitializer implements CommandLineRunner {
         log.info("Email: {}", jugadorEmail);
         log.info("Password: jugador123");
         log.info("Entidad Jugador asociada: ID {}", jugadorEntidad.getId());
+    }
+    
+    private void crearUsuariosPruebaSystemTesting() {
+        log.info("🧪 Creando usuarios para pruebas de sistema...");
+        
+        // Crear 4 usuarios de prueba para los tests E2E
+        String[] emails = {"user1@example.com", "user2@example.com", "user3@example.com", "user4@example.com"};
+        String[] nombres = {"User1", "User2", "User3", "User4"};
+        String[] passwords = {"user1pass", "user2pass", "user3pass", "user4pass"};
+        
+        for (int i = 0; i < emails.length; i++) {
+            if (userRepository.existsByEmail(emails[i])) {
+                log.info("Usuario de prueba ya existe: {}", emails[i]);
+                continue;
+            }
+            
+            // Crear entidad Jugador
+            Jugador jugadorEntidad = new Jugador(nombres[i] + " Testing");
+            jugadorEntidad = jugadorRepositorio.save(jugadorEntidad);
+            
+            // Crear usuario y asociarlo
+            User user = new User(
+                nombres[i],
+                emails[i],
+                passwordEncoder.encode(passwords[i]),
+                Role.JUGADOR
+            );
+            user.setJugador(jugadorEntidad);
+            userRepository.save(user);
+            
+            log.info("Usuario de prueba creado: {} / Password: {}", emails[i], passwords[i]);
+        }
     }
 }
